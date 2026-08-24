@@ -1,0 +1,765 @@
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Generador de Primer Testimonio — EGG</title>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jszip/3.10.1/jszip.min.js"></script>
+<style>
+  :root{
+    --verde:#3E9480;
+    --verde-hover:#4BA692;
+    --verde-txt:#1F5C4E;
+    --agua:#A9DDCD;
+    --agua-pale:#F0FAF6;
+    --acento:#6FC4AA;
+    --ink:#1D3B34;
+    --muted:#6E8B82;
+    --line:#DCEDE6;
+    --paper:#FFFFFF;
+    --bg:#F5FBF9;
+    --warn:#8A5A00;
+    --warn-bg:#FFF6E0;
+  }
+  *{box-sizing:border-box}
+  body{
+    margin:0; background:var(--bg); color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
+    font-size:15px; line-height:1.5;
+  }
+  .wrap{max-width:1180px;margin:0 auto;padding:0 20px 80px}
+
+  header.top{
+    background:var(--verde); color:#fff; padding:26px 0 22px; margin-bottom:26px;
+    border-bottom:3px solid var(--acento);
+  }
+  header.top .wrap{padding-bottom:0}
+  .eyebrow{font-size:11px;letter-spacing:.18em;text-transform:uppercase;color:#D3F0E6;margin:0 0 6px}
+  h1{font-family:Georgia,"Times New Roman",serif;font-weight:400;font-size:30px;margin:0;letter-spacing:.01em}
+  h1 em{font-style:normal;color:#DFF6EC}
+  .alias{margin:5px 0 0;color:#BFEBDC;font-size:13.5px;font-style:italic}
+  .alias em{font-style:italic;color:#EAFBF5;font-weight:600}
+  .sub{margin:14px 0 0;color:#D9F2EA;font-size:14px;max-width:78ch;line-height:1.62}
+
+  .grid{display:grid;grid-template-columns:1fr 1fr;gap:22px;align-items:start}
+  @media(max-width:900px){.grid{grid-template-columns:1fr}}
+
+  .card{background:var(--paper);border:1px solid var(--line);border-radius:6px;padding:20px 22px;margin-bottom:22px}
+  .card h2{font-family:Georgia,serif;font-size:17px;font-weight:400;margin:0 0 2px;color:var(--verde-txt)}
+  .card .hint{color:var(--muted);font-size:13px;margin:0 0 16px}
+  .step{display:inline-block;font-size:10px;letter-spacing:.16em;text-transform:uppercase;color:var(--acento);font-weight:700;margin-bottom:8px}
+
+  #drop{border:1.5px dashed var(--agua);background:var(--agua-pale);border-radius:6px;padding:30px 20px;text-align:center;cursor:pointer;transition:.15s}
+  #drop:hover,#drop.over{border-color:var(--verde);background:#E2F6EF}
+  #drop strong{display:block;color:var(--verde-txt);font-size:15px;margin-bottom:3px}
+  #drop span{color:var(--muted);font-size:13px}
+  #fileInput{display:none}
+
+  .loaded{display:none;border:1px solid var(--line);border-left:3px solid var(--acento);background:#F8FDFB;padding:12px 14px;border-radius:4px;margin-top:14px}
+  .loaded .fname{font-weight:600;font-size:14px;word-break:break-word}
+  .loaded .meta{color:var(--muted);font-size:13px;margin-top:3px}
+  .flag{display:none;margin-top:12px;background:var(--warn-bg);border:1px solid #E8D5A0;color:var(--warn);padding:10px 12px;border-radius:4px;font-size:13px}
+  .detect{display:none;margin-top:14px;padding:12px 14px;background:var(--agua-pale);border:1px solid var(--line);border-radius:4px;font-size:13px;color:var(--verde-txt);line-height:1.55}
+  .detect b{font-weight:600}
+
+  label{display:block;font-size:12px;font-weight:600;color:var(--verde-txt);margin:0 0 5px;letter-spacing:.02em}
+  .fieldnote{font-size:12px;color:var(--muted);margin:5px 0 0;font-weight:400}
+  input[type=text],input[type=number],select,textarea{
+    width:100%;padding:8px 10px;border:1px solid var(--line);border-radius:4px;
+    font-size:14px;font-family:inherit;color:var(--ink);background:#fff;
+  }
+  input::placeholder{color:#A9BDB6}
+  input:focus,select:focus,textarea:focus{outline:2px solid var(--agua);outline-offset:0;border-color:var(--verde)}
+  textarea{resize:vertical;min-height:70px;line-height:1.45}
+  .field{margin-bottom:16px}
+  .row{display:flex;gap:12px}
+  .row>*{flex:1}
+
+  .rowitem{display:flex;gap:8px;margin-bottom:8px;align-items:center}
+  .rowitem input{flex:1}
+  .del{flex:0 0 auto;width:30px;height:33px;border:1px solid var(--line);background:#fff;color:var(--muted);border-radius:4px;cursor:pointer;font-size:16px;line-height:1}
+  .del:hover{border-color:#C25;color:#C25}
+  .add{background:none;border:1px dashed var(--agua);color:var(--verde-txt);padding:6px 12px;border-radius:4px;cursor:pointer;font-size:13px;font-weight:600}
+  .add:hover{background:var(--agua-pale)}
+
+  /* sección plegable */
+  .toggle{display:flex;align-items:flex-start;gap:9px;cursor:pointer;user-select:none;margin:0}
+  .toggle input{width:auto;margin:3px 0 0;flex:0 0 auto;accent-color:var(--verde)}
+  .toggle .tt{flex:1}
+  .toggle .tt h2{margin:0}
+  .toggle .tt p{margin:2px 0 0;color:var(--muted);font-size:13px}
+  .fold{margin-top:18px;padding-top:16px;border-top:1px solid var(--line)}
+  .fold[hidden]{display:none}
+
+  .fojaline{display:flex;gap:8px;align-items:center;margin-bottom:8px}
+  .fojaline .n{flex:0 0 22px;text-align:right;color:var(--muted);font-size:12px;font-variant-numeric:tabular-nums}
+  .fojaline input{flex:1;font-family:ui-monospace,Menlo,Consolas,monospace;letter-spacing:.04em}
+
+  .auto{font-size:12px;color:var(--verde-txt);background:var(--agua-pale);border:1px solid var(--line);border-radius:3px;padding:5px 9px;margin-top:6px;display:inline-block}
+
+  .preview{background:#fff;border:1px solid var(--line);border-radius:4px;padding:18px 20px;
+    font-family:Georgia,"Times New Roman",serif;font-size:14.5px;line-height:1.85;text-align:justify;
+    color:#1a1a1a;max-height:340px;overflow:auto}
+  .preview .ins{background:#DDF4EB;box-shadow:0 0 0 1px #B2E0CD inset}
+  .preview .body{color:#9BAAA4;font-style:italic}
+  .legend{font-size:12px;color:var(--muted);margin:10px 0 0}
+  .swatch{display:inline-block;width:11px;height:11px;background:#DDF4EB;border:1px solid #B2E0CD;vertical-align:-1px;margin-right:4px}
+
+  .actions{position:sticky;bottom:0;background:linear-gradient(180deg,rgba(245,251,249,0) 0%,var(--bg) 40%);padding:18px 0 4px;margin-top:4px}
+  button.go{width:100%;padding:14px;border:0;border-radius:5px;background:var(--verde);color:#fff;font-size:15px;font-weight:600;cursor:pointer;letter-spacing:.02em}
+  button.go:hover{background:var(--verde-hover)}
+  button.go:disabled{background:#B5CFC6;cursor:not-allowed}
+  .status{text-align:center;font-size:13px;color:var(--muted);margin-top:9px;min-height:18px}
+  .status.ok{color:#1F6B3C;font-weight:600}
+  .status.err{color:#B3261E;font-weight:600}
+
+  .cfg{border-color:#E4F1EB;background:#FAFDFC}
+  .cfg h2{font-size:15px}
+</style>
+
+<header class="top">
+  <div class="wrap">
+    <p class="eyebrow">Escribanía General de Gobierno · Provincia de Córdoba</p>
+    <h1>Creador de primer testimonios</h1>
+    <p class="alias">también llamado <em>primer testimoniador</em></p>
+    <p class="sub">Cargás la escritura de protocolo en Word y la app la devuelve convertida en primer testimonio: le pone el folio y el “PRIMER TESTIMONIO” arriba, y abajo el cierre con las firmas, la escribana, la fórmula de concordancia y las fojas de actuación. Lee sola los comparecientes y el cargo de la escribana, así que casi todo viene completado. El cuerpo de la escritura no se toca: queda con la misma fuente, los mismos márgenes y el mismo interlineado.</p>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="card">
+    <span class="step">Paso 1</span>
+    <h2>La escritura de protocolo</h2>
+    <p class="hint">El archivo se procesa acá adentro, en tu navegador. No se sube a ningún servidor.</p>
+    <div id="drop">
+      <strong>Elegí el .docx o arrastralo hasta acá</strong>
+      <span>Formato Word (.docx)</span>
+    </div>
+    <input type="file" id="fileInput" accept=".docx">
+    <div class="loaded" id="loaded">
+      <div class="fname" id="fname"></div>
+      <div class="meta" id="fmeta"></div>
+    </div>
+    <div class="flag" id="flag"></div>
+    <div class="detect" id="detect"></div>
+
+    <div class="row" style="max-width:420px;margin-top:18px">
+      <div class="field">
+        <label for="folio">Folio <span style="color:#B3261E">*</span></label>
+        <input type="text" id="folio" placeholder="1">
+        <p class="fieldnote">Obligatorio.</p>
+      </div>
+      <div class="field">
+        <label for="escNum">N° de escritura</label>
+        <input type="text" id="escNum" placeholder="12">
+        <p class="fieldnote">Se lee de la escritura. Va en el nombre del archivo.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="grid">
+    <div>
+      <div class="card">
+        <span class="step">Paso 2</span>
+        <h2>Ante mí</h2>
+        <p class="hint">Se toma de la escritura según diga Titular o Sustituta.</p>
+        <div class="field" style="margin-bottom:0">
+          <select id="escribana"></select>
+          <div class="auto" id="autoEsc" style="display:none"></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="step">Paso 3 — opcional</span>
+        <label class="toggle">
+          <input type="checkbox" id="openEsp">
+          <span class="tt">
+            <h2>Firmas y casos especiales</h2>
+            <p id="espResumen">Las firmas ya se cargan solas. Tildá para revisarlas o para agregar una firma a ruego.</p>
+          </span>
+        </label>
+
+        <div class="fold" id="espBody" hidden>
+          <div class="field">
+            <label>“Hay una firma de …”</label>
+            <div id="firmas"></div>
+            <button class="add" id="addFirma">+ Agregar firma</button>
+            <p class="fieldnote">Comparecientes, cónyuges y firmantes a ruego, en orden. Salen en negrita.</p>
+          </div>
+
+          <div class="field">
+            <label for="firmantes">Quiénes firman, dentro de “firman los comparecientes ___”</label>
+            <input type="text" id="firmantes" placeholder="Guillermo Luis de RIVAS y José Francisco AGUILERA">
+            <p class="fieldnote">Solo cuando alguno no firma. Vacío = la frase queda como está.</p>
+          </div>
+
+          <div class="field" style="margin-bottom:0">
+            <label for="clausula">Cláusula previa (firma a ruego, impresión digital)</label>
+            <textarea id="clausula" placeholder="La señora … manifiesta no saber firmar y estampa su impresión dígito pulgar derecho, firmando a ruego …"></textarea>
+          </div>
+        </div>
+      </div>
+
+      <div class="card cfg">
+        <label class="toggle">
+          <input type="checkbox" id="openCfg">
+          <span class="tt">
+            <h2>Configuración</h2>
+            <p>Cambiar los nombres de las escribanas cuando cambie el cargo.</p>
+          </span>
+        </label>
+        <div class="fold" id="cfgBody" hidden>
+          <div class="field">
+            <label for="cfgTitular">Escribana General de Gobierno (Titular)</label>
+            <input type="text" id="cfgTitular">
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="cfgSustituta">Escribana Sustituta</label>
+            <input type="text" id="cfgSustituta">
+          </div>
+          <p class="fieldnote" id="cfgNota">Se guardan para las próximas veces.</p>
+        </div>
+      </div>
+    </div>
+
+    <div>
+      <div class="card">
+        <span class="step">Paso 4</span>
+        <h2>Para quién se expide</h2>
+        <p class="hint">Se cargan solos. Sacá el que no corresponda.</p>
+        <div class="field">
+          <label>Beneficiarios</label>
+          <div id="benef"></div>
+          <button class="add" id="addBenef">+ Agregar beneficiario</button>
+          <div class="auto" id="autoTrato" style="display:none"></div>
+        </div>
+        <div class="row">
+          <div class="field" style="margin-bottom:0">
+            <label for="trato">Tratamiento</label>
+            <select id="trato">
+              <option value="auto" selected>Automático, según los nombres</option>
+              <option value="el señor">el señor</option>
+              <option value="la señora">la señora</option>
+              <option value="los señores">los señores</option>
+              <option value="las señoras">las señoras</option>
+              <option value="">(sin tratamiento)</option>
+            </select>
+          </div>
+          <div class="field" style="margin-bottom:0">
+            <label for="benefNegrita" style="margin-bottom:9px">Estilo</label>
+            <label class="toggle" style="font-size:13px;font-weight:400;color:var(--ink)">
+              <input type="checkbox" id="benefNegrita" checked>
+              <span class="tt" style="padding-top:1px">En negrita</span>
+            </label>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <span class="step">Paso 5</span>
+        <h2>Fojas de actuación notarial</h2>
+        <p class="hint">Escribí la primera y las siguientes se completan solas.</p>
+        <div class="row">
+          <div class="field">
+            <label for="cantFojas">Cantidad</label>
+            <input type="number" id="cantFojas" min="1" max="40" value="4">
+          </div>
+          <div class="field">
+            <label for="foja1">Primera foja</label>
+            <input type="text" id="foja1" placeholder="A 021729505">
+          </div>
+        </div>
+        <div id="fojas"></div>
+        <div class="field" style="margin-top:14px;margin-bottom:0">
+          <label for="fojaFmt">Cómo se entrecomillan</label>
+          <select id="fojaFmt">
+            <option value="ind" selected>Una por una — “A 021729505”; “A 021729506”</option>
+            <option value="grp">Todas juntas — “A021533745; A021533762”</option>
+          </select>
+        </div>
+        <p class="fieldnote">Al editar una foja se recalculan solo las de abajo, así podés cortar la correlatividad.</p>
+      </div>
+
+      <div class="card">
+        <h2>Cómo va a quedar</h2>
+        <p class="hint">En gris, el cuerpo de la escritura que no se toca.</p>
+        <div class="preview" id="preview"></div>
+        <p class="legend"><span class="swatch"></span>Texto que agrega la app</p>
+      </div>
+
+      <div class="actions">
+        <button class="go" id="go" disabled>Generar primer testimonio</button>
+        <div class="status" id="status"></div>
+        <div class="status" id="nomArch" style="font-size:12px;margin-top:2px;word-break:break-word"></div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+const W='http://schemas.openxmlformats.org/wordprocessingml/2006/main';
+const XMLNS='http://www.w3.org/XML/1998/namespace';
+let zip=null, docXml=null, origName='';
+
+/* ================= configuración de escribanas ================= */
+let CFG={titular:'María Amelia ASSAAD', sustituta:'Estela María FELICIOTTI'};
+function pintarEscribanas(sel){
+  const s=document.getElementById('escribana');
+  const actual = sel || s.value;
+  s.innerHTML='';
+  [['titular',CFG.titular+' (Titular)'],['sustituta',CFG.sustituta+' (Sustituta)']].forEach(([v,t])=>{
+    const o=document.createElement('option'); o.value=v; o.textContent=t; s.appendChild(o);
+  });
+  if(actual) s.value=actual;
+  document.getElementById('cfgTitular').value=CFG.titular;
+  document.getElementById('cfgSustituta').value=CFG.sustituta;
+}
+async function guardarCfg(){
+  CFG.titular=document.getElementById('cfgTitular').value.trim()||CFG.titular;
+  CFG.sustituta=document.getElementById('cfgSustituta').value.trim()||CFG.sustituta;
+  pintarEscribanas(); actualizar();
+  try{ await window.storage.set('escribanas',JSON.stringify(CFG)); }
+  catch(e){ document.getElementById('cfgNota').textContent='No se pudieron guardar para la próxima vez; valen para esta sesión.'; }
+}
+(async()=>{
+  try{
+    const r=await window.storage.get('escribanas');
+    if(r&&r.value){ const o=JSON.parse(r.value); if(o.titular) CFG.titular=o.titular; if(o.sustituta) CFG.sustituta=o.sustituta; }
+  }catch(e){}
+  pintarEscribanas('sustituta'); actualizar();
+})();
+function nombreEscribana(){
+  return document.getElementById('escribana').value==='titular' ? CFG.titular : CFG.sustituta;
+}
+
+/* ================= nombre del archivo ================= */
+function sinTildes(s){return s.normalize('NFD').replace(/[\u0300-\u036f]/g,'');}
+const NUMPAL={cero:0,uno:1,un:1,una:1,dos:2,tres:3,cuatro:4,cinco:5,seis:6,siete:7,ocho:8,nueve:9,
+diez:10,once:11,doce:12,trece:13,catorce:14,quince:15,dieciseis:16,diecisiete:17,dieciocho:18,diecinueve:19,
+veinte:20,veintiuno:21,veintiuna:21,veintidos:22,veintitres:23,veinticuatro:24,veinticinco:25,veintiseis:26,
+veintisiete:27,veintiocho:28,veintinueve:29,treinta:30,cuarenta:40,cincuenta:50,sesenta:60,setenta:70,
+ochenta:80,noventa:90,cien:100,ciento:100,doscientos:200,trescientos:300,cuatrocientos:400,quinientos:500,
+seiscientos:600,setecientos:700,ochocientos:800,novecientos:900,mil:1000};
+function palabrasANumero(txt){
+  const pal=sinTildes(String(txt)).toLowerCase().split(/\s+/).filter(w=>w&&w!=='y');
+  if(!pal.length) return null;
+  let total=0;
+  for(const w of pal){ if(!(w in NUMPAL)) return null; total+=NUMPAL[w]; }
+  return total||null;
+}
+const CONECTOR=/^(de|del|la|las|los|von|van|di|da|dos|le)$/i;
+function apellidoPrimero(n){
+  const pal=n.trim().split(/\s+/).filter(Boolean);
+  let i=pal.findIndex(p=>/^[A-ZÁÉÍÓÚÑ]{2,}$/.test(p));
+  if(i<1) return n.trim();
+  while(i>0 && CONECTOR.test(pal[i-1]) && !/^[A-ZÁÉÍÓÚÑ]{2,}$/.test(pal[i-1])) i--;
+  return (pal.slice(i).join(' ')+' '+pal.slice(0,i).join(' ')).trim();
+}
+function nombreArchivo(){
+  const n=document.getElementById('escNum').value.trim();
+  const bs=benef.valores().map(apellidoPrimero);
+  let quienes='';
+  bs.forEach((x,i)=>{ if(i>0) quienes += (i===bs.length-1?' y ':', '); quienes+=x; });
+  let base='Primer Testimonio'+(n?' - ESC '+n:'')+(quienes?' - '+quienes:'');
+  base=base.replace(/[\\/:*?"<>|]/g,'-').replace(/\s+/g,' ').trim();
+  if(base.length>170) base=base.slice(0,170).trim();
+  return base+'.docx';
+}
+
+/* ================= plegables ================= */
+function plegar(chk,body){
+  const c=document.getElementById(chk), b=document.getElementById(body);
+  c.addEventListener('change',()=>{ b.hidden=!c.checked; });
+}
+plegar('openEsp','espBody');
+plegar('openCfg','cfgBody');
+['cfgTitular','cfgSustituta'].forEach(id=>document.getElementById(id).addEventListener('change',guardarCfg));
+
+/* ================= números a letras ================= */
+const UNI=['','una','dos','tres','cuatro','cinco','seis','siete','ocho','nueve','diez','once','doce','trece','catorce','quince','dieciséis','diecisiete','dieciocho','diecinueve','veinte','veintiuna','veintidós','veintitrés','veinticuatro','veinticinco','veintiséis','veintisiete','veintiocho','veintinueve','treinta'];
+const DEC={30:'treinta',40:'cuarenta',50:'cincuenta'};
+function enLetras(n){
+  n=parseInt(n,10); if(!n||n<1) return '';
+  if(n<=30) return UNI[n];
+  if(n<60){const d=Math.floor(n/10)*10,u=n%10; return u?DEC[d]+' y '+UNI[u]:DEC[d];}
+  return String(n);
+}
+
+/* ================= género para el tratamiento ================= */
+const FEM=new Set(['belén','beatriz','isabel','raquel','mabel','maribel','anabel','ruth','judith','esther','ester','carmen','inés','mercedes','dolores','lourdes','milagros','nieves','soledad','caridad','trinidad','piedad','pilar','flor','noemí','rocío','consuelo','amparo','rosario','socorro','nancy','jenny','wendy','ailén','ayelén','jazmín','yasmín','karen','miriam','myriam','marisol','abigail','sol','elizabeth','lilian','jacqueline','jaqueline','nair','janet','yanet','ivet','ivette','maribel','azul','esther','magalí','yamil','yael','anahí','mora','luz','cruz','paz']);
+const MASC=new Set(['josé','jose','jorge','emanuel','daniel','gabriel','ismael','rafael','miguel','manuel','andrés','andres','nicolás','nicolas','tomás','tomas','matías','matias','elías','elias','lucas','marcos','carlos','luis','juan','julián','julian','sebastián','sebastian','martín','martin','joaquín','joaquin','agustín','agustin','ramón','ramon','simón','simon','adrián','adrian','fabián','fabian','cristian','christian','damián','damian','maximiliano','walter','néstor','nestor','héctor','hector','víctor','victor','javier','oliver','ariel','uriel','axel','abel','leonel','lionel','ezequiel','joel','noel','samuel','raúl','raul','saúl','saul','david','jesús','jesus','alexis','dennis','luca','nicola','bautista','josué','josue','enzo','ian','elian','thiago','benjamín','benjamin','franco','iván','ivan','omar','oscar','omar','cesar','césar','edgar','elmer','wilson','nelson','milton','hugo','aldo']);
+function generoDe(nombreCompleto){
+  const pn=(nombreCompleto||'').trim().split(/\s+/)[0]||'';
+  const k=pn.toLowerCase();
+  if(FEM.has(k)) return 'f';
+  if(MASC.has(k)) return 'm';
+  if(/a$/.test(k)) return 'f';
+  if(/[oe]$/.test(k)) return 'm';
+  return '?';
+}
+function tratoAuto(nombres){
+  if(!nombres.length) return 'los señores';
+  const g=nombres.map(generoDe);
+  const f=g.filter(x=>x==='f').length, m=g.filter(x=>x==='m').length;
+  if(nombres.length===1) return g[0]==='f' ? 'la señora' : 'el señor';
+  if(f===nombres.length) return 'las señoras';
+  if(m===nombres.length) return 'los señores';
+  return 'los señores';
+}
+function tratoActual(){
+  const v=document.getElementById('trato').value;
+  if(v!=='auto') return v;
+  return tratoAuto(benef.valores());
+}
+
+/* ================= fojas ================= */
+function siguienteFoja(s){
+  const m=String(s).match(/^(.*?)(\d+)(\D*)$/);
+  if(!m) return s;
+  const num=(BigInt(m[2])+1n).toString().padStart(m[2].length,'0');
+  return m[1]+num+m[3];
+}
+let fojasVal=[];
+function rebuildFojas(desde){
+  const cant=Math.max(1,Math.min(40,parseInt(document.getElementById('cantFojas').value||'1',10)));
+  const base=document.getElementById('foja1').value.trim();
+  if(!fojasVal.length) fojasVal=[base];
+  fojasVal[0]=base;
+  const from=(typeof desde==='number')?desde:0;
+  for(let i=from+1;i<cant;i++) fojasVal[i]= fojasVal[i-1] ? siguienteFoja(fojasVal[i-1]) : '';
+  fojasVal.length=cant;
+  renderFojas();
+}
+function renderFojas(){
+  const c=document.getElementById('fojas'); c.innerHTML='';
+  fojasVal.forEach((v,i)=>{
+    if(i===0) return;
+    const d=document.createElement('div'); d.className='fojaline';
+    d.innerHTML='<span class="n">'+(i+1)+'</span>';
+    const inp=document.createElement('input'); inp.type='text'; inp.value=v||'';
+    inp.addEventListener('input',()=>{fojasVal[i]=inp.value.trim();});
+    inp.addEventListener('change',()=>{fojasVal[i]=inp.value.trim();rebuildFojas(i);actualizar();});
+    d.appendChild(inp); c.appendChild(d);
+  });
+}
+
+/* ================= listas ================= */
+function listaEditable(contId,placeholder){
+  const cont=document.getElementById(contId);
+  return {
+    valores(){ return [...cont.querySelectorAll('input')].map(i=>i.value.trim()).filter(Boolean); },
+    vaciar(){ cont.innerHTML=''; },
+    agregar(v){
+      const d=document.createElement('div'); d.className='rowitem';
+      const inp=document.createElement('input'); inp.type='text'; inp.placeholder=placeholder; inp.value=v||'';
+      inp.addEventListener('input',actualizar);
+      const b=document.createElement('button'); b.className='del'; b.type='button'; b.textContent='×'; b.title='Quitar';
+      b.addEventListener('click',()=>{d.remove();actualizar();});
+      d.appendChild(inp); d.appendChild(b); cont.appendChild(d); actualizar();
+      return inp;
+    }
+  };
+}
+const firmas=listaEditable('firmas','Nombre y APELLIDO');
+const benef=listaEditable('benef','Nombre y APELLIDO');
+document.getElementById('addFirma').addEventListener('click',()=>firmas.agregar().focus());
+document.getElementById('addBenef').addEventListener('click',()=>benef.agregar().focus());
+
+/* ================= armado del texto ================= */
+function segmentosPrefijo(){
+  const folio=document.getElementById('folio').value.trim();
+  return [{t:'Folio '+(folio||'___')+'.- PRIMER TESTIMONIO. ',b:true}];
+}
+function segmentosCierre(){
+  const s=[];
+  const cl=document.getElementById('clausula').value.trim();
+  if(cl) s.push({t:cl.replace(/\s+$/,'')+' ',b:false});
+  firmas.valores().forEach(n=>{
+    s.push({t:'Hay una firma de ',b:false});
+    s.push({t:n,b:true});
+    s.push({t:'. ',b:false});
+  });
+  s.push({t:'Ante mí ',b:false});
+  s.push({t:nombreEscribana(),b:true});
+  s.push({t:'. Esta mi firma y sello. ',b:false});
+  s.push({t:'CONCUERDA',b:true});
+  s.push({t:' con la Escritura Matriz que pasó ante mí, al número y folio citado en este Registro Notarial de la Escribanía General de Gobierno de la Provincia; doy fe.- ',b:false});
+  const trato=tratoActual();
+  const negB=document.getElementById('benefNegrita').checked;
+  s.push({t:'Para '+(trato?trato+' ':''),b:false});
+  const bs=benef.valores();
+  bs.forEach((n,i)=>{
+    if(i>0) s.push({t: i===bs.length-1?' y ':', ',b:false});
+    s.push({t:n,b:negB});
+  });
+  const fs=fojasVal.filter(Boolean);
+  const lista=document.getElementById('fojaFmt').value==='grp'
+    ? '“'+fs.join('; ')+'”'
+    : fs.map(x=>'“'+x+'”').join('; ');
+  s.push({t:' expido este PRIMER TESTIMONIO en '+enLetras(fs.length)+' foja'+(fs.length===1?'':'s')+
+          ' de Actuación Notarial '+lista+' que firmo y sello en el lugar y fecha de su otorgamiento.-',b:false});
+  return s;
+}
+function esc(x){return x.replace(/[&<>]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;'}[c]));}
+function pintar(segs){return segs.map(g=>g.b?'<b>'+esc(g.t)+'</b>':esc(g.t)).join('');}
+function actualizar(){
+  const fr=document.getElementById('firmantes').value.trim();
+  const medio = fr
+    ? '…PREVIA LECTURA Y RATIFICACIÓN, firman los comparecientes<span class="ins"> '+esc(fr)+'</span> por ante mí que doy fe. '
+    : '…PREVIA LECTURA Y RATIFICACIÓN, firman los comparecientes por ante mí que doy fe. ';
+  document.getElementById('preview').innerHTML=
+    '<span class="ins">'+pintar(segmentosPrefijo())+'</span>'+
+    '<span class="body">ESCRITURA NÚMERO … <em>[cuerpo de la escritura, sin cambios]</em> … </span>'+
+    '<span class="body">'+medio+'</span>'+
+    '<span class="ins">'+pintar(segmentosCierre())+'</span>';
+
+  const n=firmas.valores().length;
+  document.getElementById('espResumen').textContent = n
+    ? n+(n===1?' firma cargada':' firmas cargadas')+'. Tildá para revisarlas o agregar una firma a ruego.'
+    : 'Las firmas ya se cargan solas. Tildá para revisarlas o para agregar una firma a ruego.';
+
+  const at=document.getElementById('autoTrato');
+  if(document.getElementById('trato').value==='auto' && benef.valores().length){
+    at.style.display='inline-block';
+    at.textContent='Tratamiento detectado: “'+tratoAuto(benef.valores())+'”';
+  } else at.style.display='none';
+
+  const na=document.getElementById('nomArch');
+  if(na) na.textContent='Se descarga como: '+nombreArchivo();
+}
+['folio','escNum','escribana','trato','firmantes','clausula','fojaFmt','benefNegrita'].forEach(id=>{
+  document.getElementById(id).addEventListener('input',actualizar);
+  document.getElementById(id).addEventListener('change',actualizar);
+});
+document.getElementById('folio').addEventListener('input',e=>{ e.target.style.borderColor=''; });
+document.getElementById('cantFojas').addEventListener('input',()=>{rebuildFojas(0);actualizar();});
+document.getElementById('foja1').addEventListener('input',()=>{rebuildFojas(0);actualizar();});
+
+/* ================= detección en la escritura ================= */
+function bloquesNegrita(doc){
+  const rs=doc.getElementsByTagNameNS(W,'r'); const out=[]; let cur='';
+  for(let i=0;i<rs.length;i++){
+    const rPr=rs[i].getElementsByTagNameNS(W,'rPr')[0];
+    const neg=!!(rPr&&rPr.getElementsByTagNameNS(W,'b').length);
+    let t=''; const ts=rs[i].getElementsByTagNameNS(W,'t');
+    for(let j=0;j<ts.length;j++) t+=ts[j].textContent;
+    if(neg) cur+=t; else { if(cur.trim()) out.push(cur.trim()); cur=''; }
+  }
+  if(cur.trim()) out.push(cur.trim());
+  return out;
+}
+const RE_TITULO=/^[A-ZÁÉÍÓÚÑ][a-záéíóúñü]+$/;
+const RE_CAPS=/^[A-ZÁÉÍÓÚÑ]{2,}$/;
+function pareceNombre(s){
+  const x=s.replace(/^[\s,.;:]+|[\s,.;:]+$/g,'');
+  if(x.length<5||x.length>70) return false;
+  const pal=x.split(/\s+/).filter(Boolean);
+  return pal.some(p=>RE_TITULO.test(p))&&pal.some(p=>RE_CAPS.test(p));
+}
+function soloMayusculas(s){return !/[a-záéíóúñü]/.test(s);}
+function detectarComparecientes(doc){
+  const bl=bloquesNegrita(doc);
+  let ini=-1;
+  for(let i=0;i<bl.length;i++){ if(/^COMPARECEN?\b/.test(bl[i].trim())){ini=i;break;} }
+  if(ini<0) return [];
+  const res=[];
+  for(let i=ini+1;i<bl.length;i++){
+    const b=bl[i];
+    if(soloMayusculas(b)&&!pareceNombre(b)) break;
+    if(pareceNombre(b)){
+      const n=b.replace(/^[\s,.;:]+|[\s,.;:]+$/g,'');
+      if(!res.some(x=>x.toLowerCase()===n.toLowerCase())) res.push(n);
+    }
+  }
+  return res;
+}
+function detectarCargo(texto){
+  const m=texto.match(/ante\s+m[ií]\s+Escriban[ao]\s+(Sustitut[ao]|Titular)/i);
+  if(m) return /sustitut/i.test(m[1])?'sustituta':'titular';
+  if(/Escriban[ao]\s+Sustitut[ao]/i.test(texto)) return 'sustituta';
+  if(/Escriban[ao]\s+(General\s+de\s+Gobierno|Titular)/i.test(texto)) return 'titular';
+  return null;
+}
+
+/* ================= carga ================= */
+const drop=document.getElementById('drop'), fileInput=document.getElementById('fileInput');
+drop.addEventListener('click',()=>fileInput.click());
+drop.addEventListener('dragover',e=>{e.preventDefault();drop.classList.add('over');});
+drop.addEventListener('dragleave',()=>drop.classList.remove('over'));
+drop.addEventListener('drop',e=>{e.preventDefault();drop.classList.remove('over');if(e.dataTransfer.files[0])cargar(e.dataTransfer.files[0]);});
+fileInput.addEventListener('change',e=>{if(e.target.files[0])cargar(e.target.files[0]);});
+
+async function cargar(file){
+  const st=document.getElementById('status'); st.className='status'; st.textContent='';
+  if(!file.name.toLowerCase().endsWith('.docx')){
+    st.className='status err'; st.textContent='Ese archivo no es .docx. Si es .doc, guardalo antes como .docx desde Word.';
+    return;
+  }
+  try{
+    origName=file.name.replace(/\.docx$/i,'');
+    zip=await JSZip.loadAsync(await file.arrayBuffer());
+    const f=zip.file('word/document.xml');
+    if(!f) throw new Error('El .docx no tiene word/document.xml');
+    docXml=await f.async('string');
+    const plano=docXml.replace(/<[^>]+>/g,'');
+
+    document.getElementById('loaded').style.display='block';
+    document.getElementById('fname').textContent=file.name;
+    const m=plano.match(/ESCRITURA\s+NÚMERO\s+([A-ZÁÉÍÓÚÑ\s]+?)\.?-?\s*SECCIÓN\s*["“]?\s*([A-Z])/i);
+    document.getElementById('fmeta').textContent = m
+      ? 'Escritura número '+m[1].trim().toLowerCase()+' · Sección '+m[2].toUpperCase()
+      : plano.trim().length.toLocaleString('es-AR')+' caracteres';
+    if(m){
+      const num=palabrasANumero(m[1]);
+      document.getElementById('escNum').value = num!==null ? String(num) : '';
+    }
+
+    const flag=document.getElementById('flag');
+    if(/PRIMER\s+TESTIMONIO/i.test(plano)){
+      flag.style.display='block';
+      flag.textContent='Ojo: este documento ya dice “PRIMER TESTIMONIO”. Si lo procesás igual vas a terminar con el cierre duplicado. Revisá que sea el protocolo.';
+    } else flag.style.display='none';
+
+    const dTmp=new DOMParser().parseFromString(docXml,'application/xml');
+    const roto=dTmp.getElementsByTagName('parsererror').length>0;
+    const nombres=roto?[]:detectarComparecientes(dTmp);
+
+    const cargo=detectarCargo(plano);
+    const autoEsc=document.getElementById('autoEsc');
+    if(cargo){
+      document.getElementById('escribana').value=cargo;
+      autoEsc.style.display='inline-block';
+      autoEsc.textContent='La escritura dice “Escribana '+(cargo==='titular'?'Titular':'Sustituta')+'”.';
+    }else{
+      autoEsc.style.display='inline-block';
+      autoEsc.textContent='No pude leer el cargo en la escritura. Elegila a mano.';
+    }
+
+    firmas.vaciar(); benef.vaciar();
+    const det=document.getElementById('detect');
+    if(nombres.length){
+      nombres.forEach(n=>firmas.agregar(n));
+      const b = nombres.length>1 ? nombres.slice(1) : nombres.slice();
+      b.forEach(n=>benef.agregar(n));
+      det.style.display='block';
+      det.innerHTML='Comparecientes: <b>'+nombres.map(esc).join('</b>, <b>')+'</b>.'+
+        (nombres.length>1
+          ? ' Cargué a todos en las firmas y, como beneficiarios, a todos menos <b>'+esc(nombres[0])+'</b>, que figura primero y suele ser quien representa al Estado.'
+          : ' Lo cargué en firmas y como beneficiario.');
+    }else{
+      det.style.display='block';
+      det.textContent='No encontré nombres en negrita después de “COMPARECEN”. Cargá las firmas y los beneficiarios a mano.';
+      firmas.agregar(); benef.agregar();
+    }
+
+    actualizar();
+    document.getElementById('go').disabled=false;
+    st.className='status ok'; st.textContent='Escritura cargada.';
+  }catch(err){
+    st.className='status err'; st.textContent='No se pudo abrir el archivo: '+err.message;
+    zip=null; document.getElementById('go').disabled=true;
+  }
+}
+
+/* ================= OOXML ================= */
+function texto(nodo){let t='';const ts=nodo.getElementsByTagNameNS(W,'t');for(let i=0;i<ts.length;i++)t+=ts[i].textContent;return t;}
+function nuevoRun(doc,ref,seg){
+  const r=doc.createElementNS(W,'w:r');
+  const refPr=ref?ref.getElementsByTagNameNS(W,'rPr')[0]:null;
+  const rPr=refPr?refPr.cloneNode(true):doc.createElementNS(W,'w:rPr');
+  const bs=rPr.getElementsByTagNameNS(W,'b');
+  while(bs.length) bs[0].parentNode.removeChild(bs[0]);
+  if(seg.b){
+    const b=doc.createElementNS(W,'w:b');
+    const fonts=rPr.getElementsByTagNameNS(W,'rFonts')[0];
+    if(fonts&&fonts.nextSibling) rPr.insertBefore(b,fonts.nextSibling);
+    else if(fonts) rPr.appendChild(b);
+    else rPr.insertBefore(b,rPr.firstChild);
+  }
+  r.appendChild(rPr);
+  const t=doc.createElementNS(W,'w:t');
+  t.setAttributeNS(XMLNS,'xml:space','preserve');
+  t.textContent=seg.t; r.appendChild(t);
+  return r;
+}
+function parrafosConTexto(doc){const ps=doc.getElementsByTagNameNS(W,'p');const out=[];for(let i=0;i<ps.length;i++)if(texto(ps[i]).trim())out.push(ps[i]);return out;}
+function primerRunConTexto(p){const rs=p.getElementsByTagNameNS(W,'r');for(let i=0;i<rs.length;i++)if(texto(rs[i]).length)return rs[i];return null;}
+function ultimoRunConTexto(p){const rs=p.getElementsByTagNameNS(W,'r');for(let i=rs.length-1;i>=0;i--)if(texto(rs[i]).length)return rs[i];return null;}
+function insertarDespuesDe(doc,p,frase,segs){
+  const lista=p.getElementsByTagNameNS(W,'r'); const rs=[];
+  for(let i=0;i<lista.length;i++) rs.push(lista[i]);
+  let acc='',mapa=[];
+  rs.forEach(r=>{const ts=r.getElementsByTagNameNS(W,'t');
+    for(let i=0;i<ts.length;i++){mapa.push({run:r,t:ts[i],ini:acc.length,txt:ts[i].textContent});acc+=ts[i].textContent;}});
+  const idx=acc.indexOf(frase); if(idx<0) return false;
+  const fin=idx+frase.length;
+  const item=mapa.find(m=>fin>m.ini&&fin<=m.ini+m.txt.length); if(!item) return false;
+  const off=fin-item.ini, resto=item.txt.slice(off);
+  item.t.textContent=item.txt.slice(0,off);
+  item.t.setAttributeNS(XMLNS,'xml:space','preserve');
+  const ref=item.run; let ancla=ref;
+  segs.forEach(s=>{const r=nuevoRun(doc,ref,s);ancla.parentNode.insertBefore(r,ancla.nextSibling);ancla=r;});
+  if(resto){
+    const r2=ref.cloneNode(true);
+    const ts2=r2.getElementsByTagNameNS(W,'t');
+    while(ts2.length>1) ts2[ts2.length-1].parentNode.removeChild(ts2[ts2.length-1]);
+    if(ts2.length===1){ts2[0].textContent=resto;ts2[0].setAttributeNS(XMLNS,'xml:space','preserve');}
+    ancla.parentNode.insertBefore(r2,ancla.nextSibling);
+  }
+  return true;
+}
+
+document.getElementById('go').addEventListener('click',async()=>{
+  const st=document.getElementById('status');
+  if(!zip){st.className='status err';st.textContent='Primero cargá la escritura.';return;}
+  const fol=document.getElementById('folio');
+  if(!fol.value.trim()){
+    st.className='status err'; st.textContent='Falta el folio.';
+    fol.style.borderColor='#B3261E'; fol.focus(); fol.scrollIntoView({behavior:'smooth',block:'center'});
+    return;
+  }
+  if(!benef.valores().length){st.className='status err';st.textContent='Falta al menos un beneficiario.';return;}
+  if(!fojasVal.filter(Boolean).length){st.className='status err';st.textContent='Falta el número de la primera foja.';return;}
+  try{
+    st.className='status'; st.textContent='Generando…';
+    const doc=new DOMParser().parseFromString(docXml,'application/xml');
+    if(doc.getElementsByTagName('parsererror').length) throw new Error('XML ilegible');
+    const ps=parrafosConTexto(doc);
+    if(!ps.length) throw new Error('El documento no tiene texto');
+    const pIni=ps[0], pFin=ps[ps.length-1];
+
+    const rIni=primerRunConTexto(pIni);
+    let ancla=null;
+    segmentosPrefijo().forEach(s=>{
+      const r=nuevoRun(doc,rIni,s);
+      if(ancla) ancla.parentNode.insertBefore(r,ancla.nextSibling);
+      else rIni.parentNode.insertBefore(r,rIni);
+      ancla=r;
+    });
+
+    const fr=document.getElementById('firmantes').value.trim();
+    if(fr){
+      let ok=false;
+      for(const frase of ['firman los comparecientes','firman los otorgantes','firma el compareciente']){
+        for(const p of ps.slice().reverse()) if(insertarDespuesDe(doc,p,frase,[{t:' '+fr,b:false}])){ok=true;break;}
+        if(ok) break;
+      }
+    }
+
+    const rFin=ultimoRunConTexto(pFin); let a2=rFin;
+    segmentosCierre().forEach(s=>{const r=nuevoRun(doc,rFin,s);a2.parentNode.insertBefore(r,a2.nextSibling);a2=r;});
+
+    zip.file('word/document.xml',new XMLSerializer().serializeToString(doc));
+    const blob=await zip.generateAsync({type:'blob',mimeType:'application/vnd.openxmlformats-officedocument.wordprocessingml.document',compression:'DEFLATE'});
+    const a=document.createElement('a');
+    a.href=URL.createObjectURL(blob);
+    a.download=nombreArchivo();
+    document.body.appendChild(a); a.click();
+    setTimeout(()=>{URL.revokeObjectURL(a.href);a.remove();},2000);
+    st.className='status ok'; st.textContent='Listo. Se descargó el primer testimonio.';
+  }catch(err){
+    st.className='status err'; st.textContent='Falló la generación: '+err.message;
+  }
+});
+
+rebuildFojas(0);
+actualizar();
+</script>
