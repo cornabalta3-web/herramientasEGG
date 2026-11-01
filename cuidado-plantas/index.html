@@ -3,342 +3,344 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2F7D5B" media="(prefers-color-scheme: light)">
-<meta name="theme-color" content="#163024" media="(prefers-color-scheme: dark)">
+<meta name="theme-color" content="#F4EFE4" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#171A15" media="(prefers-color-scheme: dark)">
 <meta name="mobile-web-app-capable" content="yes">
 <meta name="apple-mobile-web-app-capable" content="yes">
-<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-status-bar-style" content="default">
 <meta name="apple-mobile-web-app-title" content="Brote">
 <meta name="description" content="Brote: organizá el riego y el cuidado de tus plantas, con fotos y diagnóstico con IA. Tus datos quedan en tu celular.">
 <title>Brote · Cuidado de plantas</title>
 <link rel="manifest" href="manifest.json">
 <link rel="apple-touch-icon" href="icons/icon-180.png">
 <link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
+<link rel="preload" href="fonts/fraunces-latin.woff2" as="font" type="font/woff2" crossorigin>
 <style>
+  /* =====================================================================
+     Diseño "Botánico editorial": papel crema, tinta verde oscura, serifa
+     Fraunces para títulos, fotos enmarcadas en arco y líneas finas.
+     ===================================================================== */
+  @font-face{font-family:'Fraunces';font-style:normal;font-weight:400 600;font-display:swap;src:url(fonts/fraunces-latin.woff2) format('woff2')}
+  @font-face{font-family:'Fraunces';font-style:italic;font-weight:400;font-display:swap;src:url(fonts/fraunces-italic-latin.woff2) format('woff2')}
   :root{
-    --verde:#2F7D5B; --verde-osc:#1F5A41; --verde-claro:#E4F3EA; --on-verde:#FFFFFF;
-    --header-bg:#2F7D5B; --header-ink:#FFFFFF; --header-soft:#D6F0E1;
-    --agua:#2F7FC4; --agua-claro:#E3F0FB;
-    --tierra:#9A6630; --tierra-claro:#F8EDE1;
-    --rojo:#B83A26; --rojo-claro:#FBE9E5;
-    --ambar:#956000; --ambar-claro:#FFF4DC;
-    --ink:#1C2B24; --muted:#5E746A; --line:#DDE8E1; --paper:#FFFFFF; --bg:#F4F8F5;
-    --radius:14px;
-    --shadow:0 1px 2px rgba(20,50,35,.06),0 6px 18px rgba(20,50,35,.07);
+    --bg:#F4EFE4; --paper:#FBF8F1; --sand:#E8DEC9; --ink:#1F2A22; --ink-soft:#3A453D; --muted:#6C7063;
+    --line:#DCD2BF; --rule:#1F2A22; --moss:#4E6B47; --sage:#8EA67F; --terra:#B5603B; --terra-soft:#F3E2D6;
+    --sky:#5B7FA3; --ochre:#946A12; --ochre-soft:#F3E8CF; --danger:#A8432A; --on-ink:#FBF8F1;
+    --serif:'Fraunces',Georgia,'Times New Roman',serif;
+    --sans:system-ui,-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
   }
   @media (prefers-color-scheme: dark){
     :root{
-      --verde:#5CC08F; --verde-osc:#A6E6C4; --verde-claro:#1B3328; --on-verde:#0C1A13;
-      --header-bg:#163024; --header-ink:#EAF7EF; --header-soft:#9FCFB5;
-      --agua:#71B6F0; --agua-claro:#15283A;
-      --tierra:#DDA66F; --tierra-claro:#33261A;
-      --rojo:#F2846F; --rojo-claro:#3A1E19;
-      --ambar:#F0B550; --ambar-claro:#33280F;
-      --ink:#E4EEE8; --muted:#98AEA4; --line:#2A3B33; --paper:#18221D; --bg:#101814;
-      --shadow:0 1px 2px rgba(0,0,0,.35),0 6px 18px rgba(0,0,0,.3);
+      --bg:#171A15; --paper:#1E221B; --sand:#2A2E25; --ink:#EDE6D6; --ink-soft:#D3CBB8; --muted:#A39F8E;
+      --line:#363A30; --rule:#CFC7B4; --moss:#A3BF95; --sage:#6F8A64; --terra:#DE8E66; --terra-soft:#3A2A20;
+      --sky:#93AFCF; --ochre:#DDB45E; --ochre-soft:#342B17; --danger:#E7896B; --on-ink:#171A15;
     }
   }
   *{box-sizing:border-box}
   html{-webkit-text-size-adjust:100%}
-  body{
-    margin:0; background:var(--bg); color:var(--ink);
-    font:15px/1.5 system-ui,-apple-system,"Segoe UI",Roboto,Helvetica,Arial,sans-serif;
-    padding-bottom:calc(92px + env(safe-area-inset-bottom));
-  }
-  @media(min-width:760px){ body{padding-bottom:48px} }
-  a{color:var(--verde-osc)}
-  h1,h2,h3{line-height:1.25}
-  .wrap{max-width:980px;margin:0 auto;padding:0 18px}
+  body{margin:0;background:var(--bg);color:var(--ink);font:15px/1.5 var(--sans);padding-bottom:calc(100px + env(safe-area-inset-bottom))}
+  @media(min-width:760px){ body{padding-bottom:64px} }
+  a{color:var(--terra)}
+  h1,h2,h3,h4{line-height:1.15;font-weight:400}
+  .wrap{max-width:960px;margin:0 auto;padding:0 22px}
   .muted{color:var(--muted)}
   .small{font-size:13px}
   [hidden]{display:none !important}
-  :focus-visible{outline:3px solid var(--agua);outline-offset:2px}
+  :focus-visible{outline:2px solid var(--terra);outline-offset:2px}
+  .eyebrow{margin:0;font-size:11px;letter-spacing:.16em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+  svg.i{width:20px;height:20px;flex-shrink:0}
 
   /* ---------- Encabezado y navegación ---------- */
-  header.top{position:sticky;top:0;z-index:20;background:var(--header-bg);color:var(--header-ink);box-shadow:0 2px 10px rgba(0,0,0,.12);padding-top:env(safe-area-inset-top)}
-  .top-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px}
-  .brand{display:flex;align-items:center;gap:8px;color:var(--header-ink);text-decoration:none;font-weight:800;font-size:20px;letter-spacing:.01em}
-  .brand-ico{font-size:24px}
-  .brand small{font-weight:500;font-size:12.5px;color:var(--header-soft);letter-spacing:0}
+  header.top{position:sticky;top:0;z-index:20;background:var(--bg);padding-top:env(safe-area-inset-top)}
+  .top-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:60px;border-bottom:1px solid var(--line)}
+  .brand{display:flex;align-items:center;gap:9px;color:var(--ink);text-decoration:none;font-family:var(--serif);font-size:25px;letter-spacing:-.01em}
+  .brand svg{width:30px;height:30px}
   .tabs{display:flex;gap:4px}
-  .tabs a{position:relative;display:flex;align-items:center;gap:6px;padding:8px 13px;border-radius:999px;color:var(--header-soft);text-decoration:none;font-weight:600;font-size:14px}
-  .tabs a:hover{color:var(--header-ink);background:rgba(255,255,255,.08)}
-  .tabs a[aria-current="page"]{background:rgba(255,255,255,.18);color:var(--header-ink)}
-  .tabs .ico{font-size:16px}
-  .badge{min-width:18px;height:18px;padding:0 5px;border-radius:999px;background:#E0533D;color:#fff;font-size:11px;font-weight:800;display:inline-flex;align-items:center;justify-content:center;line-height:1}
+  .tabs a{position:relative;display:flex;align-items:center;gap:7px;padding:8px 12px;color:var(--muted);text-decoration:none;font-size:14px;font-weight:500}
+  .tabs a:hover{color:var(--ink)}
+  .tabs a[aria-current="page"]{color:var(--ink);font-weight:650}
+  .tabs a[aria-current="page"]::after{content:"";position:absolute;left:50%;bottom:-2px;width:5px;height:5px;border-radius:50%;background:var(--terra);transform:translateX(-50%)}
+  .badge{min-width:17px;height:17px;padding:0 5px;border-radius:999px;background:var(--terra);color:#fff;font-size:10.5px;font-weight:700;display:inline-flex;align-items:center;justify-content:center;line-height:1}
   @media(max-width:759px){
+    .brand{display:none}
+    .top-inner{min-height:0;border:0}
     .tabs{position:fixed;left:0;right:0;bottom:0;z-index:30;background:var(--paper);border-top:1px solid var(--line);
-      padding:6px 6px calc(6px + env(safe-area-inset-bottom));justify-content:space-around;box-shadow:0 -4px 16px rgba(0,0,0,.06)}
-    .tabs a{flex:1;flex-direction:column;gap:1px;font-size:11.5px;color:var(--muted);padding:6px 4px;border-radius:12px}
-    .tabs a:hover{background:none;color:var(--ink)}
-    .tabs a .ico{font-size:21px}
-    .tabs a[aria-current="page"]{color:var(--verde-osc);background:var(--verde-claro)}
-    .tabs .badge{position:absolute;top:2px;left:calc(50% + 6px)}
+      padding:10px 6px calc(10px + env(safe-area-inset-bottom));justify-content:space-around}
+    .tabs a{flex:1;flex-direction:column;gap:3px;font-size:11px;padding:2px 4px 6px}
+    .tabs a svg.i{width:23px;height:23px}
+    .tabs a[aria-current="page"]::after{bottom:-3px}
+    .tabs .badge{position:absolute;top:-5px;left:calc(50% + 5px)}
   }
 
   /* ---------- Bloques generales ---------- */
-  main{padding-top:20px}
-  .page-head{margin:6px 0 16px}
-  .page-head h1{margin:0;font-size:26px}
-  .page-head p{margin:4px 0 0}
-  .hero{margin:6px 0 18px}
-  .eyebrow{margin:0;text-transform:uppercase;letter-spacing:.12em;font-size:11.5px;font-weight:700;color:var(--verde)}
-  .hero h1{margin:4px 0 6px;font-size:28px}
-  .season-pill{display:inline-flex;align-items:center;gap:6px;background:var(--verde-claro);color:var(--verde-osc);border-radius:999px;padding:5px 12px;font-size:13.5px;font-weight:600}
-  .card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:18px;margin-bottom:16px;box-shadow:var(--shadow)}
-  .card h2{margin:0 0 4px;font-size:18px}
-  .card > p:first-of-type{margin-top:4px}
-  .section-head{display:flex;align-items:center;justify-content:space-between;gap:10px;flex-wrap:wrap;margin-bottom:10px}
-  .section-head h2{margin:0}
-  .summary{display:flex;gap:8px;flex-wrap:wrap;margin:12px 0 0}
-  .summary span{background:var(--paper);border:1px solid var(--line);border-radius:999px;padding:4px 12px;font-size:13.5px;font-weight:600}
-  .summary .late{color:var(--rojo);border-color:color-mix(in srgb,var(--rojo) 35%,var(--line))}
-  .tipline{margin:0 0 12px;font-size:13.5px;color:var(--muted)}
+  main{padding-top:22px}
+  .hero,.page-head{margin:4px 0 6px}
+  .hero h1,.page-head h1{font-family:var(--serif);font-size:42px;letter-spacing:-.015em;margin:8px 0 6px}
+  .lead{font-family:var(--serif);font-style:italic;font-size:19px;color:var(--moss);margin:0}
+  .page-head p.muted{margin:0;max-width:60ch}
+  .sec{display:flex;justify-content:space-between;align-items:baseline;gap:10px;border-bottom:1px solid var(--rule);padding-bottom:7px;margin:30px 0 2px}
+  .sec h2{font-family:var(--serif);font-weight:600;font-size:17px;margin:0}
+  .sec .aside{font-size:12.5px;color:var(--muted);text-align:right}
+  .linkbtn{border:0;background:none;padding:0;font:inherit;font-size:13.5px;font-weight:650;color:var(--terra);cursor:pointer;text-decoration:none}
+  .linkbtn:hover{text-decoration:underline}
+  .tipline{font-family:var(--serif);font-style:italic;color:var(--muted);font-size:14.5px;margin:10px 0 0}
+  .note{font-family:var(--serif);font-style:italic;color:var(--moss);font-size:15px;margin:0}
+  .card{border-top:1px solid var(--rule);padding:18px 0 26px}
+  .card h2{font-family:var(--serif);font-weight:600;font-size:20px;margin:0 0 6px}
+  .card > p:first-of-type{margin-top:0}
+  .banner{background:var(--ochre-soft);color:var(--ochre);border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:14px}
+  footer.foot{margin:30px 0 0;padding-top:16px;border-top:1px solid var(--line);font-size:12.5px;color:var(--muted);text-align:center}
 
   /* ---------- Botones ---------- */
-  .btn{display:inline-flex;align-items:center;justify-content:center;gap:6px;border:1px solid var(--line);background:var(--paper);color:var(--ink);
-    padding:9px 15px;border-radius:11px;font:inherit;font-weight:650;font-size:14.5px;cursor:pointer;text-decoration:none;line-height:1.2;transition:background .15s,border-color .15s,transform .05s}
-  .btn:hover{border-color:var(--verde)}
-  .btn:active{transform:translateY(1px)}
-  .btn.primary{background:var(--verde);border-color:var(--verde);color:var(--on-verde)}
-  .btn.primary:hover{background:var(--verde-osc);border-color:var(--verde-osc)}
-  @media (prefers-color-scheme: dark){ .btn.primary:hover{background:#7AD3A6;border-color:#7AD3A6} }
-  .btn.agua{background:var(--agua-claro);border-color:transparent;color:var(--agua)}
-  .btn.agua:hover{border-color:var(--agua)}
-  .btn.tierra{background:var(--tierra-claro);border-color:transparent;color:var(--tierra)}
-  .btn.tierra:hover{border-color:var(--tierra)}
-  .btn.ghost{background:transparent}
-  .btn.danger{color:var(--rojo);border-color:color-mix(in srgb,var(--rojo) 40%,var(--line))}
-  .btn.danger:hover{background:var(--rojo-claro)}
-  .btn.small{padding:6px 11px;font-size:13.5px;border-radius:9px}
-  .btn[disabled]{opacity:.55;cursor:default;transform:none}
-  .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:14px}
+  .btn{display:inline-flex;align-items:center;justify-content:center;gap:7px;border:1px solid var(--ink);background:transparent;color:var(--ink);
+    padding:10px 18px;border-radius:999px;font:inherit;font-size:14.5px;font-weight:600;cursor:pointer;text-decoration:none;line-height:1.2;transition:background .15s,color .15s}
+  .btn:hover{background:var(--sand)}
+  .btn.primary{background:var(--ink);color:var(--on-ink)}
+  .btn.primary:hover{background:var(--ink-soft)}
+  .btn.terra{background:var(--terra);border-color:var(--terra);color:#fff}
+  .btn.ghost{border-color:transparent}
+  .btn.danger{border-color:var(--danger);color:var(--danger)}
+  .btn.small{padding:7px 13px;font-size:13.5px}
+  .btn[disabled]{opacity:.45;cursor:default;background:transparent}
+  .btn.primary[disabled]{background:var(--ink);opacity:.35}
+  .btn-row{display:flex;gap:8px;flex-wrap:wrap;margin-top:16px}
   .btn-row.end{justify-content:flex-end}
   .btn-row.center{justify-content:center}
-  .icon-btn{border:0;background:transparent;color:var(--muted);font-size:20px;width:38px;height:38px;border-radius:10px;cursor:pointer;display:inline-flex;align-items:center;justify-content:center}
-  .icon-btn:hover{background:var(--verde-claro);color:var(--ink)}
-  .fab{position:fixed;right:18px;bottom:calc(86px + env(safe-area-inset-bottom));z-index:25;height:56px;padding:0 20px 0 16px;border-radius:999px;border:0;
-    background:var(--verde);color:var(--on-verde);font:inherit;font-weight:750;font-size:15px;display:flex;align-items:center;gap:6px;box-shadow:0 6px 20px rgba(20,80,50,.35);cursor:pointer}
-  .fab span{font-size:24px;line-height:1}
-  @media(min-width:760px){ .fab{bottom:28px;right:28px} }
+  .icon-btn{border:0;background:transparent;color:var(--muted);width:40px;height:40px;border-radius:50%;cursor:pointer;display:inline-flex;align-items:center;justify-content:center;font-size:18px}
+  .icon-btn:hover{background:var(--sand);color:var(--ink)}
+  .circle{width:42px;height:42px;border-radius:50%;border:1.5px solid var(--ink);background:transparent;color:var(--ink);display:inline-flex;align-items:center;justify-content:center;cursor:pointer;padding:0;flex-shrink:0}
+  .circle svg{width:19px;height:19px}
+  .circle:hover{background:var(--ink);color:var(--on-ink)}
+  .circle.soft{border-color:var(--line);color:var(--muted)}
+  .circle.soft:hover{background:var(--sand);color:var(--ink)}
+  .fab{position:fixed;right:20px;bottom:calc(100px + env(safe-area-inset-bottom));z-index:25;width:60px;height:60px;border-radius:50%;border:0;background:var(--terra);color:#fff;
+    display:flex;align-items:center;justify-content:center;gap:8px;cursor:pointer;box-shadow:0 10px 24px rgba(150,70,35,.32);font:inherit;font-size:15px;font-weight:650}
+  .fab svg{width:28px;height:28px}
+  .fab .fab-lbl{display:none}
+  @media(min-width:760px){ .fab{bottom:32px;right:32px;width:auto;padding:0 24px 0 18px;border-radius:999px} .fab svg{width:22px;height:22px} .fab .fab-lbl{display:inline} }
 
-  /* ---------- Tareas ---------- */
-  .tasks{list-style:none;margin:0;padding:0;display:grid;gap:8px}
-  .task{display:flex;align-items:center;gap:12px;padding:10px;border:1px solid var(--line);border-radius:12px;background:var(--paper)}
-  .task.late{border-color:color-mix(in srgb,var(--rojo) 40%,var(--line));background:color-mix(in srgb,var(--rojo-claro) 45%,var(--paper))}
-  .task-body{flex:1;min-width:0}
-  .task-body strong{display:block;font-size:15.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .task-meta{display:flex;gap:6px;flex-wrap:wrap;align-items:center;margin-top:2px;font-size:13px}
-  .tag{display:inline-flex;align-items:center;gap:4px;border-radius:999px;padding:1px 9px;font-weight:650;font-size:12.5px}
-  .tag.riego{background:var(--agua-claro);color:var(--agua)}
-  .tag.abono{background:var(--tierra-claro);color:var(--tierra)}
-  .when{font-weight:650;color:var(--muted)}
-  .when.late{color:var(--rojo)}
-  .when.today{color:var(--verde-osc)}
-  .task-actions{display:flex;gap:6px;flex-shrink:0}
-  .thumb{flex-shrink:0;width:52px;height:52px;border-radius:12px;border:0;padding:0;cursor:pointer;background:var(--verde-claro);overflow:hidden;display:flex;align-items:center;justify-content:center}
+  /* ---------- Hoy ---------- */
+  .tasks{list-style:none;margin:0;padding:0}
+  .task{display:flex;align-items:center;gap:14px;padding:14px 0;border-bottom:1px solid var(--line)}
+  .thumb{flex-shrink:0;width:52px;height:64px;border:0;padding:0;cursor:pointer;background:var(--sand);border-radius:999px 999px 10px 10px;overflow:hidden;display:flex;align-items:center;justify-content:center}
   .thumb img{width:100%;height:100%;object-fit:cover;display:block}
-  .thumb .emoji{font-size:28px}
-  .alldone{text-align:center;padding:18px 10px 8px}
-  .alldone .big{font-size:42px}
-  .alldone p{margin:6px 0 0}
-  @media(max-width:520px){
-    .task{flex-wrap:wrap}
-    .task-actions{width:100%;justify-content:flex-end}
-  }
-
-  .days{display:grid;gap:12px}
-  .day h3{margin:0 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.08em;color:var(--muted)}
-  .mini-list{list-style:none;margin:0;padding:0;display:grid;gap:6px}
-  .mini-list li{display:flex;align-items:center;gap:10px}
-  .link-btn{display:flex;align-items:center;gap:8px;border:0;background:none;padding:2px 0;font:inherit;color:var(--ink);cursor:pointer;text-align:left;min-width:0}
-  .link-btn:hover .nm{text-decoration:underline}
-  .mini-thumb{width:30px;height:30px;border-radius:8px;overflow:hidden;background:var(--verde-claro);display:inline-flex;align-items:center;justify-content:center;flex-shrink:0;font-size:17px}
+  .thumb .emoji{font-size:26px}
+  .task-body{flex:1;min-width:0}
+  .task-body strong{display:block;font-family:var(--serif);font-weight:400;font-size:20px;line-height:1.2;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .task-meta{font-size:13px;color:var(--muted);margin-top:3px}
+  .task-meta b{font-weight:650;color:var(--ink)}
+  .task-meta b.late{color:var(--terra)}
+  .task-actions{display:flex;gap:8px;flex-shrink:0}
+  .alldone{padding:22px 0 6px}
+  .alldone p{font-family:var(--serif);font-style:italic;font-size:20px;color:var(--moss);margin:0}
+  .week{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;margin-top:14px}
+  .week button{border:0;background:none;cursor:pointer;padding:9px 0 10px;border-radius:999px;font:inherit;font-size:11px;color:var(--muted);display:flex;flex-direction:column;align-items:center;gap:1px}
+  .week button b{font-family:var(--serif);font-weight:400;font-size:20px;color:var(--ink);line-height:1.25}
+  .week button.today:not([aria-pressed="true"]) b{text-decoration:underline;text-decoration-color:var(--terra);text-underline-offset:4px}
+  .week button[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+  .week button[aria-pressed="true"] b{color:var(--on-ink)}
+  .dots{display:flex;gap:3px;height:6px;align-items:center}
+  .dots i,.legend i{display:inline-block;width:5px;height:5px;border-radius:50%;background:var(--sky)}
+  .dots i.abono,.legend i.abono{background:var(--terra)}
+  .dots i.revision,.legend i.revision{background:var(--moss)}
+  .week button[aria-pressed="true"] .dots i.riego{background:#9FC0E3}
+  .legend i{margin:0 3px 1px 8px;vertical-align:middle}
+  .daylabel{font-family:var(--serif);font-style:italic;color:var(--muted);margin:14px 0 0;font-size:16px}
+  .daylist{list-style:none;padding:0;margin:4px 0 0}
+  .daylist li{display:flex;align-items:center;gap:12px;padding:9px 0;border-bottom:1px solid var(--line)}
+  .mini-thumb{width:36px;height:44px;border-radius:999px 999px 8px 8px;overflow:hidden;background:var(--sand);display:inline-flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0}
   .mini-thumb img{width:100%;height:100%;object-fit:cover}
+  .link-btn{display:flex;align-items:center;gap:12px;border:0;background:none;padding:0;font:inherit;color:var(--ink);cursor:pointer;text-align:left;flex:1;min-width:0}
+  .link-btn .nm{font-family:var(--serif);font-size:17px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .link-btn:hover .nm{text-decoration:underline}
+  .daylist .what{font-size:12.5px;color:var(--muted);flex-shrink:0}
 
-  /* ---------- Grilla de plantas ---------- */
-  .toolbar{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:14px}
-  .search{flex:1;min-width:200px;padding:10px 14px;border-radius:11px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit}
-  .plant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:12px}
-  @media(min-width:760px){ .plant-grid{grid-template-columns:repeat(auto-fill,minmax(210px,1fr));gap:14px} }
-  .plant-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);overflow:hidden;cursor:pointer;box-shadow:var(--shadow);transition:transform .12s,box-shadow .12s;display:flex;flex-direction:column}
-  .plant-card:hover{transform:translateY(-2px);box-shadow:0 10px 26px rgba(20,50,35,.12)}
-  .pc-photo{aspect-ratio:4/3;background:linear-gradient(160deg,var(--verde-claro),color-mix(in srgb,var(--verde-claro) 60%,var(--paper)));display:flex;align-items:center;justify-content:center;position:relative}
+  /* ---------- Tu jardín ---------- */
+  .toolbar{margin:10px 0 0}
+  .search{width:100%;padding:10px 2px;border:0;border-bottom:1px solid var(--rule);border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:16px}
+  .search::placeholder{color:var(--muted)}
+  .search:focus{outline:none;border-bottom-color:var(--terra)}
+  .pills,.chips{display:flex;gap:8px;flex-wrap:wrap;margin:16px 0 0;padding:0;list-style:none}
+  .pill,.filter{border:1px solid var(--ink);background:transparent;color:var(--ink);border-radius:999px;padding:6px 14px;font:inherit;font-size:13px;cursor:pointer}
+  .pill[aria-pressed="true"],.filter[aria-pressed="true"]{background:var(--ink);color:var(--on-ink)}
+  .plant-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(150px,1fr));gap:26px 16px;margin-top:22px}
+  @media(min-width:760px){ .plant-grid{grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:34px 24px} }
+  .plant-card{cursor:pointer;display:flex;flex-direction:column;min-width:0}
+  .pc-photo{aspect-ratio:4/5;border-radius:999px 999px 14px 14px;overflow:hidden;background:var(--sand);display:flex;align-items:center;justify-content:center;transition:transform .2s}
+  .plant-card:hover .pc-photo{transform:translateY(-3px)}
   .pc-photo img{width:100%;height:100%;object-fit:cover;display:block}
-  .pc-photo .emoji{font-size:52px}
-  .pc-flag{position:absolute;top:8px;left:8px;background:var(--rojo);color:#fff;font-size:12px;font-weight:750;border-radius:999px;padding:2px 9px}
-  .pc-flag.today{background:var(--agua)}
-  .pc-body{padding:10px 12px 12px}
-  .pc-body h3{margin:0;font-size:16.5px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .pc-body .sub{margin:1px 0 10px;font-size:13px;color:var(--muted);overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
-  .meter{height:8px;border-radius:999px;background:color-mix(in srgb,var(--agua-claro) 70%,var(--line));overflow:hidden}
-  .meter span{display:block;height:100%;border-radius:999px;background:var(--agua);transition:width .3s}
-  .meter.mid span{background:var(--ambar)}
-  .meter.low span{background:var(--rojo)}
-  .pc-next{margin:7px 0 0;font-size:13.5px;font-weight:650}
-  .pc-next.late{color:var(--rojo)}
-  .pc-next.today{color:var(--agua)}
+  .pc-photo .emoji{font-size:56px}
+  .plant-card h3{font-family:var(--serif);font-size:18.5px;margin:11px 0 3px;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .pc-next{margin:0;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:500}
+  .pc-next.late{color:var(--terra);font-weight:700}
+  .pc-next.today{color:var(--sky);font-weight:700}
+  .meter{height:2px;background:var(--line);margin-top:9px}
+  .meter span{display:block;height:100%;background:var(--sky)}
+  .meter.low span{background:var(--terra)}
 
   /* ---------- Guía ---------- */
-  .chips{display:flex;gap:6px;flex-wrap:wrap;list-style:none;margin:0;padding:0}
-  .filter{border:1px solid var(--line);background:var(--paper);color:var(--ink);border-radius:999px;padding:6px 13px;font:inherit;font-size:13.5px;font-weight:600;cursor:pointer}
-  .filter[aria-pressed="true"]{background:var(--verde);border-color:var(--verde);color:var(--on-verde)}
-  .guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:14px;margin-top:14px}
-  .guide-card{background:var(--paper);border:1px solid var(--line);border-radius:var(--radius);padding:16px;box-shadow:var(--shadow);display:flex;flex-direction:column;gap:10px}
-  .gc-head{display:flex;gap:12px;align-items:center}
-  .gc-emoji{width:48px;height:48px;border-radius:12px;background:var(--verde-claro);display:flex;align-items:center;justify-content:center;font-size:27px;flex-shrink:0}
-  .gc-head h3{margin:0;font-size:17px}
-  .sci{margin:0;font-style:italic;color:var(--muted);font-size:13px}
-  .care{gap:6px}
-  .care li{background:var(--bg);border:1px solid var(--line);border-radius:9px;padding:3px 9px;font-size:12.5px}
-  .care li.pet-ok{background:var(--verde-claro);border-color:transparent;color:var(--verde-osc);font-weight:650}
-  .care li.pet-bad{background:var(--ambar-claro);border-color:transparent;color:var(--ambar);font-weight:650}
-  .tox-note{margin:0;font-size:12.5px;color:var(--ambar)}
-  .guide-card p.small{margin:0}
-  .guide-card details summary{cursor:pointer;font-weight:650;font-size:13.5px;color:var(--verde-osc)}
-  .guide-card ul.tips, .tips{margin:6px 0 0;padding-left:18px;font-size:13.5px}
-  .tips li{margin:3px 0}
-  .guide-card .btn{align-self:flex-start;margin-top:auto}
+  .guide-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(290px,1fr));gap:0 32px;margin-top:14px}
+  .guide-card{border-top:1px solid var(--line);padding:20px 0 22px;display:flex;flex-direction:column;gap:12px}
+  .gc-head{display:flex;gap:14px;align-items:center}
+  .gc-emoji{width:50px;height:62px;border-radius:999px 999px 10px 10px;background:var(--sand);display:flex;align-items:center;justify-content:center;font-size:26px;flex-shrink:0}
+  .gc-head h3{font-family:var(--serif);font-size:22px;margin:0}
+  .sci{margin:2px 0 0;font-family:var(--serif);font-style:italic;color:var(--muted);font-size:15px}
+  dl.care{display:grid;grid-template-columns:auto 1fr;gap:5px 16px;margin:0;font-size:14px}
+  dl.care dt{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600;padding-top:3px}
+  dl.care dd{margin:0}
+  .pet-ok{color:var(--moss);font-weight:650}
+  .pet-bad{color:var(--terra);font-weight:650}
+  .tox-note{margin:0;font-size:13px;color:var(--terra)}
+  details summary{cursor:pointer;font-family:var(--serif);font-size:15.5px;color:var(--moss)}
+  .tips{margin:6px 0 0;padding-left:18px;font-size:14px}
+  .tips li{margin:4px 0}
+  .guide-card .btn{align-self:flex-start}
 
   /* ---------- Estado vacío ---------- */
-  .empty{text-align:center;padding:36px 16px;background:var(--paper);border:1px dashed var(--line);border-radius:var(--radius)}
-  .empty-emoji{font-size:56px}
-  .empty h2{margin:8px 0 6px}
-  .empty p{margin:0 auto;max-width:42ch;color:var(--muted)}
+  .empty{text-align:center;padding:30px 10px 10px;margin-top:24px;border-top:1px solid var(--rule)}
+  .empty-art{width:110px;height:136px;margin:0 auto;border-radius:999px 999px 14px 14px;background:var(--sand);display:flex;align-items:center;justify-content:center;font-size:56px}
+  .empty h2{font-family:var(--serif);font-size:27px;margin:18px 0 6px}
+  .empty p{margin:0 auto;max-width:40ch;color:var(--muted)}
 
-  /* ---------- Modal ---------- */
-  dialog#modal{border:0;padding:0;border-radius:18px;background:var(--paper);color:var(--ink);width:min(620px,calc(100vw - 20px));max-height:calc(100dvh - 24px);box-shadow:0 20px 60px rgba(0,0,0,.35)}
-  dialog#modal::backdrop{background:rgba(10,25,18,.55)}
-  dialog#modal[open]{animation:fade .16s ease-out}
-  @keyframes fade{from{opacity:0}to{opacity:1}}
-  #modal-body{padding:18px 20px 20px;max-height:calc(100dvh - 24px);overflow:auto}
-  .modal-title{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-bottom:12px}
-  .modal-title h2{margin:0;font-size:20px}
-  .detail-photo{margin:-18px -20px 14px;aspect-ratio:16/9;background:linear-gradient(160deg,var(--verde-claro),color-mix(in srgb,var(--verde-claro) 55%,var(--paper)));display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;border-radius:18px 18px 0 0}
-  .detail-photo img{width:100%;height:100%;object-fit:cover}
-  .detail-photo .emoji{font-size:84px}
-  .detail-photo .icon-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.4);color:#fff}
-  .detail-photo .icon-btn:hover{background:rgba(0,0,0,.6)}
-  .detail-head h2{margin:0;font-size:23px}
-  .detail-head p{margin:2px 0 0}
-  .stats{display:grid;grid-template-columns:1fr 1fr;gap:10px;margin-top:14px}
-  .stat{border-radius:12px;padding:12px 14px}
-  .stat.riego{background:var(--agua-claro)}
-  .stat.abono{background:var(--tierra-claro)}
-  .stat span{display:block;font-size:12.5px;font-weight:700;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-  .stat strong{display:block;font-size:18px;margin-top:2px}
-  .stat strong.late{color:var(--rojo)}
-  .stat small{display:block;color:var(--muted);font-size:12.5px;margin-top:2px}
-  @media(max-width:460px){ .stats{grid-template-columns:1fr} }
-  .detail-section{margin-top:18px}
-  .detail-section h3{margin:0 0 8px;font-size:15px}
-  .notes{white-space:pre-wrap;background:var(--bg);border-radius:10px;padding:10px 12px;margin:0;font-size:14px}
-  .log{list-style:none;margin:0;padding:0;display:grid;gap:2px}
-  .log li{display:flex;align-items:flex-start;gap:10px;padding:7px 0;border-bottom:1px solid var(--line);font-size:14px}
-  .log li:last-child{border-bottom:0}
+  /* ---------- Hojas (detalle, foto, formularios) ---------- */
+  dialog#modal{border:0;padding:0;background:var(--bg);color:var(--ink);width:100%;max-width:100%;height:100%;max-height:100%;margin:0;inset:0}
+  dialog#modal::backdrop{background:rgba(23,26,21,.5)}
+  dialog#modal[open]{animation:sheet .22s ease-out}
+  @keyframes sheet{from{opacity:0}to{opacity:1}}
+  #modal-body{height:100%;overflow:auto;padding:env(safe-area-inset-top) 22px calc(30px + env(safe-area-inset-bottom))}
+  @media(min-width:760px){
+    dialog#modal{width:min(640px,calc(100vw - 40px));height:auto;max-height:calc(100dvh - 48px);margin:auto;border-radius:22px;box-shadow:0 30px 80px rgba(0,0,0,.35)}
+    #modal-body{height:auto;max-height:calc(100dvh - 48px);padding:6px 28px 30px}
+  }
+  .sheet-top{position:sticky;top:0;z-index:2;display:flex;align-items:center;justify-content:space-between;gap:10px;margin:0 -22px;padding:10px 12px;background:var(--bg)}
+  @media(min-width:760px){ .sheet-top{margin:0 -28px;padding:10px 16px} }
+  .back{display:inline-flex;align-items:center;gap:4px;border:0;background:none;color:var(--muted);font:inherit;font-size:15px;cursor:pointer;padding:6px 6px;max-width:75%;overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+  .back:hover{color:var(--ink)}
+  .back svg{width:20px;height:20px}
+  .detail-photo,.photo-full{border-radius:999px 999px 18px 18px;overflow:hidden;background:var(--sand);display:flex;align-items:center;justify-content:center;margin:4px 0 20px}
+  .detail-photo{height:300px}
+  .photo-full{height:min(52vh,430px)}
+  .detail-photo img,.photo-full img{width:100%;height:100%;object-fit:cover;display:block}
+  .detail-photo .emoji{font-size:92px}
+  .photo-full .gone{color:var(--muted);font-family:var(--serif);font-style:italic;margin:0}
+  .detail-head h2{font-family:var(--serif);font-size:34px;margin:6px 0 0;letter-spacing:-.01em}
+  .detail-head .sci{margin-top:4px}
+  .stats{display:grid;grid-template-columns:1fr 1fr;margin-top:20px;border-top:1px solid var(--rule);border-bottom:1px solid var(--line)}
+  .stat{padding:12px 14px 14px 0}
+  .stat + .stat{border-left:1px solid var(--line);padding-left:16px}
+  .stat span{display:block;font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .stat strong{display:block;font-family:var(--serif);font-weight:400;font-size:23px;margin-top:4px}
+  .stat strong.late{color:var(--terra)}
+  .stat small{display:block;color:var(--muted);font-size:12.5px;margin-top:3px}
+  @media(max-width:420px){ .stats{grid-template-columns:1fr} .stat + .stat{border-left:0;border-top:1px solid var(--line);padding-left:0} }
+  .detail-section{margin-top:30px}
+  .detail-section > h3,.section-head{border-bottom:1px solid var(--rule);padding-bottom:7px;margin:0 0 10px}
+  .detail-section h3{font-family:var(--serif);font-weight:600;font-size:17px}
+  .section-head{display:flex;justify-content:space-between;align-items:center;gap:10px}
+  .section-head h3{margin:0}
+  .notes{white-space:pre-wrap;margin:0;font-family:var(--serif);font-style:italic;font-size:17px}
+  .log{list-style:none;margin:0;padding:0}
+  .log li{display:flex;align-items:center;gap:10px;padding:10px 0;border-bottom:1px solid var(--line);font-size:14px}
   .log .le{width:24px;text-align:center;flex-shrink:0}
   .log .lt{flex:1;min-width:0}
   .log .lt small{display:block;color:var(--muted)}
-  .log .icon-btn{width:28px;height:28px;font-size:14px}
-
-  /* ---------- Formularios ---------- */
-  .form{display:grid;gap:12px}
-  .field{display:grid;gap:4px}
-  .field > span{font-size:13px;font-weight:700;color:var(--muted)}
-  .field small{color:var(--muted);font-size:12px}
-  .field input,.field select,.field textarea{width:100%;padding:10px 12px;border-radius:10px;border:1px solid var(--line);background:var(--paper);color:var(--ink);font:inherit}
-  .field textarea{resize:vertical}
-  .field input:focus,.field select:focus,.field textarea:focus{outline:2px solid var(--verde);outline-offset:0;border-color:var(--verde)}
-  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-  @media(max-width:340px){ .field-row{grid-template-columns:1fr} }
-  .photo-pick{display:flex;gap:14px;align-items:center}
-  .photo-preview{width:88px;height:88px;border-radius:16px;background:var(--verde-claro);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:44px;flex-shrink:0}
-  .photo-preview img{width:100%;height:100%;object-fit:cover}
-  .photo-pick p{margin:6px 0 0}
-  .hint-box{background:var(--verde-claro);color:var(--verde-osc);border-radius:10px;padding:9px 12px;font-size:13px;margin-top:-4px}
-
-  /* ---------- Ajustes ---------- */
-  .switch-row{display:flex;gap:12px;align-items:flex-start;cursor:pointer;margin-top:10px}
-  .switch-row input{width:20px;height:20px;margin-top:2px;accent-color:var(--verde);flex-shrink:0}
-  .switch-row small{display:block;color:var(--muted)}
-  fieldset{border:0;padding:0;margin:14px 0 0}
-  legend{font-weight:700;font-size:13px;color:var(--muted);margin-bottom:6px}
-  .radio{display:flex;gap:8px;align-items:center;margin:4px 0;cursor:pointer}
-  .radio input{accent-color:var(--verde);width:18px;height:18px}
-  table.season{border-collapse:collapse;width:100%;margin-top:14px;font-size:14px}
-  table.season th,table.season td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
-  table.season th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
-  table.season tr.now td{font-weight:750;background:var(--verde-claro)}
-  .steps{margin:8px 0 0;padding-left:20px;font-size:14px}
-  .steps li{margin:4px 0}
-  .banner{background:var(--ambar-claro);color:var(--ambar);border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:14px}
-  footer.foot{margin:26px 0 0;font-size:12.5px;color:var(--muted);text-align:center}
-
-  /* ---------- Fotos y diagnóstico con IA ---------- */
-  .detail-section .section-head{margin-bottom:8px}
-  .detail-section .section-head h3{margin:0}
-  .gallery{display:flex;gap:8px;overflow-x:auto;padding:2px 2px 6px;scroll-snap-type:x proximity}
-  .gallery button{flex:0 0 auto;width:78px;height:78px;border-radius:12px;overflow:hidden;border:0;padding:0;cursor:pointer;background:var(--verde-claro);position:relative;scroll-snap-align:start}
+  .log .icon-btn{width:30px;height:30px;font-size:13px}
+  .gallery{display:flex;gap:10px;overflow-x:auto;padding:2px 0 6px;scroll-snap-type:x proximity}
+  .gallery button{flex:0 0 auto;width:70px;height:88px;border-radius:999px 999px 10px 10px;overflow:hidden;border:0;padding:0;cursor:pointer;background:var(--sand);position:relative;scroll-snap-align:start}
   .gallery img{width:100%;height:100%;object-fit:cover;display:block}
-  .gallery .dx{position:absolute;right:4px;bottom:4px;font-size:13px;line-height:1;background:rgba(255,255,255,.92);border-radius:7px;padding:3px}
-  .photo-full{margin:-18px -20px 14px;background:#0B110E;display:flex;justify-content:center;align-items:center;min-height:160px;border-radius:18px 18px 0 0;overflow:hidden;position:relative}
-  .photo-full img{max-width:100%;max-height:58vh;object-fit:contain;display:block}
-  .photo-full .icon-btn{position:absolute;top:10px;right:10px;background:rgba(0,0,0,.45);color:#fff}
-  .photo-full .gone{color:#B9C9C0;margin:0}
-  .ai-box{border:1px solid var(--line);background:var(--bg);border-radius:14px;padding:14px}
-  .ai-box h3{margin:0 0 4px;font-size:16px}
-  .ai-box > p{margin:0 0 10px}
-  .ai-loading{display:flex;gap:12px;align-items:center;padding:14px 4px}
-  .spinner{width:26px;height:26px;flex-shrink:0;border:3px solid var(--verde-claro);border-top-color:var(--verde);border-radius:50%;animation:spin .9s linear infinite}
+  .gallery .dx{position:absolute;right:6px;bottom:6px;width:11px;height:11px;border-radius:50%;border:2px solid var(--paper);background:var(--muted)}
+  .dx.ok{background:var(--moss)} .dx.leve{background:var(--ochre)} .dx.mod{background:var(--terra)} .dx.grave{background:var(--danger)}
+  .review-line{font-family:var(--serif);font-style:italic;color:var(--moss);margin:12px 0 0;font-size:15.5px}
+
+  /* ---------- Diagnóstico con IA ---------- */
+  .diag-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
+  .diag-state{display:inline-block;border:1px solid currentColor;border-radius:999px;padding:3px 11px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700}
+  .diag-state.ok{color:var(--moss)} .diag-state.leve{color:var(--ochre)} .diag-state.mod{color:var(--terra)}
+  .diag-state.grave{color:var(--danger);background:var(--terra-soft)} .diag-state.na{color:var(--muted)}
+  .diag-sum{font-family:var(--serif);font-size:22px;line-height:1.3;margin:12px 0 14px}
+  .diag-note{font-family:var(--serif);font-style:italic;color:var(--muted);margin:-6px 0 14px;font-size:15px}
+  .sugg{display:flex;gap:12px;align-items:center;justify-content:space-between;flex-wrap:wrap;border-top:1px solid var(--rule);border-bottom:1px solid var(--rule);padding:12px 0;font-size:15px}
+  .sugg + .sugg{border-top:0}
+  .diag h4{font-family:var(--serif);font-weight:600;font-size:17px;margin:26px 0 2px;padding-bottom:7px;border-bottom:1px solid var(--rule)}
+  ol.steps-n{list-style:none;padding:0;margin:0;counter-reset:s}
+  ol.steps-n li{counter-increment:s;display:flex;gap:14px;padding:11px 0;border-bottom:1px solid var(--line);font-size:15px;line-height:1.4}
+  ol.steps-n li::before{content:counter(s);font-family:var(--serif);font-size:23px;line-height:1;color:var(--terra);min-width:16px}
+  .problem{padding:13px 0;border-bottom:1px solid var(--line)}
+  .problem-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
+  .problem-head strong{font-family:var(--serif);font-weight:400;font-size:19px}
+  .problem p{margin:6px 0 0;font-size:14px}
+  .prob{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;font-weight:700;color:var(--muted)}
+  .prob.alta{color:var(--terra)} .prob.media{color:var(--ochre)}
+  .ai-box{border-top:1px solid var(--rule);padding:16px 0 4px}
+  .ai-box h3{font-family:var(--serif);font-weight:600;font-size:20px;margin:0 0 4px}
+  .ai-box > p{margin:0 0 12px}
+  .ai-loading{display:flex;gap:14px;align-items:center;padding:16px 0}
+  .ai-loading strong{font-family:var(--serif);font-weight:400;font-size:18px}
+  .spinner{width:26px;height:26px;flex-shrink:0;border:2px solid var(--line);border-top-color:var(--terra);border-radius:50%;animation:spin .9s linear infinite}
   @keyframes spin{to{transform:rotate(360deg)}}
   @media (prefers-reduced-motion: reduce){ .spinner{animation-duration:3s} }
-  .err{background:var(--rojo-claro);color:var(--rojo);border-radius:10px;padding:9px 12px;margin:0 0 10px;font-size:14px}
-  .diag-head{display:flex;align-items:center;justify-content:space-between;gap:8px;flex-wrap:wrap}
-  .diag-state{display:inline-flex;align-items:center;gap:6px;border-radius:999px;padding:5px 12px;font-weight:750;font-size:14px}
-  .diag-state.ok{background:var(--verde-claro);color:var(--verde-osc)}
-  .diag-state.leve{background:var(--ambar-claro);color:var(--ambar)}
-  .diag-state.mod{background:var(--tierra-claro);color:var(--tierra)}
-  .diag-state.grave{background:var(--rojo-claro);color:var(--rojo)}
-  .diag-state.na{background:var(--bg);color:var(--muted);border:1px solid var(--line)}
-  .diag-sum{font-size:15.5px;margin:10px 0 4px}
-  .diag-note{font-size:13.5px;color:var(--muted);margin:6px 0 0}
-  .diag h4{margin:16px 0 6px;font-size:13px;text-transform:uppercase;letter-spacing:.06em;color:var(--muted)}
-  .problem{border:1px solid var(--line);border-radius:12px;padding:10px 12px;margin-top:8px}
-  .problem-head{display:flex;justify-content:space-between;gap:8px;align-items:baseline;flex-wrap:wrap}
-  .problem p{margin:4px 0 0;font-size:14px}
-  .prob{font-size:12px;font-weight:700;border-radius:999px;padding:1px 8px;background:var(--bg);color:var(--muted)}
-  .prob.alta{background:var(--rojo-claro);color:var(--rojo)}
-  .prob.media{background:var(--ambar-claro);color:var(--ambar)}
-  .sugg{display:flex;gap:10px;align-items:center;justify-content:space-between;flex-wrap:wrap;background:var(--verde-claro);border-radius:12px;padding:9px 12px;margin-top:8px;font-size:14px}
-  .tag.revision{background:var(--ambar-claro);color:var(--ambar)}
-  .review-line{margin:8px 0 0;font-size:13.5px;color:var(--ambar);font-weight:600}
+  .err{background:var(--terra-soft);color:var(--danger);border-radius:12px;padding:10px 13px;margin:0 0 12px;font-size:14px}
+
+  /* ---------- Formularios ---------- */
+  .form{display:grid;gap:16px}
+  .modal-title{display:flex;align-items:center;justify-content:space-between;gap:10px}
+  .modal-title h2{font-family:var(--serif);font-size:30px;margin:0}
+  .field{display:grid;gap:4px}
+  .field > span{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--muted)}
+  .field small{color:var(--muted);font-size:12px}
+  .field input,.field select{width:100%;padding:9px 2px;border:0;border-bottom:1px solid var(--rule);border-radius:0;background:transparent;color:var(--ink);font:inherit;font-size:16px}
+  .field textarea{width:100%;padding:10px 12px;border:1px solid var(--line);border-radius:12px;background:var(--paper);color:var(--ink);font:inherit;font-size:16px;resize:vertical}
+  .field input:focus,.field select:focus,.field textarea:focus{outline:none;border-color:var(--terra)}
+  .field-row{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+  @media(max-width:340px){ .field-row{grid-template-columns:1fr} }
+  .photo-pick{display:flex;gap:16px;align-items:center}
+  .photo-preview{width:84px;height:104px;border-radius:999px 999px 12px 12px;background:var(--sand);overflow:hidden;display:flex;align-items:center;justify-content:center;font-size:40px;flex-shrink:0}
+  .photo-preview img{width:100%;height:100%;object-fit:cover}
+  .photo-pick p{margin:8px 0 0}
+  .hint-box{font-family:var(--serif);font-style:italic;color:var(--moss);font-size:15px;margin-top:-6px}
+
+  /* ---------- Ajustes ---------- */
+  .switch-row{display:flex;gap:12px;align-items:flex-start;cursor:pointer;margin-top:12px}
+  .switch-row input{width:20px;height:20px;margin-top:2px;accent-color:var(--ink);flex-shrink:0}
+  .switch-row small{display:block;color:var(--muted)}
+  fieldset{border:0;padding:0;margin:16px 0 0}
+  legend{font-size:10.5px;letter-spacing:.14em;text-transform:uppercase;font-weight:600;color:var(--muted);margin-bottom:6px}
+  .radio{display:flex;gap:8px;align-items:center;margin:5px 0;cursor:pointer}
+  .radio input{accent-color:var(--ink);width:18px;height:18px}
+  table.season{border-collapse:collapse;width:100%;margin-top:16px;font-size:14px}
+  table.season th,table.season td{text-align:left;padding:8px 6px;border-bottom:1px solid var(--line)}
+  table.season th{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600;border-bottom-color:var(--rule)}
+  table.season tr.now td{font-weight:650;background:var(--sand)}
+  .steps{margin:8px 0 0;padding-left:20px;font-size:14.5px}
+  .steps li{margin:5px 0}
 
   /* ---------- Aviso flotante ---------- */
-  #toast{position:fixed;left:0;right:0;margin:0 auto;width:max-content;bottom:calc(156px + env(safe-area-inset-bottom));transform:translateY(20px);opacity:0;pointer-events:none;
-    background:#1E2C25;color:#F1F8F4;border-radius:12px;padding:10px 12px 10px 16px;display:flex;gap:12px;align-items:center;font-size:14.5px;
-    box-shadow:0 10px 30px rgba(0,0,0,.3);transition:opacity .18s,transform .18s;z-index:100;max-width:calc(100vw - 24px)}
+  #toast{position:fixed;left:0;right:0;margin:0 auto;width:max-content;max-width:calc(100vw - 28px);bottom:calc(172px + env(safe-area-inset-bottom));transform:translateY(16px);opacity:0;pointer-events:none;
+    background:var(--ink);color:var(--on-ink);border-radius:16px;padding:11px 12px 11px 18px;display:flex;gap:12px;align-items:center;font-size:14.5px;
+    box-shadow:0 12px 30px rgba(0,0,0,.25);transition:opacity .18s,transform .18s;z-index:100}
   #toast.show{opacity:1;transform:translateY(0);pointer-events:auto}
-  #toast button{border:0;background:rgba(255,255,255,.14);color:#9FE3BF;font:inherit;font-weight:750;padding:6px 10px;border-radius:8px;cursor:pointer}
-  @media(min-width:760px){ #toast{bottom:32px} }
+  #toast button{border:0;background:transparent;color:#E9A07C;font:inherit;font-weight:700;padding:6px 8px;border-radius:10px;cursor:pointer;flex-shrink:0}
+  @media (prefers-color-scheme: dark){ #toast button{color:#9E4426} }
+  @media(min-width:760px){ #toast{bottom:36px} }
 </style>
 </head>
 <body>
 
 <header class="top">
   <div class="wrap top-inner">
-    <a class="brand" href="#hoy"><span class="brand-ico" aria-hidden="true">🌱</span> Brote <small>cuidado de plantas</small></a>
+    <a class="brand" href="#hoy"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M8 29V14a8 8 0 0 1 16 0v15z" fill="var(--sand)"/><path d="M16 23v-7" stroke="var(--moss)" stroke-width="1.6" stroke-linecap="round"/><path d="M16 19c-3 .2-5.6-1.6-6-5 3-.4 5.6 1.6 6 5z" fill="var(--sage)"/><path d="M16 16.5c.2-3.6 2.8-6.1 6.5-5.9-.3 3.8-2.9 5.9-6.5 5.9z" fill="var(--moss)"/><path d="M12 23h8l-1 5.2a1 1 0 0 1-1 .8h-4a1 1 0 0 1-1-.8z" fill="var(--terra)"/></svg>Brote</a>
     <nav class="tabs" aria-label="Secciones">
-      <a href="#hoy" data-tab="hoy"><span class="ico" aria-hidden="true">🌤️</span><span class="lbl">Hoy</span><span class="badge" id="badge-hoy" hidden></span></a>
-      <a href="#plantas" data-tab="plantas"><span class="ico" aria-hidden="true">🪴</span><span class="lbl">Mis plantas</span></a>
-      <a href="#guia" data-tab="guia"><span class="ico" aria-hidden="true">📖</span><span class="lbl">Guía</span></a>
-      <a href="#ajustes" data-tab="ajustes"><span class="ico" aria-hidden="true">⚙️</span><span class="lbl">Ajustes</span></a>
+      <a href="#hoy" data-tab="hoy"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg><span class="lbl">Hoy</span><span class="badge" id="badge-hoy" hidden></span></a>
+      <a href="#plantas" data-tab="plantas"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12c0-4.5-3.2-7.5-8-7.5 0 4.6 3.4 7.5 8 7.5z"/><path d="M12 14.5c0-3.8 2.8-6.5 7.5-6.5 0 3.9-2.9 6.5-7.5 6.5z"/></svg><span class="lbl">Jardín</span></a>
+      <a href="#guia" data-tab="guia"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5c2.5-1 5.5-1 8 .5 2.5-1.5 5.5-1.5 8-.5v13c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5z"/><path d="M12 6v13.5"/></svg><span class="lbl">Guía</span></a>
+      <a href="#ajustes" data-tab="ajustes"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span class="lbl">Ajustes</span></a>
     </nav>
   </div>
 </header>
 
 <main id="view" class="wrap" tabindex="-1"></main>
 
-<button id="fab" class="fab" type="button" data-action="add" hidden><span aria-hidden="true">＋</span> Agregar planta</button>
+<button id="fab" class="fab" type="button" data-action="add" aria-label="Agregar planta" hidden><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M12 5v14M5 12h14"/></svg><span class="fab-lbl">Agregar planta</span></button>
 
 <dialog id="modal"><div id="modal-body"></div></dialog>
 <div id="toast" role="status" aria-live="polite"></div>
@@ -394,7 +396,7 @@ const LOG_TYPES = {
   foto:{label:'Foto', emoji:'📷'}, diagnostico:{label:'Diagnóstico con IA', emoji:'🩺'}
 };
 const TASK_ORDER = {riego:0, abono:1, revision:2};
-const TASK_LABEL = {riego:'💧 Regar', abono:'🧪 Abonar', revision:'📷 Revisar'};
+const TASK_VERB = {riego:'Regar', abono:'Abonar', revision:'Foto de control'};
 const SNOOZE_DAYS = {riego:2, abono:7, revision:3};
 const SEASONS = {
   primavera:{name:'Primavera', emoji:'🌸', factor:1,    desc:'Temporada de crecimiento: riego normal y abono activo.'},
@@ -577,7 +579,7 @@ function save(){
 
 let loadFailed = false;
 let state = load();
-const ui = {search:'', guideSearch:'', guideFilter:'todas', modal:null, formPhotoSet:undefined, formAnalysis:null,
+const ui = {search:'', locFilter:'', weekDate:null, guideSearch:'', guideFilter:'todas', modal:null, formPhotoSet:undefined, formAnalysis:null,
             diagNote:'', busy:false, photoToken:0, galleryCache:{}, lastDay:todayISO()};
 
 // Aplica un cambio; si falla o no se puede guardar, vuelve atrás. Devuelve la foto previa (para "Deshacer").
@@ -669,27 +671,34 @@ function petInfo(sp){
   if (sp.toxica === true)  return {cls:'pet-bad', label:'Tóxica para mascotas'};
   return {cls:'', label:'Toxicidad: variable / sin datos'};
 }
+// Íconos de línea (diseño editorial)
+const ICON = {
+  check: '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12.5l4.5 4.5L19 7.5"/></svg>',
+  clock: '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l3 1.8"/></svg>',
+  camera: '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5h3l1.8-2.5h6.4L17 8.5h3V19H4z"/><circle cx="12" cy="13.3" r="3.3"/></svg>',
+  back: '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+};
 function careChips(sp){
   const pet = petInfo(sp);
-  const items = [`<li title="Luz">☀️ ${esc(sp.luz)}</li>`];
+  const rows = [['Luz', esc(sp.luz)]];
   if (sp.id !== 'otra'){
-    items.push(`<li title="Riego">💧 Cada ~${sp.riego} ${plural(sp.riego, 'día', 'días')}</li>`);
-    items.push(`<li title="Abono">🧪 ${sp.abono ? `Abono cada ~${sp.abono} días` : 'Casi no necesita abono'}</li>`);
-    items.push(`<li title="Humedad ambiente">💨 Humedad ${esc(sp.humedad.toLowerCase())}</li>`);
-    items.push(`<li title="Dificultad">📈 ${esc(sp.dificultad)}</li>`);
+    rows.push(['Riego', `cada ~${sp.riego} ${plural(sp.riego, 'día', 'días')}`]);
+    rows.push(['Abono', sp.abono ? `cada ~${sp.abono} días` : 'casi no necesita']);
+    rows.push(['Humedad', esc(sp.humedad.toLowerCase())]);
+    rows.push(['Dificultad', esc(sp.dificultad.toLowerCase())]);
   }
-  items.push(`<li class="${pet.cls}" title="Mascotas">🐾 ${pet.label}</li>`);
-  return `<ul class="chips care">${items.join('')}</ul>` +
-    (sp.toxica !== false && sp.toxNota ? `<p class="tox-note">⚠️ ${esc(sp.toxNota)}</p>` : '');
+  rows.push(['Mascotas', `<span class="${pet.cls}">${pet.label.replace(' para mascotas', '')}</span>`]);
+  return `<dl class="care">${rows.map(([k, v]) => `<dt>${k}</dt><dd>${v}</dd>`).join('')}</dl>` +
+    (sp.toxica !== false && sp.toxNota ? `<p class="tox-note">${esc(sp.toxNota)}</p>` : '');
 }
 function emptyState(){
   return `<div class="empty">
-    <div class="empty-emoji" aria-hidden="true">🪴</div>
-    <h2>Todavía no cargaste plantas</h2>
+    <div class="empty-art" aria-hidden="true">🪴</div>
+    <h2>Tu jardín está vacío</h2>
     <p>Agregá tu primera planta y Brote te va a decir cuándo regarla y cuándo abonarla.</p>
     <div class="btn-row center">
-      <button class="btn primary" type="button" data-action="add">＋ Agregar planta</button>
-      <a class="btn" href="#guia">📖 Ver la guía</a>
+      <button class="btn primary" type="button" data-action="add">Agregar planta</button>
+      <a class="btn" href="#guia">Ver la guía</a>
     </div>
   </div>`;
 }
@@ -703,108 +712,106 @@ function greeting(){
    ===================================================================== */
 function viewHoy(){
   const S = SEASONS[seasonKey()];
-  const head = `<section class="hero">
-    <p class="eyebrow">${esc(cap(fmtLong.format(new Date())))}</p>
-    <h1>${greeting()} 🌿</h1>
-    <span class="season-pill">${S.emoji} ${S.name}${state.settings.seasonal ? ' · ' + S.desc : ' · Ajuste estacional desactivado'}</span>
-  </section>`;
-  if (!state.plants.length) return head + emptyState();
+  const eyebrow = `${cap(fmtLong.format(new Date())).replace(',', '')} · ${S.name}`;
+  const head = lead => `<section class="hero"><p class="eyebrow">${esc(eyebrow)}</p><h1>${greeting()}.</h1>${lead ? `<p class="lead">${lead}</p>` : ''}</section>`;
+  if (!state.plants.length) return head('Empecemos tu jardín.') + emptyState();
 
-  const {due, soon} = collectTasks();
-  const late = due.filter(t => t.d < 0).length;
+  const {due} = collectTasks();
+  const nPlants = new Set(due.map(t => t.p.id)).size;
+  const NUM = ['', 'Una', 'Dos', 'Tres', 'Cuatro', 'Cinco', 'Seis', 'Siete', 'Ocho', 'Nueve', 'Diez'];
+  const lead = !nPlants ? 'Hoy no hay nada pendiente.' : nPlants === 1 ? 'Una planta te espera hoy.' : `${NUM[nPlants] || nPlants} plantas te esperan hoy.`;
   const waterDue = due.filter(t => t.type === 'riego');
 
   const taskItem = t => {
-    const p = t.p;
+    const p = t.p, late = t.d < 0;
     const snoozeTitle = {riego:'La tierra sigue húmeda: posponer 2 días', abono:'Posponer una semana', revision:'Posponer 3 días'}[t.type];
-    const snoozeLbl = {riego:'+2 días', abono:'+1 semana', revision:'+3 días'}[t.type];
+    const when = late ? `atrasado ${-t.d} ${plural(-t.d, 'día', 'días')}` : t.type === 'revision' ? 'ver cómo evoluciona' : 'hoy';
     const main = t.type === 'revision'
-      ? `<label class="btn small tierra">📷 Sacar foto<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label>`
-      : `<button class="btn small ${t.type === 'riego' ? 'agua' : 'tierra'}" type="button" data-action="done" data-id="${p.id}" data-type="${t.type}">✓ Listo</button>`;
-    return `<li class="task ${t.d < 0 ? 'late' : ''}">
+      ? `<label class="circle" title="Sacar foto de control" aria-label="Sacar foto de control de ${esc(p.name)}">${ICON.camera}<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label>`
+      : `<button class="circle" type="button" data-action="done" data-id="${p.id}" data-type="${t.type}" title="Listo" aria-label="Listo: ${TASK_VERB[t.type].toLowerCase()} ${esc(p.name)}">${ICON.check}</button>`;
+    return `<li class="task ${late ? 'late' : ''}">
       <button class="thumb" type="button" data-action="open" data-id="${p.id}" aria-label="Ver ${esc(p.name)}">${photoOrEmoji(p)}</button>
       <div class="task-body">
         <strong>${esc(p.name)}</strong>
-        <div class="task-meta">
-          <span class="tag ${t.type}">${TASK_LABEL[t.type]}</span>
-          <span class="when ${whenClass(t.d)}">${whenText(t.d)}</span>
-          ${p.location ? `<span class="muted">· ${esc(p.location)}</span>` : ''}
-        </div>
+        <div class="task-meta"><b class="${late ? 'late' : ''}">${TASK_VERB[t.type]}</b> · ${when}${p.location ? ` · ${esc(p.location)}` : ''}</div>
       </div>
       <div class="task-actions">
-        <button class="btn small ghost" type="button" data-action="snooze" data-id="${p.id}" data-type="${t.type}" title="${snoozeTitle}">⏰ ${snoozeLbl}</button>
+        <button class="circle soft" type="button" data-action="snooze" data-id="${p.id}" data-type="${t.type}" title="${snoozeTitle}" aria-label="${snoozeTitle}">${ICON.clock}</button>
         ${main}
       </div>
     </li>`;
   };
 
-  const todayCard = `<section class="card">
-    <div class="section-head">
-      <h2>Para hoy</h2>
-      ${waterDue.length > 1 ? `<button class="btn small agua" type="button" data-action="water-all">💧 Regar todas (${waterDue.length})</button>` : ''}
-    </div>
-    ${due.length ? `${waterDue.length ? '<p class="tipline">Antes de regar, tocá la tierra: si a 2–3 cm todavía está húmeda, mejor posponer.</p>' : ''}
+  const today = `<section>
+    <div class="sec"><h2>Hoy</h2><span class="aside">${waterDue.length > 1 ? `<button class="linkbtn" type="button" data-action="water-all">Regar todas (${waterDue.length})</button> · ` : ''}${due.length} ${plural(due.length, 'tarea', 'tareas')}</span></div>
+    ${due.length ? `${waterDue.length ? '<p class="tipline">Antes de regar, tocá la tierra: si a 2–3 cm sigue húmeda, mejor posponé.</p>' : ''}
       <ul class="tasks">${due.map(taskItem).join('')}</ul>`
-    : `<div class="alldone"><div class="big" aria-hidden="true">🌱</div><strong>¡Todo al día!</strong><p class="muted">No hay riegos ni abonos pendientes para hoy.</p></div>`}
+    : '<div class="alldone"><p>Todo al día. Volvé mañana.</p></div>'}
   </section>`;
 
+  const week = `<section>
+    <div class="sec"><h2>La semana</h2><span class="aside legend"><i class="riego"></i>riego<i class="abono"></i>abono<i class="revision"></i>fotos</span></div>
+    <div id="week">${weekHTML()}</div>
+  </section>`;
+  return head(lead) + today + week;
+}
+
+// Tira de los próximos 7 días: al tocar un día se ve qué toca.
+function weekHTML(){
+  const t = todayISO();
+  const {due, soon} = collectTasks();
   const byDate = {};
-  soon.forEach(t => (byDate[t.date] ||= []).push(t));
-  const days = Object.keys(byDate).sort().map(date => {
-    const d = diffDays(todayISO(), date);
-    const label = d === 1 ? 'Mañana' : cap(fmtShort.format(localDate(date)));
-    return `<div class="day"><h3>${label}</h3><ul class="mini-list">${byDate[date].map(t => `<li>
-        <button class="link-btn" type="button" data-action="open" data-id="${t.p.id}">
-          <span class="mini-thumb">${photoOrEmoji(t.p)}</span><span class="nm">${esc(t.p.name)}</span>
-        </button>
-        <span class="tag ${t.type}">${TASK_LABEL[t.type]}</span>
-      </li>`).join('')}</ul></div>`;
+  due.forEach(x => (byDate[t] ||= []).push(x));
+  soon.forEach(x => (byDate[x.date] ||= []).push(x));
+  const days = Array.from({length:7}, (_, i) => addDays(t, i));
+  if (!days.includes(ui.weekDate)) ui.weekDate = days.slice(1).find(d => byDate[d]) || t;
+  const wd = new Intl.DateTimeFormat('es-AR', {weekday:'short'});
+  const strip = days.map(d => {
+    const items = byDate[d] || [];
+    const name = cap(wd.format(localDate(d)).replace('.', ''));
+    return `<button type="button" class="${d === t ? 'today' : ''}" data-action="week-day" data-date="${d}" aria-pressed="${d === ui.weekDate}"
+      aria-label="${esc(cap(fmtLong.format(localDate(d))))}: ${items.length} ${plural(items.length, 'tarea', 'tareas')}">${esc(name)}<b>${Number(d.slice(8))}</b>
+      <span class="dots">${items.slice(0, 4).map(x => `<i class="${x.type}"></i>`).join('')}</span></button>`;
   }).join('');
-
-  const nextCard = `<section class="card">
-    <h2>Próximos 7 días</h2>
-    ${days ? `<div class="days" style="margin-top:12px">${days}</div>` : '<p class="muted">Nada programado para la próxima semana.</p>'}
-  </section>`;
-
-  const summary = `<div class="summary">
-    <span>🪴 ${state.plants.length} ${plural(state.plants.length, 'planta', 'plantas')}</span>
-    <span>${waterDue.length ? `💧 ${waterDue.length} para regar` : '✅ Todo regado'}</span>
-    ${late ? `<span class="late">⚠️ ${late} ${plural(late, 'atrasada', 'atrasadas')}</span>` : ''}
-  </div>`;
-
-  return head.replace('</section>', summary + '</section>') + todayCard + nextCard;
+  const sel = byDate[ui.weekDate] || [];
+  const dd = diffDays(t, ui.weekDate);
+  const label = dd === 0 ? 'Hoy' : dd === 1 ? 'Mañana' : cap(fmtLong.format(localDate(ui.weekDate)));
+  const list = sel.length
+    ? `<ul class="daylist">${sel.map(x => `<li><button class="link-btn" type="button" data-action="open" data-id="${x.p.id}"><span class="mini-thumb">${photoOrEmoji(x.p)}</span><span class="nm">${esc(x.p.name)}</span></button><span class="what">${TASK_VERB[x.type]}</span></li>`).join('')}</ul>`
+    : '<p class="muted small" style="margin:4px 0 0">Nada programado.</p>';
+  return `<div class="week">${strip}</div><p class="daylabel">${label}</p>${list}`;
 }
 
 function plantListHTML(){
   const q = ui.search.trim().toLowerCase();
   const t = todayISO();
   const list = state.plants
+    .filter(p => !ui.locFilter || p.location === ui.locFilter)
     .filter(p => !q || [p.name, p.location, speciesOf(p).name, speciesOf(p).sci].join(' ').toLowerCase().includes(q))
     .map(p => ({p, w:nextWater(p)}))
     .sort((a, b) => a.w.localeCompare(b.w) || a.p.name.localeCompare(b.p.name, 'es'));
-  if (!list.length) return `<p class="muted">No hay plantas que coincidan con “${esc(ui.search)}”.</p>`;
+  if (!list.length) return `<p class="muted">No hay plantas que coincidan${ui.search ? ` con “${esc(ui.search)}”` : ''}.</p>`;
   return list.map(({p, w}) => {
     const d = diffDays(t, w);
-    const lvl = waterLevel(p);
-    const meterCls = lvl < 0.2 ? 'low' : lvl < 0.5 ? 'mid' : '';
-    const nextTxt = d < 0 ? `💧 Riego atrasado ${-d} ${plural(-d, 'día', 'días')}` : d === 0 ? '💧 Regar hoy' : d === 1 ? '💧 Riego mañana' : `💧 Riego en ${d} días`;
-    const sub = [speciesOf(p).name, p.location].filter(Boolean).join(' · ');
-    return `<article class="plant-card" role="button" tabindex="0" data-action="open" data-id="${p.id}" aria-label="${esc(p.name)}: ${esc(nextTxt.slice(3))}">
-      <div class="pc-photo">${photoOrEmoji(p)}${d < 0 ? '<span class="pc-flag">Atrasada</span>' : d === 0 ? '<span class="pc-flag today">Hoy</span>' : ''}</div>
-      <div class="pc-body">
-        <h3>${esc(p.name)}</h3>
-        <p class="sub">${esc(sub)}</p>
-        <div class="meter ${meterCls}" role="img" aria-label="Humedad estimada ${Math.round(lvl * 100)}%"><span style="width:${Math.round(lvl * 100)}%"></span></div>
-        <p class="pc-next ${whenClass(d)}">${nextTxt}</p>
-      </div>
+    const pct = Math.round(waterLevel(p) * 100);
+    const status = d < 0 ? 'Riego atrasado' : d === 0 ? 'Riego · hoy' : d === 1 ? 'Riego · mañana' : `Riego · en ${d} días`;
+    return `<article class="plant-card" role="button" tabindex="0" data-action="open" data-id="${p.id}" aria-label="${esc(p.name)}: ${esc(status)}">
+      <div class="pc-photo">${photoOrEmoji(p)}</div>
+      <h3>${esc(p.name)}</h3>
+      <p class="pc-next ${whenClass(d)}">${status}</p>
+      <div class="meter ${pct < 20 ? 'low' : ''}" role="img" aria-label="Humedad estimada ${pct}%"><span style="width:${pct}%"></span></div>
     </article>`;
   }).join('');
 }
 
 function viewPlantas(){
   const n = state.plants.length;
-  return `<div class="page-head"><h1>Mis plantas</h1><p class="muted">${n ? `${n} ${plural(n, 'planta', 'plantas')} · ordenadas por próximo riego` : 'Tu colección está vacía'}</p></div>
+  const locs = [...new Set(state.plants.map(p => p.location).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'es'));
+  if (ui.locFilter && !locs.includes(ui.locFilter)) ui.locFilter = '';
+  const eyebrow = n ? `${n} ${plural(n, 'planta', 'plantas')}${locs.length ? ` · ${locs.length} ${plural(locs.length, 'ambiente', 'ambientes')}` : ''}` : 'Tu colección';
+  return `<div class="page-head"><p class="eyebrow">${eyebrow}</p><h1>Tu jardín</h1></div>
     ${n ? `<div class="toolbar"><input id="plant-search" class="search" type="search" placeholder="Buscar por nombre, especie o lugar" value="${esc(ui.search)}" aria-label="Buscar plantas"></div>
+      ${locs.length > 1 ? `<div class="pills" role="group" aria-label="Filtrar por lugar">${['', ...locs].map(l => `<button type="button" class="pill" data-action="loc-filter" data-loc="${esc(l)}" aria-pressed="${ui.locFilter === l}">${l ? esc(l) : 'Todas'}</button>`).join('')}</div>` : ''}
       <div id="plant-list" class="plant-grid">${plantListHTML()}</div>` : emptyState()}`;
 }
 
@@ -824,15 +831,15 @@ function guideListHTML(){
   return list.map(sp => `<article class="guide-card">
       <div class="gc-head"><span class="gc-emoji" aria-hidden="true">${sp.emoji}</span><div><h3>${esc(sp.name)}</h3><p class="sci">${esc(sp.sci)}</p></div></div>
       ${careChips(sp)}
-      <p class="small">💧 ${esc(sp.riegoNota)}</p>
+      <p class="note">${esc(sp.riegoNota)}</p>
       <details><summary>Consejos</summary><ul class="tips">${sp.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul></details>
-      <button class="btn small" type="button" data-action="add-species" data-species="${sp.id}">＋ Agregar a mis plantas</button>
+      <button class="btn small" type="button" data-action="add-species" data-species="${sp.id}">Agregar a mi jardín</button>
     </article>`).join('');
 }
 function viewGuia(){
-  const filters = [['todas','Todas'],['interior','Interior'],['suculenta','Suculentas'],['huerta','Huerta y aromáticas'],['exterior','Exterior'],['faciles','Muy fáciles'],['mascotas','🐾 Aptas para mascotas']];
-  return `<div class="page-head"><h1>Guía de cuidados</h1>
-      <p class="muted">${SPECIES.length - 1} plantas comunes con sus necesidades de luz, riego y abono. Las frecuencias son orientativas: cada casa es distinta.</p></div>
+  const filters = [['todas','Todas'],['interior','Interior'],['suculenta','Suculentas'],['huerta','Huerta y aromáticas'],['exterior','Exterior'],['faciles','Muy fáciles'],['mascotas','Aptas para mascotas']];
+  return `<div class="page-head"><p class="eyebrow">${SPECIES.length - 1} plantas comunes</p><h1>Guía de cuidados</h1>
+      <p class="muted">Luz, riego y abono de cada una. Las frecuencias son orientativas: cada casa es distinta.</p></div>
     <div class="toolbar"><input id="guide-search" class="search" type="search" placeholder="Buscar (ej.: potus, sombra, suculenta)" value="${esc(ui.guideSearch)}" aria-label="Buscar en la guía"></div>
     <div class="chips" role="group" aria-label="Filtros">${filters.map(([k, l]) => `<button type="button" class="filter" data-action="guide-filter" data-filter="${k}" aria-pressed="${ui.guideFilter === k}">${l}</button>`).join('')}</div>
     <div id="guide-list" class="guide-grid">${guideListHTML()}</div>
@@ -845,9 +852,9 @@ function viewAjustes(){
   const months = state.settings.hemisphere === 'S'
     ? {verano:'dic – feb', otono:'mar – may', invierno:'jun – ago', primavera:'sep – nov'}
     : {invierno:'dic – feb', primavera:'mar – may', verano:'jun – ago', otono:'sep – nov'};
-  const rows = order.map(k => `<tr class="${k === cur ? 'now' : ''}"><td>${SEASONS[k].emoji} ${SEASONS[k].name}${k === cur ? ' (ahora)' : ''}</td><td>${months[k]}</td><td>cada ${adjust(7, SEASONS[k].factor)} días</td><td>${k === 'invierno' ? 'En pausa' : 'Activo'}</td></tr>`).join('');
-  return `<div class="page-head"><h1>Ajustes</h1></div>
-    ${storageOK ? '' : '<p class="banner">⚠️ Este navegador no permite guardar datos (¿modo incógnito?). Los cambios se van a perder al cerrar la página.</p>'}
+  const rows = order.map(k => `<tr class="${k === cur ? 'now' : ''}"><td>${SEASONS[k].name}${k === cur ? ' (ahora)' : ''}</td><td>${months[k]}</td><td>cada ${adjust(7, SEASONS[k].factor)} días</td><td>${k === 'invierno' ? 'En pausa' : 'Activo'}</td></tr>`).join('');
+  return `<div class="page-head"><p class="eyebrow">Brote · cuidado de plantas</p><h1>Ajustes</h1></div>
+    ${storageOK ? '' : '<p class="banner">Este navegador no permite guardar datos (¿modo incógnito?). Los cambios se van a perder al cerrar la página.</p>'}
     <section class="card">
       <h2>Estaciones del año</h2>
       <label class="switch-row"><input type="checkbox" id="set-seasonal" ${state.settings.seasonal ? 'checked' : ''}>
@@ -860,7 +867,7 @@ function viewAjustes(){
       <table class="season"><thead><tr><th>Estación</th><th>Meses</th><th>Planta de riego semanal</th><th>Abono</th></tr></thead><tbody>${rows}</tbody></table>
     </section>
     <section class="card">
-      <h2>🩺 Diagnóstico con IA</h2>
+      <h2>Diagnóstico con IA</h2>
       <p class="muted">Sacale una foto a una planta y Claude, la IA de Anthropic, te dice qué problemas puede tener y qué hacer. También reconoce la especie.</p>
       ${servedOnline() ? '' : '<p class="banner" style="margin-top:10px">Estás abriendo el archivo directamente: el diagnóstico funciona en la app publicada en Netlify.</p>'}
       <div class="form" style="margin-top:12px">
@@ -870,7 +877,7 @@ function viewAjustes(){
       <p class="small muted" style="margin:10px 0 0">La clave de Claude está guardada en el servidor (Netlify), como en Déficit Tracker: no hay que cargar nada en el celular. Las fotos se envían solo cuando pedís un diagnóstico o una identificación.</p>
     </section>
     ${isInstalled() ? '' : `<section class="card">
-      <h2>📲 Instalar en el celular</h2>
+      <h2>Instalar en el celular</h2>
       <p class="muted">Agregala a la pantalla de inicio y se abre como una app, con su ícono y sin la barra del navegador.</p>
       <ul class="steps">
         <li><b>iPhone:</b> abrila en Safari → botón Compartir → <i>Agregar a pantalla de inicio</i>.</li>
@@ -881,20 +888,20 @@ function viewAjustes(){
     <section class="card">
       <h2>Recordatorios en tu calendario</h2>
       <p class="muted">Descargá un archivo .ics con los riegos y abonos programados e importalo en Google Calendar, Calendario de Apple u Outlook. Si cambiás frecuencias o cambia la estación, volvé a descargarlo.</p>
-      <div class="btn-row"><button class="btn" type="button" data-action="export-ics" ${state.plants.length ? '' : 'disabled'}>📅 Descargar calendario (.ics)</button></div>
+      <div class="btn-row"><button class="btn" type="button" data-action="export-ics" ${state.plants.length ? '' : 'disabled'}>Descargar calendario (.ics)</button></div>
     </section>
     <section class="card">
       <h2>Respaldo</h2>
       <p class="muted">Tus datos y fotos se guardan solo en este navegador. Exportá un respaldo (incluye las fotos) para no perderlos o para pasarlos a otro dispositivo.</p>
       <div class="btn-row">
-        <button class="btn" type="button" data-action="export-json" ${state.plants.length ? '' : 'disabled'}>⬇️ Exportar respaldo</button>
-        <button class="btn" type="button" data-action="import-json">⬆️ Importar respaldo</button>
+        <button class="btn" type="button" data-action="export-json" ${state.plants.length ? '' : 'disabled'}>Exportar respaldo</button>
+        <button class="btn" type="button" data-action="import-json">Importar respaldo</button>
       </div>
     </section>
     <section class="card">
       <h2>Borrar datos</h2>
       <p class="muted">Elimina todas las plantas, fotos, diagnósticos e historial de este navegador.</p>
-      <div class="btn-row"><button class="btn danger" type="button" data-action="wipe" ${state.plants.length ? '' : 'disabled'}>🗑️ Borrar todo</button></div>
+      <div class="btn-row"><button class="btn danger" type="button" data-action="wipe" ${state.plants.length ? '' : 'disabled'}>Borrar todo</button></div>
     </section>
     <footer class="foot">Tus plantas y fotos se guardan solo en este dispositivo. Las fotos se envían a la IA solo cuando pedís un diagnóstico.<br>Toxicidad para mascotas según la <a href="${ASPCA_URL}" target="_blank" rel="noopener">ASPCA</a>. Las frecuencias de riego son orientativas.</footer>`;
 }
@@ -916,33 +923,35 @@ function detailHTML(p){
   const rv = nextReview(p);
   const logLabel = l => l.type === 'diagnostico' ? `${LOG_TYPES.diagnostico.label}: ${DIAG_STATES[l.data.estado].label.toLowerCase()}` : LOG_TYPES[l.type].label;
   return `
-    <div class="detail-photo">${photoOrEmoji(p)}<button class="icon-btn" type="button" data-action="close" aria-label="Cerrar">✕</button></div>
+    <div class="sheet-top"><button class="back" type="button" data-action="close">${ICON.back} Volver</button></div>
+    <div class="detail-photo">${photoOrEmoji(p)}</div>
     <div class="detail-head">
+      <p class="eyebrow">${esc(sp.name)}${p.location ? ` · ${esc(p.location)}` : ''}</p>
       <h2>${esc(p.name)}</h2>
-      <p class="muted">${esc(sp.name)}${sp.id !== 'otra' ? ` · <em>${esc(sp.sci)}</em>` : ''}${p.location ? ` · 📍 ${esc(p.location)}` : ''}</p>
+      ${sp.id !== 'otra' ? `<p class="sci">${esc(sp.sci)}</p>` : ''}
     </div>
     <div class="stats">
-      <div class="stat riego"><span>💧 Próximo riego</span>
+      <div class="stat riego"><span>Próximo riego</span>
         <strong class="${dw < 0 ? 'late' : ''}">${whenText(dw)}</strong>
         <small>${cap(fmtShort.format(localDate(w)))} · cada ${wi} días${wi !== p.waterEvery ? ` (base ${p.waterEvery}, ajustado por ${SEASONS[seasonKey()].name.toLowerCase()})` : ''}${p.lastWater ? ` · último: ${fmtDate.format(localDate(p.lastWater))}` : ''}</small></div>
-      <div class="stat abono"><span>🧪 Próximo abono</span>${fertStat}</div>
+      <div class="stat abono"><span>Próximo abono</span>${fertStat}</div>
     </div>
     <div class="btn-row">
-      <button class="btn agua" type="button" data-action="done" data-id="${p.id}" data-type="riego" ${wateredToday ? 'disabled' : ''}>${wateredToday ? '✓ Regada hoy' : '💧 La regué hoy'}</button>
-      ${p.fertEvery ? `<button class="btn tierra" type="button" data-action="done" data-id="${p.id}" data-type="abono" ${fertToday ? 'disabled' : ''}>${fertToday ? '✓ Abonada hoy' : '🧪 La aboné hoy'}</button>` : ''}
-      <button class="btn" type="button" data-action="log-form" data-id="${p.id}">📝 Registrar…</button>
+      <button class="btn primary" type="button" data-action="done" data-id="${p.id}" data-type="riego" ${wateredToday ? 'disabled' : ''}>${wateredToday ? 'Regada hoy' : 'La regué hoy'}</button>
+      ${p.fertEvery ? `<button class="btn" type="button" data-action="done" data-id="${p.id}" data-type="abono" ${fertToday ? 'disabled' : ''}>${fertToday ? 'Abonada hoy' : 'La aboné hoy'}</button>` : ''}
+      <button class="btn ghost" type="button" data-action="log-form" data-id="${p.id}">Registrar…</button>
     </div>
     <div class="detail-section">
       <div class="section-head"><h3>Fotos y diagnósticos</h3>
-        <label class="btn small primary">📷 Sacar foto<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label></div>
+        <label class="btn small">${ICON.camera} Sacar foto<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label></div>
       <div id="gallery" class="gallery" data-plant="${p.id}">${ui.galleryCache[p.id] || '<span class="small muted">Cargando fotos…</span>'}</div>
-      ${rv ? `<p class="review-line">📷 Foto de control: ${whenText(diffDays(t, rv)).toLowerCase()}, para ver cómo evoluciona.</p>` : ''}
+      ${rv ? `<p class="review-line">Foto de control: ${whenText(diffDays(t, rv)).toLowerCase()}, para ver cómo evoluciona.</p>` : ''}
     </div>
     ${p.notes ? `<div class="detail-section"><h3>Notas</h3><p class="notes">${esc(p.notes)}</p></div>` : ''}
     <div class="detail-section">
-      <h3>Cuidados: ${esc(sp.name)}</h3>
+      <h3>Cuidados</h3>
       ${careChips(sp)}
-      <p class="small" style="margin:8px 0 0">💧 ${esc(sp.riegoNota)}</p>
+      <p class="note" style="margin-top:10px">${esc(sp.riegoNota)}</p>
       <ul class="tips">${sp.tips.map(x => `<li>${esc(x)}</li>`).join('')}</ul>
     </div>
     <div class="detail-section">
@@ -950,19 +959,19 @@ function detailHTML(p){
       ${log.length ? `<ul class="log">${log.map(l => `<li>
           <span class="le" aria-hidden="true">${LOG_TYPES[l.type].emoji}</span>
           <span class="lt"><strong>${logLabel(l)}</strong>${l.text ? ` — ${esc(l.text)}` : ''}<small>${cap(fmtLong.format(localDate(l.date)))}${l.date.slice(0, 4) !== t.slice(0, 4) ? ' de ' + l.date.slice(0, 4) : ''}</small></span>
-          ${l.type === 'foto' || l.type === 'diagnostico' ? `<button class="btn small ghost" type="button" data-action="view-photo" data-photo="${esc(l.photoId || '')}" data-log="${l.type === 'diagnostico' ? esc(l.id) : ''}">Ver</button>` : ''}
+          ${l.type === 'foto' || l.type === 'diagnostico' ? `<button class="linkbtn" type="button" data-action="view-photo" data-photo="${esc(l.photoId || '')}" data-log="${l.type === 'diagnostico' ? esc(l.id) : ''}">Ver</button>` : ''}
           ${l.type !== 'alta' && l.type !== 'foto' ? `<button class="icon-btn" type="button" data-action="del-log" data-id="${p.id}" data-log="${esc(l.id)}" aria-label="Borrar registro">✕</button>` : ''}
         </li>`).join('')}</ul>` : '<p class="muted">Sin registros todavía.</p>'}
     </div>
-    <div class="btn-row end">
-      <button class="btn" type="button" data-action="edit" data-id="${p.id}">✏️ Editar</button>
-      <button class="btn danger" type="button" data-action="delete" data-id="${p.id}">🗑️ Eliminar</button>
+    <div class="btn-row end" style="margin-top:28px">
+      <button class="btn" type="button" data-action="edit" data-id="${p.id}">Editar</button>
+      <button class="btn danger" type="button" data-action="delete" data-id="${p.id}">Eliminar</button>
     </div>`;
 }
 
 function speciesHint(sp){
   const pet = petInfo(sp);
-  return `☀️ ${esc(sp.luz)} · 💧 ${esc(sp.riegoNota)} · 🐾 ${pet.label}`;
+  return `${esc(sp.luz)}. ${esc(sp.riegoNota)} ${pet.label}.`;
 }
 function speciesOptions(selected){
   return Object.entries(CATS).map(([cat, label]) => {
@@ -982,13 +991,13 @@ function formHTML(p, speciesId){
     <div class="photo-pick">
       <div id="photo-preview" class="photo-preview">${photo ? `<img src="${esc(photo)}" alt="">` : sp.emoji}</div>
       <div>
-        <label class="btn small" for="photo-input">📷 <span id="photo-label">${photo ? 'Cambiar foto' : 'Agregar foto'}</span></label>
+        <label class="btn small" for="photo-input">${ICON.camera} <span id="photo-label">${photo ? 'Cambiar foto' : 'Agregar foto'}</span></label>
         <input type="file" id="photo-input" accept="image/*" hidden>
         <button class="btn small ghost" type="button" data-action="remove-photo" ${photo ? '' : 'hidden'}>Quitar</button>
         <p class="small muted">Opcional. Se guarda solo en tu dispositivo.</p>
       </div>
     </div>
-    <div id="ai-identify" class="ai-box" hidden></div>
+    <div id="ai-identify" class="ai-box" style="padding-top:12px" hidden></div>
     <label class="field"><span>Especie</span><select name="speciesId" id="species-select">${speciesOptions(sp.id)}</select></label>
     <div id="species-hint" class="hint-box">${speciesHint(sp)}</div>
     <label class="field"><span>Nombre</span><input name="name" maxlength="60" placeholder="${esc(sp.id === 'otra' ? 'Ej.: Helecho de la abuela' : sp.name)}" value="${esc(p ? p.name : '')}"></label>
@@ -1277,7 +1286,7 @@ function galleryHTML(p, recs){
   p.log.forEach(l => { if (l.type === 'diagnostico' && l.photoId) diag.set(l.photoId, l); });
   return recs.sort((a, b) => b.createdAt - a.createdAt).map(r => {
     const d = diag.get(r.id), st = d && DIAG_STATES[d.data.estado];
-    return `<button type="button" data-action="view-photo" data-photo="${esc(r.id)}" aria-label="Foto del ${esc(fmtDate.format(localDate(r.date)))}${st ? ' · ' + st.label : ''}"><img src="${esc(r.thumb)}" alt="">${st ? `<span class="dx" aria-hidden="true">${st.emoji}</span>` : ''}</button>`;
+    return `<button type="button" data-action="view-photo" data-photo="${esc(r.id)}" aria-label="Foto del ${esc(fmtDate.format(localDate(r.date)))}${st ? ' · ' + st.label : ''}"><img src="${esc(r.thumb)}" alt="">${st ? `<span class="dx ${st.cls}" aria-hidden="true"></span>` : ''}</button>`;
   }).join('');
 }
 async function loadGallery(plantId){
@@ -1328,63 +1337,63 @@ async function openPhoto(photoId, logId, keepScroll){
 function photoHTML(p, rec, entry){
   const date = rec ? rec.date : entry.date;
   return `
-    <div class="photo-full">${rec ? `<img src="${esc(rec.full)}" alt="Foto de ${esc(p.name)}">` : '<p class="gone">La foto fue eliminada.</p>'}
+    <div class="sheet-top"><button class="back" type="button" data-action="open" data-id="${p.id}">${ICON.back} ${esc(p.name)}</button>
       <button class="icon-btn" type="button" data-action="close" aria-label="Cerrar">✕</button></div>
-    <div class="detail-head"><h2>${esc(p.name)}</h2><p class="muted">📷 ${cap(fmtLong.format(localDate(date)))}${date.slice(0, 4) !== todayISO().slice(0, 4) ? ' de ' + date.slice(0, 4) : ''}</p></div>
-    <div id="diag-area" class="diag" style="margin-top:12px">${entry ? diagResultHTML(entry, p, !!rec) : diagPromptHTML()}</div>
-    <div class="btn-row">
-      <button class="btn" type="button" data-action="open" data-id="${p.id}">← Volver</button>
-      ${rec ? `<button class="btn" type="button" data-action="set-cover" data-photo="${esc(rec.id)}">🖼️ Usar de portada</button>
-      <button class="btn danger" type="button" data-action="del-photo" data-photo="${esc(rec.id)}">🗑️ Eliminar foto</button>` : ''}
-    </div>`;
+    <div class="photo-full">${rec ? `<img src="${esc(rec.full)}" alt="Foto de ${esc(p.name)}">` : '<p class="gone">La foto fue eliminada.</p>'}</div>
+    ${entry ? '' : `<p class="eyebrow">Foto del ${esc(fmtLong.format(localDate(date)).replace(',', ''))}${date.slice(0, 4) !== todayISO().slice(0, 4) ? ' de ' + date.slice(0, 4) : ''}</p>`}
+    <div id="diag-area" class="diag" style="margin-top:14px">${entry ? diagResultHTML(entry, p, !!rec) : diagPromptHTML()}</div>
+    ${rec ? `<div class="btn-row" style="margin-top:26px">
+      <button class="btn small" type="button" data-action="set-cover" data-photo="${esc(rec.id)}">Usar de portada</button>
+      <button class="btn small danger" type="button" data-action="del-photo" data-photo="${esc(rec.id)}">Eliminar foto</button>
+    </div>` : ''}`;
 }
 const loadingHTML = (msg = 'Analizando la foto…') => `<div class="ai-loading" role="status"><span class="spinner" aria-hidden="true"></span>
   <div><strong>${msg}</strong><br><span class="small muted">Puede tardar hasta un minuto.</span></div></div>`;
 function diagPromptHTML(errorMsg){
-  if (!servedOnline()) return `<div class="ai-box"><h3>🩺 ¿Tiene algún problema?</h3>
+  if (!servedOnline()) return `<div class="ai-box"><h3>¿Tiene algún problema?</h3>
     <p class="small muted">El diagnóstico con IA funciona en la app publicada en Netlify (la que instalás en el celular), no abriendo el archivo directamente.</p></div>`;
   return `<div class="ai-box">
-    <h3>🩺 ¿Tiene algún problema?</h3>
+    <h3>¿Tiene algún problema?</h3>
     <p class="small muted">Claude analiza la foto junto con el riego y el historial de la planta. La foto se envía a Anthropic solo cuando tocás el botón.</p>
-    ${errorMsg ? `<p class="err" role="alert">⚠️ ${esc(errorMsg)}</p>` : ''}
+    ${errorMsg ? `<p class="err" role="alert">${esc(errorMsg)}</p>` : ''}
     <label class="field"><span>¿Notaste algo? (opcional)</span><textarea id="diag-note" rows="2" maxlength="400" placeholder="Ej.: se le ponen amarillas las hojas de abajo">${esc(ui.diagNote)}</textarea></label>
-    <div class="btn-row" style="margin-top:10px"><button class="btn primary" type="button" data-action="diagnose">🩺 Diagnosticar con IA</button></div>
+    <div class="btn-row" style="margin-top:14px"><button class="btn primary" type="button" data-action="diagnose">Diagnosticar con IA</button></div>
   </div>`;
 }
 const modelName = id => (MODEL_INFO[id] || [id || 'IA'])[0];
 const fmtUSD = n => n < 0.01 ? 'menos de US$0,01' : 'US$' + n.toLocaleString('es-AR', {minimumFractionDigits:2, maximumFractionDigits:2});
+const fmtDM = new Intl.DateTimeFormat('es-AR', {day:'numeric', month:'short'});
 function diagResultHTML(entry, p, hasPhoto){
   const d = entry.data, st = DIAG_STATES[d.estado], e = d.especie, meta = entry.meta || {};
   const li = arr => arr.map(x => `<li>${esc(x)}</li>`).join('');
-  let h = `<div class="diag-head"><span class="diag-state ${st.cls}">${st.emoji} ${st.label}</span>
-    <small class="muted">🩺 ${cap(fmtShort.format(localDate(entry.date)))}</small></div>`;
+  let h = `<div class="diag-head"><span class="eyebrow">Diagnóstico · ${esc(fmtDM.format(localDate(entry.date)).replace('.', ''))}</span><span class="diag-state ${st.cls}">${st.label}</span></div>`;
   if (d.resumen) h += `<p class="diag-sum">${esc(d.resumen)}</p>`;
   if (meta.nota) h += `<p class="diag-note">Tu comentario: “${esc(meta.nota)}”</p>`;
-  if (!d.es_planta) h += '<p class="banner" style="margin-top:10px">La IA no reconoció una planta en esta foto.</p>';
-  else if (d.calidad_foto === 'mala') h += '<p class="banner" style="margin-top:10px">La foto no es muy clara: probá con más luz y acercándote a las partes afectadas.</p>';
+  if (!d.es_planta) h += '<p class="banner">La IA no reconoció una planta en esta foto.</p>';
+  else if (d.calidad_foto === 'mala') h += '<p class="banner">La foto no es muy clara: probá con más luz y acercándote a las partes afectadas.</p>';
   // Sugerencias que se aplican con un toque
   if (d.riego_sugerido_dias && d.riego_sugerido_dias !== p.waterEvery)
-    h += `<div class="sugg"><span>💧 Sugiere regar cada <b>${d.riego_sugerido_dias}</b> días (ahora: cada ${p.waterEvery}).</span>
-      <button class="btn small agua" type="button" data-action="apply-water" data-id="${p.id}" data-days="${d.riego_sugerido_dias}">Aplicar</button></div>`;
+    h += `<div class="sugg"><span>Regar cada <b>${d.riego_sugerido_dias} días</b> en vez de ${p.waterEvery}</span>
+      <button class="linkbtn" type="button" data-action="apply-water" data-id="${p.id}" data-days="${d.riego_sugerido_dias}">Aplicar →</button></div>`;
   if (d.es_planta && e.catalogo_id !== 'otra' && e.catalogo_id !== p.speciesId && e.confianza !== 'baja')
-    h += `<div class="sugg"><span>🔍 Parece ser <b>${esc(SPECIES_BY_ID[e.catalogo_id].name)}</b> (confianza ${e.confianza}), no ${esc(speciesOf(p).name.toLowerCase())}.</span>
-      <button class="btn small" type="button" data-action="apply-species" data-id="${p.id}" data-species="${e.catalogo_id}">Cambiar especie</button></div>`;
+    h += `<div class="sugg"><span>Parece ser <b>${esc(SPECIES_BY_ID[e.catalogo_id].name)}</b> (confianza ${e.confianza}), no ${esc(speciesOf(p).name.toLowerCase())}</span>
+      <button class="linkbtn" type="button" data-action="apply-species" data-id="${p.id}" data-species="${e.catalogo_id}">Cambiar especie →</button></div>`;
   else if (d.es_planta && e.catalogo_id === 'otra' && p.speciesId === 'otra' && e.nombre_comun)
-    h += `<div class="sugg"><span>🔍 Parece ser <b>${esc(e.nombre_comun)}</b>${e.nombre_cientifico ? ` <i>(${esc(e.nombre_cientifico)})</i>` : ''} · confianza ${e.confianza}.</span></div>`;
-  if (d.acciones_inmediatas.length) h += `<h4>Qué hacer ahora</h4><ol class="tips">${li(d.acciones_inmediatas)}</ol>`;
+    h += `<div class="sugg"><span>Parece ser <b>${esc(e.nombre_comun)}</b>${e.nombre_cientifico ? ` <i>(${esc(e.nombre_cientifico)})</i>` : ''} · confianza ${e.confianza}</span></div>`;
+  if (d.acciones_inmediatas.length) h += `<h4>Qué hacer ahora</h4><ol class="steps-n">${li(d.acciones_inmediatas)}</ol>`;
   if (d.problemas.length) h += '<h4>Problemas probables</h4>' + d.problemas.map(pr => `<div class="problem">
       <div class="problem-head"><strong>${esc(pr.nombre)}</strong><span class="prob ${pr.probabilidad}">Probabilidad ${pr.probabilidad}</span></div>
       ${pr.senales ? `<p><b>Señales:</b> ${esc(pr.senales)}</p>` : ''}
       ${pr.causa ? `<p><b>Causa probable:</b> ${esc(pr.causa)}</p>` : ''}
       ${pr.tratamiento.length ? `<ul class="tips">${li(pr.tratamiento)}</ul>` : ''}
     </div>`).join('');
-  if (d.observaciones.length) h += `<details style="margin-top:12px"><summary class="small"><b>Lo que se ve en la foto</b></summary><ul class="tips">${li(d.observaciones)}</ul></details>`;
-  if (d.consultar_experto) h += '<p class="banner" style="margin-top:12px">🧑‍🌾 Conviene consultar en un vivero: llevá una hoja afectada o mostrales esta foto.</p>';
+  if (d.observaciones.length) h += `<details style="margin-top:14px"><summary>Lo que se ve en la foto</summary><ul class="tips">${li(d.observaciones)}</ul></details>`;
+  if (d.consultar_experto) h += '<p class="banner" style="margin-top:14px">Conviene consultar en un vivero: llevá una hoja afectada o mostrales esta foto.</p>';
   const latest = p.log.filter(l => l.type === 'diagnostico').pop();
   const rv = nextReview(p);
-  if (latest && latest.id === entry.id && rv) h += `<p class="review-line">📷 Te vamos a recordar sacar otra foto ${whenText(diffDays(todayISO(), rv)).toLowerCase()} para ver cómo evoluciona.</p>`;
-  h += `<p class="small muted" style="margin:14px 0 0">Diagnóstico orientativo generado por IA (${esc(modelName(meta.modelo))}): puede equivocarse.${meta.costo != null ? ` Costo aproximado: ${fmtUSD(meta.costo)}.` : ''}</p>`;
-  if (hasPhoto) h += '<div class="btn-row" style="margin-top:8px"><button class="btn small ghost" type="button" data-action="diag-again">🔄 Volver a diagnosticar</button></div>';
+  if (latest && latest.id === entry.id && rv) h += `<p class="review-line">Te vamos a recordar sacar otra foto ${whenText(diffDays(todayISO(), rv)).toLowerCase()} para ver cómo evoluciona.</p>`;
+  h += `<p class="small muted" style="margin:16px 0 0">Diagnóstico orientativo generado por IA (${esc(modelName(meta.modelo))}): puede equivocarse.${meta.costo != null ? ` Costo aproximado: ${fmtUSD(meta.costo)}.` : ''}</p>`;
+  if (hasPhoto) h += '<p style="margin:10px 0 0"><button class="linkbtn" type="button" data-action="diag-again">Volver a diagnosticar</button></p>';
   return h;
 }
 
@@ -1433,9 +1442,9 @@ async function runDiagnosis(){
 /* ---------- Identificar la especie al cargar una planta nueva ---------- */
 function identifyBoxHTML(){
   return servedOnline()
-    ? `<div class="btn-row" style="margin:0;align-items:center"><button class="btn small" type="button" data-action="identify">🔍 Identificar con IA</button>
+    ? `<div class="btn-row" style="margin:0;align-items:center"><button class="btn small" type="button" data-action="identify">Identificar con IA</button>
         <span class="small muted">Sugiere la especie y revisa su salud.</span></div><div id="identify-result"></div>`
-    : '<p class="small muted" style="margin:0">💡 En la app publicada, Brote puede reconocer la especie y revisar su salud desde la foto.</p>';
+    : '<p class="small muted" style="margin:0">En la app publicada, Brote puede reconocer la especie y revisar su salud desde la foto.</p>';
 }
 async function identifyInForm(btn){
   const set = ui.formPhotoSet, form = $('#plant-form');
@@ -1711,6 +1720,16 @@ document.addEventListener('click', e => {
     case 'water-all': waterAll(); break;
     case 'log-form': { const p = getPlant(id); if (p) openModal(logFormHTML(p), {kind:'log', id}, 'Registrar actividad'); break; }
     case 'del-log': deleteLog(id, el.dataset.log); break;
+    case 'week-day':
+      ui.weekDate = el.dataset.date;
+      $('#week').innerHTML = weekHTML();
+      $(`#week [data-date="${ui.weekDate}"]`)?.focus();
+      break;
+    case 'loc-filter':
+      ui.locFilter = el.dataset.loc;
+      document.querySelectorAll('[data-action="loc-filter"]').forEach(b => b.setAttribute('aria-pressed', String(b === el)));
+      $('#plant-list').innerHTML = plantListHTML();
+      break;
     case 'view-photo': openPhoto(el.dataset.photo || null, el.dataset.log || null); break;
     case 'diagnose': runDiagnosis(); break;
     case 'diag-again': $('#diag-area').innerHTML = diagPromptHTML(); break;

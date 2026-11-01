@@ -6,13 +6,19 @@ App para el celular que organiza el riego y el abono de tus plantas, guarda foto
 
 - `index.html` — la app completa (frontend), sin dependencias externas.
 - `manifest.json` + `icons/` — nombre ("Brote") e ícono para la pantalla de inicio.
+- `fonts/` — la tipografía Fraunces de los títulos, guardada dentro de la app (licencia libre OFL, en `fonts/OFL.txt`).
 - `netlify/functions/diagnostico.mjs` — función serverless que llama a la API de Claude protegiendo tu clave. El prompt y el formato de la respuesta viven acá.
 - `netlify.toml` — configuración de Netlify. No hay paso de build ni `npm install`.
+
+## Diseño
+
+"Botánico editorial": papel crema, títulos con serifa (Fraunces), fotos enmarcadas en arco y líneas finas, con acentos verde musgo y terracota. Se pasa solo a modo oscuro si el celular lo tiene activado.
 
 ## Qué hace
 
 - **Hoy:** qué regar y abonar hoy, lo atrasado, y lo que viene en los próximos 7 días. "✓ Listo", "posponer" y "Deshacer".
-- **Mis plantas:** foto, especie, ubicación, historial (riegos, abonos, trasplantes, podas, notas) y galería de fotos.
+- **Tu jardín:** foto, especie, ubicación (con filtro por ambiente), historial (riegos, abonos, trasplantes, podas, notas) y galería de fotos.
+- **La semana:** una tira con los próximos 7 días; tocás un día y ves qué toca.
 - **Diagnóstico con IA:** abrís una foto, tocás "🩺 Diagnosticar" y Claude responde con el estado (saludable, leve, moderado, grave), los problemas probables con su tratamiento y qué hacer ahora. Si conviene, propone una nueva frecuencia de riego o corregir la especie (se aplican con un toque) y te programa una **foto de control** para seguir la evolución.
 - **Identificar la especie** al cargar una planta nueva con foto.
 - **Guía** de 27 plantas comunes con luz, riego, abono y toxicidad para perros y gatos (según la ASPCA).
@@ -73,4 +79,4 @@ Riego, abono, fotos, guía, recordatorios y respaldos no usan la IA: son gratis.
 
 Las plantas, el historial y las fotos se guardan en el celular (localStorage y la base de fotos del navegador). No hay cuenta ni nube: para no perder nada si cambiás de celular, usá **Ajustes → Exportar respaldo** (incluye las fotos). Las fotos se envían a Claude solo cuando pedís un diagnóstico o una identificación.
 
-La app necesita internet para abrir, como Déficit Tracker. Si abrís `index.html` directamente (sin Netlify) funciona todo menos la IA.
+La app necesita internet para abrir, como Déficit Tracker. Si abrís `index.html` directamente (sin Netlify) funciona todo menos la IA, y los títulos se ven en Georgia en vez de Fraunces.
