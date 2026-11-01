@@ -1,0 +1,9 @@
+{
+  "name": "brote",
+  "private": true,
+  "description": "Brote, app de cuidado de plantas. Sin paso de build: index.html, sw.js y funciones de Netlify.",
+  "dependencies": {
+    "@netlify/blobs": "^11.1.7",
+    "web-push": "^3.6.7"
+  }
+}

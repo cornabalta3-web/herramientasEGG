@@ -8,7 +8,10 @@ App para el celular que organiza el riego y el abono de tus plantas, guarda foto
 - `manifest.json` + `icons/` — nombre ("Brote") e ícono para la pantalla de inicio.
 - `fonts/` — la tipografía Fraunces de los títulos, guardada dentro de la app (licencia libre OFL, en `fonts/OFL.txt`).
 - `netlify/functions/diagnostico.mjs` — función serverless que llama a la API de Claude protegiendo tu clave. El prompt y el formato de la respuesta viven acá.
-- `netlify.toml` — configuración de Netlify. No hay paso de build ni `npm install`.
+- `netlify/functions/avisos.mjs` y `avisos-diarios.mjs` — los avisos en el celular: la primera guarda la suscripción de cada celular, y la segunda corre sola cada hora y manda el aviso del día. La lógica compartida está en `netlify/lib/avisos.mjs`.
+- `sw.js` — el service worker que recibe los avisos y los muestra (no guarda nada en caché).
+- `package.json` — las dos dependencias de los avisos: `web-push` y `@netlify/blobs`.
+- `netlify.toml` — configuración de Netlify. No hay paso de build: Netlify solo instala las dependencias de `package.json`.
 
 ## Diseño
 
@@ -16,14 +19,26 @@ App para el celular que organiza el riego y el abono de tus plantas, guarda foto
 
 ## Qué hace
 
-- **Hoy:** qué regar y abonar hoy, lo atrasado, y lo que viene en los próximos 7 días. "✓ Listo", "posponer" y "Deshacer".
-- **Tu jardín:** foto, especie, ubicación (con filtro por ambiente), historial (riegos, abonos, trasplantes, podas, notas) y galería de fotos.
+Pensada para quien no sabe de plantas: todo está en palabras de todos los días, hay una lista con lo básico para que no se te mueran y la app es un poco entretenida.
+
+- **Cuidados:** el lugar para resolver qué le pasa a una planta.
+  - **Sacale una foto:** la IA la revisa y te dice qué tiene y cómo solucionarlo.
+  - **Contame qué ves:** marcás los síntomas (hojas amarillas, manchas, bichos, tierra siempre húmeda…) y te muestra las causas más probables, cruzadas con el riego de esa planta. Es gratis y no usa la IA.
+  - **Plan de tratamiento:** cada problema queda con sus pasos para tachar y una foto de control, hasta que tocás "Ya se curó".
+  - **Lo básico para que no se te muera:** 5 reglas simples.
+  - **Problemas frecuentes:** 17 fichas (riego, luz y ambiente, plagas, hongos y nutrientes) con cómo reconocerlos, por qué pasan, qué hacer y cómo prevenirlos.
+- **Avisos en el celular:** a la hora que elijas, una notificación si alguna planta necesita agua, abono o una foto de control (por ejemplo, "💧 Ficus tiene sed — Le tocaba agua hace 1 día"). Como mucho uno por día, y solo si hay algo que hacer.
+- **Hoy:** qué regar y abonar hoy, lo atrasado, las plantas en tratamiento y lo que viene en los próximos 7 días. "✓ Listo", "posponer" y "Deshacer".
+- **Tu jardín:** foto, especie, ubicación (con filtro por ambiente), historial (riegos, abonos, trasplantes, podas, notas) y galería de fotos. Cada planta muestra cómo está: 😊 contenta, 😓 con sed, 🥵 muerta de sed o 🤒 en tratamiento.
+- **Biografía de cada planta:** desde cuándo la tenés, cómo llegó a tu casa, sus números (riegos, fotos, tratamientos…), un antes y ahora con su primera y su última foto, y el origen y una curiosidad de su especie.
+- **Nivel de jardinero:** cada cuidado suma, y vas pasando de Semilla a Brote, Plantín, Mano verde y Leyenda del jardín.
 - **La semana:** una tira con los próximos 7 días; tocás un día y ves qué toca.
-- **Diagnóstico con IA:** abrís una foto, tocás "🩺 Diagnosticar" y Claude responde con el estado (saludable, leve, moderado, grave), los problemas probables con su tratamiento y qué hacer ahora. Si conviene, propone una nueva frecuencia de riego o corregir la especie (se aplican con un toque) y te programa una **foto de control** para seguir la evolución.
+- **Diagnóstico con IA:** abrís una foto, tocás "Diagnosticar con IA" y Claude responde con el estado (saludable, leve, moderado, grave), los problemas probables con su tratamiento y qué hacer ahora. Con "Empezar tratamiento" lo convertís en un plan de pasos. Si conviene, propone una nueva frecuencia de riego o corregir la especie (se aplican con un toque) y te programa una **foto de control** para seguir la evolución.
 - **Identificar la especie** al cargar una planta nueva con foto.
 - **Guía** de 27 plantas comunes con luz, riego, abono y toxicidad para perros y gatos (según la ASPCA).
 - **Estaciones:** el riego se ajusta solo (más seguido en verano, más espaciado en invierno, abono en pausa en invierno). Hemisferio sur por defecto.
 - **Recordatorios** en Google Calendar / Calendario de Apple (archivo .ics) y **respaldo** en archivo, con fotos.
+- **Cuánto gasta:** en Ajustes, cuántas fotos analizó la IA este mes, el mes pasado y desde el principio, con el costo aproximado.
 
 ## Paso 1 — La clave de Claude
 
@@ -63,9 +78,23 @@ La función ya viene con dos defensas: el prompt vive en el servidor (no sirve p
 
 En iPhone, la app instalada guarda sus datos aparte de Safari: si ya habías cargado plantas en Safari, exportá un respaldo (Ajustes) e importalo en la app.
 
+## Paso 5 — Activar los avisos
+
+No hay que configurar nada en Netlify: las claves que firman los avisos (VAPID) se generan solas la primera vez y quedan guardadas en Netlify Blobs, que viene con el sitio.
+
+1. Abrí la app **instalada** → **Ajustes → Avisos en el celular**, elegí la hora y tocá **Activar avisos**. Aceptá el permiso.
+2. Tocá **Probar aviso**: en unos segundos tiene que llegar "🌱 ¡Los avisos funcionan!".
+
+Detalles:
+
+- **iPhone:** solo con la app agregada a la pantalla de inicio y iOS 16.4 o más nuevo (Safari no deja mandar avisos a una página común).
+- **Android:** con Chrome, instalada o no.
+- El aviso diario lo manda `avisos-diarios.mjs`, una función programada que Netlify corre cada hora **solo en el sitio publicado** (no en los deploy previews de un pull request). En un preview se puede usar "Probar aviso", pero el aviso de cada día empieza después del merge. Los avisos son de cada dirección: si los probaste en un preview, desactivalos ahí y activalos en la app publicada.
+- Cada celular se activa por separado (por ejemplo, el tuyo y el de tu hermano).
+
 ## Costos
 
-Cada diagnóstico es un pedido a Claude con la foto (achicada a 1568 px). Estimación, no medición (el número real está en platform.claude.com → Usage; la app también muestra el costo aproximado de cada diagnóstico):
+**Claude (lo único que se paga).** Cada vez que la IA mira una foto (diagnóstico o identificar la especie) es un pedido a Claude con la foto achicada a 1568 px. Estimación, no medición: el número real está en platform.claude.com → Usage. La app muestra el costo de cada diagnóstico y, en **Ajustes → Cuánto gasta**, el total del mes:
 
 | Modelo (se elige en Ajustes) | Costo aproximado por foto |
 |---|---|
@@ -73,10 +102,16 @@ Cada diagnóstico es un pedido a Claude con la foto (achicada a 1568 px). Estima
 | Claude Sonnet 5.5 — equilibrado y más rápido | USD 0,03 |
 | Claude Haiku 5.5 — el más económico | menos de USD 0,01 |
 
-Riego, abono, fotos, guía, recordatorios y respaldos no usan la IA: son gratis.
+Riego, abono, fotos, avisos, guía, buscador de síntomas, recordatorios y respaldos no usan la IA: son gratis.
+
+**Netlify (gratis).** El plan Free trae 300 créditos por mes, compartidos entre los proyectos de la cuenta (por ejemplo, con Déficit Tracker). Lo que más gasta es publicar: cada deploy a producción usa 15 créditos (los deploy previews no cuentan). El uso de todos los días es mínimo: el ancho de banda cuesta 20 créditos por GB, los pedidos 2 créditos cada 10.000 y las funciones 10 créditos por GB-hora. La función de avisos que corre cada hora usa como mucho un par de créditos por mes, y cada diagnóstico alrededor de 0,1. Si un mes se acabaran los créditos, Netlify pausa los proyectos hasta el mes siguiente: no cobra nada sin que pases a un plan pago.
+
+**Avisos (gratis).** Los mandan los servicios de Google, Apple y Mozilla sin costo.
 
 ## Datos
 
 Las plantas, el historial y las fotos se guardan en el celular (localStorage y la base de fotos del navegador). No hay cuenta ni nube: para no perder nada si cambiás de celular, usá **Ajustes → Exportar respaldo** (incluye las fotos). Las fotos se envían a Claude solo cuando pedís un diagnóstico o una identificación.
+
+Si activás los avisos, el servidor (Netlify Blobs) guarda la suscripción de ese celular, la hora elegida y la lista de nombres de plantas con sus fechas de riego, abono y foto de control. Nada de fotos ni notas. El registro se guarda con el hash de un identificador al azar del celular, y se borra al tocar **Desactivar** (o solo, si el celular da de baja los avisos).
 
 La app necesita internet para abrir, como Déficit Tracker. Si abrís `index.html` directamente (sin Netlify) funciona todo menos la IA, y los títulos se ven en Georgia en vez de Fraunces.
