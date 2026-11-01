@@ -314,6 +314,38 @@
   .steps{margin:8px 0 0;padding-left:20px;font-size:14.5px}
   .steps li{margin:5px 0}
 
+  /* ---------- Ánimo y nivel ---------- */
+  .pc-photo{position:relative}
+  .pc-mood{position:absolute;left:8px;bottom:8px;max-width:calc(100% - 16px);background:var(--paper);color:var(--ink);border-radius:999px;padding:3px 9px;font-size:11.5px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis;box-shadow:0 2px 8px rgba(0,0,0,.12)}
+  .pc-mood.mood-bad{color:var(--terra)}
+  .mood-line{font-family:var(--serif);font-style:italic;font-size:17px;margin:8px 0 0;color:var(--moss)}
+  .mood-line.mood-bad{color:var(--terra)}
+  .level{display:flex;align-items:center;gap:10px;margin:16px 0 0;font-size:13px;color:var(--muted)}
+  .level b{font-family:var(--serif);font-weight:600;font-size:15.5px;color:var(--ink);white-space:nowrap}
+  .level .bar{flex:1;min-width:50px;height:3px;background:var(--line)}
+  .level .bar i{display:block;height:100%;background:var(--terra)}
+  .level small{font-size:12.5px;text-align:right}
+  ol.basics li{font-size:15px}
+
+  /* ---------- Biografía ---------- */
+  .bio-lead{font-family:var(--serif);font-size:18px;margin:0}
+  .bio-lead b{font-weight:600}
+  .bio-quote{margin:12px 0 0;padding:2px 0 2px 14px;border-left:2px solid var(--terra);font-family:var(--serif);font-style:italic;font-size:17px;color:var(--ink-soft)}
+  .bio-stats{display:grid;grid-template-columns:repeat(3,1fr);gap:14px 8px;margin:16px 0 0;padding:14px 0;border-top:1px solid var(--line);border-bottom:1px solid var(--line)}
+  .bio-stats div{text-align:center}
+  .bio-stats b{display:block;font-family:var(--serif);font-weight:400;font-size:27px;line-height:1.1}
+  .bio-stats span{font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .bio-photos{display:grid;grid-template-columns:1fr 1fr;gap:14px;margin-top:16px}
+  .bio-photos p{grid-column:1 / -1;margin:0}
+  .bio-photos button{border:0;padding:0;background:none;cursor:pointer;text-align:left;font:inherit;color:var(--ink)}
+  .bio-photos img{width:100%;aspect-ratio:4/5;object-fit:cover;border-radius:999px 999px 12px 12px;display:block;background:var(--sand)}
+  .bio-photos span{display:block;margin-top:7px;font-size:10.5px;letter-spacing:.12em;text-transform:uppercase;color:var(--muted);font-weight:600}
+  .bio-species{margin-top:20px}
+  .bio-species h4{font-family:var(--serif);font-weight:600;font-size:16px;margin:0 0 4px}
+  .bio-species p{margin:8px 0 0;font-size:14.5px}
+  .bio-species .eyebrow{margin-right:6px}
+  .origin{margin:3px 0 0;font-size:12.5px;color:var(--muted)}
+
   /* ---------- Cuidados ---------- */
   .care-cta{display:grid;grid-template-columns:1fr;margin-top:18px}
   @media(min-width:640px){ .care-cta{grid-template-columns:1fr 1fr;gap:0 32px} }
@@ -403,36 +435,66 @@
      (true = tóxica para perros/gatos, false = no tóxica, null = varía / sin datos).
    ===================================================================== */
 const SPECIES = [
-  {id:'potus', cat:'interior', name:'Potus', sci:'Epipremnum aureum', emoji:'🍃', luz:'Indirecta media; tolera poca luz', riego:7, abono:30, humedad:'Media', dificultad:'Muy fácil', toxica:true, toxNota:'Contiene oxalatos de calcio, que irritan la boca y el estómago.', riegoNota:'Dejá secar los 2–3 cm superiores del sustrato antes de regar.', tips:['Con poca luz sobrevive, pero pierde el variegado de las hojas.','Despuntá las guías para que se ponga más frondoso.','Los esquejes enraízan fácil en un frasco con agua.']},
-  {id:'monstera', cat:'interior', name:'Costilla de Adán', sci:'Monstera deliciosa', emoji:'🌿', luz:'Indirecta brillante', riego:8, abono:30, humedad:'Media a alta', dificultad:'Fácil', toxica:true, toxNota:'Contiene oxalatos de calcio.', riegoNota:'Regá cuando la mitad superior de la maceta esté seca.', tips:['Si las hojas nuevas salen sin perforaciones, probablemente le falte luz.','Un tutor de musgo o fibra de coco la ayuda a crecer erguida y con hojas más grandes.','Limpiá las hojas con un paño húmedo para sacarles el polvo.']},
-  {id:'sansevieria', cat:'interior', name:'Lengua de suegra', sci:'Dracaena trifasciata (Sansevieria)', emoji:'🪴', luz:'Cualquiera: de sol filtrado a poca luz', riego:18, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Contiene saponinas (pueden causar vómitos y diarrea).', riegoNota:'Esperá a que el sustrato esté seco por completo.', tips:['El exceso de riego pudre el rizoma: ante la duda, no riegues.','Evitá que se acumule agua en el centro de la roseta.','Ideal para dormitorios y rincones con poca luz.']},
-  {id:'zamioculca', cat:'interior', name:'Zamioculca', sci:'Zamioculcas zamiifolia', emoji:'🌱', luz:'Indirecta media o baja', riego:16, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Contiene oxalatos de calcio (irritante).', riegoNota:'Regá solo cuando el sustrato esté totalmente seco.', tips:['Sus rizomas guardan agua: aguanta semanas sin riego.','Hojas amarillas y tallos blandos suelen ser señal de exceso de agua.','Crece lento; no la trasplantes hasta que las raíces llenen la maceta.']},
-  {id:'cinta', cat:'interior', name:'Cinta', sci:'Chlorophytum comosum', emoji:'🎋', luz:'Indirecta brillante', riego:7, abono:30, humedad:'Media', dificultad:'Muy fácil', toxica:false, toxNota:'', riegoNota:'Mantené el sustrato apenas húmedo; dejá secar la superficie.', tips:['Las puntas marrones suelen deberse al cloro o al flúor del agua: usá agua reposada.','Los hijuelos que cuelgan enraízan fácil en agua o en tierra.','Queda muy bien en macetas colgantes.']},
-  {id:'espatifilo', cat:'interior', name:'Espatifilo', sci:'Spathiphyllum wallisii', emoji:'🤍', luz:'Indirecta media, sin sol directo', riego:6, abono:30, humedad:'Alta', dificultad:'Fácil', toxica:true, toxNota:'Contiene oxalatos de calcio.', riegoNota:'Regá cuando la superficie esté seca; no dejes que se seque del todo.', tips:['Cuando tiene sed se "desmaya", y se recupera a las pocas horas de regarla.','El sol directo le quema las hojas.','Para que florezca necesita buena luz indirecta.']},
-  {id:'calathea', cat:'interior', name:'Calathea', sci:'Goeppertia spp. (Calathea)', emoji:'🪶', luz:'Indirecta media, sin sol directo', riego:5, abono:30, humedad:'Alta', dificultad:'Exigente', toxica:false, toxNota:'', riegoNota:'Mantené el sustrato siempre levemente húmedo, nunca encharcado.', tips:['Es sensible al agua dura: usá agua de lluvia, filtrada o reposada.','Las hojas enruladas indican sed o aire muy seco.','Agrupala con otras plantas o usá una bandeja con piedras y agua para subir la humedad.']},
-  {id:'aloe', cat:'suculenta', name:'Aloe vera', sci:'Aloe vera', emoji:'🌵', luz:'Sol directo o muy luminosa', riego:18, abono:90, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Saponinas y antraquinonas (vómitos, diarrea, decaimiento).', riegoNota:'Regá a fondo y esperá a que el sustrato se seque por completo.', tips:['Usá sustrato para cactus y una maceta con buen drenaje (mejor si es de barro).','Hojas finas y curvadas: le falta agua. Blandas y translúcidas: le sobra.','Protegela de las heladas.']},
-  {id:'ficus-lyrata', cat:'interior', name:'Ficus lira', sci:'Ficus lyrata', emoji:'🌳', luz:'Indirecta brillante, algo de sol suave', riego:8, abono:30, humedad:'Media', dificultad:'Exigente', toxica:true, toxNota:'Su savia es irritante.', riegoNota:'Regá cuando los 5 cm superiores del sustrato estén secos.', tips:['No le gustan los cambios de lugar ni las corrientes de aire: elegile un sitio y dejala ahí.','Girá la maceta cada tanto para que crezca pareja.','Las manchas marrones en las hojas suelen indicar exceso de riego.']},
-  {id:'gomero', cat:'interior', name:'Gomero', sci:'Ficus elastica', emoji:'🌳', luz:'Brillante, indirecta o sol suave', riego:9, abono:30, humedad:'Media', dificultad:'Fácil', toxica:true, toxNota:'Su savia es irritante.', riegoNota:'Dejá secar la mitad superior del sustrato.', tips:['Limpiá las hojas con un paño húmedo para que brillen y aprovechen mejor la luz.','Si pierde las hojas de abajo, puede faltarle luz.','Podarlo en primavera lo estimula a ramificar.']},
-  {id:'helecho', cat:'interior', name:'Helecho serrucho', sci:'Nephrolepis exaltata', emoji:'🌿', luz:'Indirecta, sin sol directo', riego:4, abono:30, humedad:'Alta', dificultad:'Moderada', toxica:false, toxNota:'', riegoNota:'Mantené el sustrato húmedo pero no encharcado.', tips:['Las frondas secas y crocantes indican aire seco: subí la humedad.','Le gustan los baños luminosos.','Retirá las hojas secas desde la base.']},
-  {id:'areca', cat:'interior', name:'Palmera areca', sci:'Dypsis lutescens', emoji:'🌴', luz:'Indirecta brillante', riego:6, abono:30, humedad:'Media a alta', dificultad:'Moderada', toxica:false, toxNota:'', riegoNota:'Regá cuando los 2–3 cm superiores estén secos.', tips:['Las puntas secas suelen deberse al aire seco o a las sales del agua.','Alejala de estufas y del aire acondicionado directo.','Pulverizá las hojas en épocas secas.']},
-  {id:'orquidea', cat:'interior', name:'Orquídea mariposa', sci:'Phalaenopsis spp.', emoji:'🌺', luz:'Indirecta brillante, sin sol directo', riego:7, abono:15, humedad:'Media a alta', dificultad:'Moderada', toxica:false, toxNota:'', riegoNota:'Regá por inmersión durante 10–15 minutos y escurrí bien.', tips:['Raíces plateadas: necesita agua. Verdes: está hidratada.','Se cultiva en corteza de pino, no en tierra.','Usá fertilizante para orquídeas bien diluido.']},
-  {id:'peperomia', cat:'interior', name:'Peperomia', sci:'Peperomia spp.', emoji:'🍀', luz:'Indirecta media a brillante', riego:10, abono:45, humedad:'Media', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Sus hojas carnosas guardan agua: dejá secar casi por completo.', tips:['Prefiere macetas chicas y sustrato aireado.','El exceso de riego es su principal enemigo.','Se reproduce por esquejes de hoja.']},
-  {id:'pilea', cat:'interior', name:'Pilea', sci:'Pilea peperomioides', emoji:'🪙', luz:'Indirecta brillante', riego:7, abono:30, humedad:'Media', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Regá cuando los 2–3 cm superiores estén secos.', tips:['Girala una vez por semana: tiende a inclinarse hacia la luz.','Los hijuelos que brotan de la base se pueden separar y plantar.','Si las hojas se curvan hacia abajo, puede ser exceso de agua.']},
-  {id:'filodendro', cat:'interior', name:'Filodendro', sci:'Philodendron spp.', emoji:'💚', luz:'Indirecta media', riego:7, abono:30, humedad:'Media a alta', dificultad:'Fácil', toxica:true, toxNota:'Contiene oxalatos de calcio.', riegoNota:'Dejá secar los 2–3 cm superiores.', tips:['Las variedades trepadoras agradecen un tutor.','Muchas hojas amarillas suelen indicar exceso de riego.','Tolera bien la luz media de interior.']},
-  {id:'hoya', cat:'interior', name:'Flor de cera', sci:'Hoya carnosa', emoji:'⭐', luz:'Indirecta brillante', riego:10, abono:30, humedad:'Media', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Dejá secar el sustrato casi por completo.', tips:['No cortes los pedúnculos de las flores viejas: vuelve a florecer en el mismo lugar.','Florece mejor si la maceta le queda algo justa.','Más luz, más floración.']},
-  {id:'dracena', cat:'interior', name:'Palo de agua', sci:'Dracaena fragrans', emoji:'🎍', luz:'Indirecta media', riego:10, abono:45, humedad:'Media', dificultad:'Fácil', toxica:true, toxNota:'Contiene saponinas.', riegoNota:'Regá cuando la mitad superior del sustrato esté seca.', tips:['Las puntas marrones suelen deberse al flúor o al cloro del agua.','Tolera la luz media de interior.','Limpiá el polvo de las hojas cada tanto.']},
-  {id:'jade', cat:'suculenta', name:'Árbol de jade', sci:'Crassula ovata', emoji:'🪴', luz:'Sol directo o muy luminosa', riego:14, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Puede causar vómitos y decaimiento.', riegoNota:'Dejá secar el sustrato por completo entre riegos.', tips:['Hojas arrugadas: sed. Hojas blandas y caídas: exceso de agua.','Con varias horas de sol, los bordes se tiñen de rojo.','Las hojas sueltas enraízan apoyadas sobre sustrato seco.']},
-  {id:'echeveria', cat:'suculenta', name:'Echeveria', sci:'Echeveria spp.', emoji:'🌸', luz:'Pleno sol o muy luminosa', riego:12, abono:60, humedad:'Baja', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Regá el sustrato (no la roseta) cuando esté seco.', tips:['Si se estira y pierde la forma de roseta, le falta luz.','No dejes agua acumulada entre las hojas: puede pudrirse.','Se multiplica fácil por hojas o hijuelos.']},
-  {id:'cactus', cat:'suculenta', name:'Cactus', sci:'Cactaceae (varias especies)', emoji:'🌵', luz:'Pleno sol', riego:21, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:null, toxNota:'Varía según la especie; además, las espinas pueden lastimar.', riegoNota:'Regá a fondo solo cuando el sustrato esté completamente seco.', tips:['En invierno casi no necesita riego.','Usá sustrato mineral y maceta con agujeros de drenaje.','Acostumbralo al sol de a poco para evitar quemaduras.']},
-  {id:'albahaca', cat:'huerta', name:'Albahaca', sci:'Ocimum basilicum', emoji:'🌿', luz:'Sol directo (6 h o más)', riego:2, abono:21, humedad:'Media', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Mantené el sustrato húmedo; en verano puede necesitar riego diario.', tips:['Cortá los brotes florales para que siga dando hojas.','Cosechá desde arriba, por encima de un par de hojas, para que ramifique.','Es anual y no tolera el frío.']},
-  {id:'romero', cat:'huerta', name:'Romero', sci:'Salvia rosmarinus', emoji:'🌲', luz:'Pleno sol', riego:8, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:false, toxNota:'', riegoNota:'Dejá secar bien el sustrato: no tolera el encharcamiento.', tips:['Prefiere suelos pobres y bien drenados.','Podalo después de la floración para mantenerlo compacto.','En maceta, mejor si es de barro.']},
-  {id:'menta', cat:'huerta', name:'Menta', sci:'Mentha spp.', emoji:'🌱', luz:'Sol o media sombra', riego:3, abono:30, humedad:'Media', dificultad:'Muy fácil', toxica:true, toxNota:'La ASPCA la lista como tóxica (malestar gastrointestinal).', riegoNota:'Le gusta el sustrato húmedo de forma constante.', tips:['Es invasiva: plantala en su propia maceta.','Cortala seguido para que se ponga tupida.','Rebrota con fuerza en primavera aunque se seque en invierno.']},
-  {id:'tomate', cat:'huerta', name:'Tomate', sci:'Solanum lycopersicum', emoji:'🍅', luz:'Pleno sol (8 h)', riego:2, abono:14, humedad:'Media', dificultad:'Moderada', toxica:true, toxNota:'Hojas y tallos son tóxicos (el fruto maduro no).', riegoNota:'Riego regular al pie, sin mojar las hojas.', tips:['Regar de forma pareja evita que los frutos se rajen.','Tutoralo a medida que crece.','En las variedades de crecimiento indeterminado, quitá los brotes laterales (chupones).']},
-  {id:'lavanda', cat:'exterior', name:'Lavanda', sci:'Lavandula spp.', emoji:'💜', luz:'Pleno sol', riego:10, abono:0, humedad:'Baja', dificultad:'Fácil', toxica:true, toxNota:'Contiene linalool (náuseas, vómitos).', riegoNota:'Regá poco y solo con el sustrato seco.', tips:['Prefiere suelos pobres: casi no necesita fertilizante.','Podala después de la floración, sin cortar la madera vieja.','El exceso de humedad es su principal problema.']},
-  {id:'malvon', cat:'exterior', name:'Malvón', sci:'Pelargonium spp.', emoji:'🌺', luz:'Pleno sol', riego:5, abono:21, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Puede causar vómitos y dermatitis.', riegoNota:'Dejá secar la superficie entre riegos.', tips:['Retirá las flores secas para estimular nuevas.','Se multiplica fácil por gajos.','Protegelo de las heladas fuertes.']},
+  {id:'potus', cat:'interior', name:'Potus', sci:'Epipremnum aureum', emoji:'🍃', luz:'Luz media; aguanta lugares con poca luz', riego:7, abono:30, humedad:'Media', dificultad:'Muy fácil', toxica:true, toxNota:'Contiene oxalatos de calcio, que irritan la boca y el estómago.', riegoNota:'Regá cuando los primeros 2–3 cm de tierra estén secos (meté un dedo para fijarte).', tips:['Con poca luz sobrevive, pero las manchas claras de sus hojas se van poniendo verdes.','Cortale las puntas de las ramas para que se ponga más tupido.','Un gajo con un par de hojas echa raíces fácil en un frasco con agua.']},
+  {id:'monstera', cat:'interior', name:'Costilla de Adán', sci:'Monstera deliciosa', emoji:'🌿', luz:'Mucha luz, sin sol directo', riego:8, abono:30, humedad:'Media a alta', dificultad:'Fácil', toxica:true, toxNota:'Contiene oxalatos de calcio.', riegoNota:'Regá cuando la mitad superior de la maceta esté seca.', tips:['Si las hojas nuevas salen sin perforaciones, probablemente le falte luz.','Una estaca forrada en musgo o fibra de coco (la venden en viveros) la ayuda a crecer derecha y con hojas más grandes.','Limpiá las hojas con un paño húmedo para sacarles el polvo.']},
+  {id:'sansevieria', cat:'interior', name:'Lengua de suegra', sci:'Dracaena trifasciata (Sansevieria)', emoji:'🪴', luz:'Cualquier lugar: aguanta poca luz y también sol suave', riego:18, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Contiene saponinas (pueden causar vómitos y diarrea).', riegoNota:'Regá solo cuando la tierra esté seca del todo.', tips:['Si la regás de más, se pudre desde la base: ante la duda, no riegues.','Evitá que se acumule agua en el centro de la roseta.','Ideal para dormitorios y rincones con poca luz.']},
+  {id:'zamioculca', cat:'interior', name:'Zamioculca', sci:'Zamioculcas zamiifolia', emoji:'🌱', luz:'Luz media o poca luz', riego:16, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Contiene oxalatos de calcio (irritante).', riegoNota:'Regá solo cuando la tierra esté seca del todo.', tips:['Guarda agua en sus raíces gruesas: aguanta semanas sin riego.','Hojas amarillas y tallos blandos suelen ser señal de exceso de agua.','Crece lento; no la trasplantes hasta que las raíces llenen la maceta.']},
+  {id:'cinta', cat:'interior', name:'Cinta', sci:'Chlorophytum comosum', emoji:'🎋', luz:'Mucha luz, sin sol directo', riego:7, abono:30, humedad:'Media', dificultad:'Muy fácil', toxica:false, toxNota:'', riegoNota:'Regá cuando la tierra de arriba esté seca; no dejes que se seque toda.', tips:['Las puntas marrones suelen deberse al cloro o al flúor del agua: usá agua reposada.','Los hijuelos que cuelgan enraízan fácil en agua o en tierra.','Queda muy bien en macetas colgantes.']},
+  {id:'espatifilo', cat:'interior', name:'Espatifilo', sci:'Spathiphyllum wallisii', emoji:'🤍', luz:'Luz media, sin sol directo', riego:6, abono:30, humedad:'Alta', dificultad:'Fácil', toxica:true, toxNota:'Contiene oxalatos de calcio.', riegoNota:'Regá cuando la superficie esté seca; no dejes que se seque del todo.', tips:['Cuando tiene sed se "desmaya", y se recupera a las pocas horas de regarla.','El sol directo le quema las hojas.','Para que florezca necesita buena luz indirecta.']},
+  {id:'calathea', cat:'interior', name:'Calathea', sci:'Goeppertia spp. (Calathea)', emoji:'🪶', luz:'Luz media, sin sol directo', riego:5, abono:30, humedad:'Alta', dificultad:'Exigente', toxica:false, toxNota:'', riegoNota:'Le gusta la tierra apenas húmeda siempre, nunca empapada.', tips:['Es sensible al agua dura: usá agua de lluvia, filtrada o reposada.','Las hojas enruladas indican sed o aire muy seco.','Agrupala con otras plantas o usá una bandeja con piedras y agua para subir la humedad.']},
+  {id:'aloe', cat:'suculenta', name:'Aloe vera', sci:'Aloe vera', emoji:'🌵', luz:'Sol directo o mucha luz', riego:18, abono:90, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Saponinas y antraquinonas (vómitos, diarrea, decaimiento).', riegoNota:'Regá bien y no vuelvas a regar hasta que la tierra esté seca del todo.', tips:['Usá tierra para cactus y una maceta con agujeros abajo (mejor si es de barro).','Hojas finas y curvadas: le falta agua. Blandas y translúcidas: le sobra.','Protegela de las heladas.']},
+  {id:'ficus-lyrata', cat:'interior', name:'Ficus lira', sci:'Ficus lyrata', emoji:'🌳', luz:'Mucha luz y un poco de sol suave', riego:8, abono:30, humedad:'Media', dificultad:'Exigente', toxica:true, toxNota:'Su savia es irritante.', riegoNota:'Regá cuando los primeros 5 cm de tierra estén secos (meté un dedo para fijarte).', tips:['No le gustan los cambios de lugar ni las corrientes de aire: elegile un sitio y dejala ahí.','Girá la maceta cada tanto para que crezca pareja.','Las manchas marrones en las hojas suelen indicar exceso de riego.']},
+  {id:'gomero', cat:'interior', name:'Gomero', sci:'Ficus elastica', emoji:'🌳', luz:'Mucha luz o sol suave', riego:9, abono:30, humedad:'Media', dificultad:'Fácil', toxica:true, toxNota:'Su savia es irritante.', riegoNota:'Regá cuando la mitad de arriba de la tierra esté seca.', tips:['Limpiá las hojas con un paño húmedo para que brillen y aprovechen mejor la luz.','Si pierde las hojas de abajo, puede faltarle luz.','Si lo podás en primavera, larga ramas nuevas y se pone más tupido.']},
+  {id:'helecho', cat:'interior', name:'Helecho serrucho', sci:'Nephrolepis exaltata', emoji:'🌿', luz:'Luz media, sin sol directo', riego:4, abono:30, humedad:'Alta', dificultad:'Moderada', toxica:false, toxNota:'', riegoNota:'Mantené la tierra húmeda, pero nunca empapada.', tips:['Si las hojas se ponen secas y crocantes, le falta humedad en el aire.','Le gustan los baños luminosos.','Retirá las hojas secas desde la base.']},
+  {id:'areca', cat:'interior', name:'Palmera areca', sci:'Dypsis lutescens', emoji:'🌴', luz:'Mucha luz, sin sol directo', riego:6, abono:30, humedad:'Media a alta', dificultad:'Moderada', toxica:false, toxNota:'', riegoNota:'Regá cuando los 2–3 cm superiores estén secos.', tips:['Las puntas secas suelen deberse al aire seco o a las sales del agua.','Alejala de estufas y del aire acondicionado directo.','En épocas secas, rociale agua sobre las hojas.']},
+  {id:'orquidea', cat:'interior', name:'Orquídea mariposa', sci:'Phalaenopsis spp.', emoji:'🌺', luz:'Mucha luz, sin sol directo', riego:7, abono:15, humedad:'Media a alta', dificultad:'Moderada', toxica:false, toxNota:'', riegoNota:'Sumergí la maceta en agua 10–15 minutos y dejala escurrir bien.', tips:['Raíces plateadas: necesita agua. Verdes: está hidratada.','Se cultiva en corteza de pino, no en tierra.','Usá fertilizante para orquídeas bien diluido.']},
+  {id:'peperomia', cat:'interior', name:'Peperomia', sci:'Peperomia spp.', emoji:'🍀', luz:'Luz media o mucha luz', riego:10, abono:45, humedad:'Media', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Sus hojas carnosas guardan agua: dejá secar casi por completo.', tips:['Prefiere macetas chicas y tierra liviana.','El exceso de riego es su principal enemigo.','Una hoja con su tallito, clavada en tierra húmeda, puede echar raíces.']},
+  {id:'pilea', cat:'interior', name:'Pilea', sci:'Pilea peperomioides', emoji:'🪙', luz:'Mucha luz, sin sol directo', riego:7, abono:30, humedad:'Media', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Regá cuando los 2–3 cm superiores estén secos.', tips:['Girala una vez por semana: tiende a inclinarse hacia la luz.','Los hijuelos que brotan de la base se pueden separar y plantar.','Si las hojas se curvan hacia abajo, puede ser exceso de agua.']},
+  {id:'filodendro', cat:'interior', name:'Filodendro', sci:'Philodendron spp.', emoji:'💚', luz:'Luz media', riego:7, abono:30, humedad:'Media a alta', dificultad:'Fácil', toxica:true, toxNota:'Contiene oxalatos de calcio.', riegoNota:'Dejá secar los 2–3 cm superiores.', tips:['Las que trepan agradecen una estaca o un palo donde apoyarse.','Muchas hojas amarillas suelen indicar exceso de riego.','Tolera bien la luz media de interior.']},
+  {id:'hoya', cat:'interior', name:'Flor de cera', sci:'Hoya carnosa', emoji:'⭐', luz:'Mucha luz, sin sol directo', riego:10, abono:30, humedad:'Media', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Regá cuando la tierra esté casi seca del todo.', tips:['No cortes los pedúnculos de las flores viejas: vuelve a florecer en el mismo lugar.','Florece mejor si la maceta le queda algo justa.','Más luz, más floración.']},
+  {id:'dracena', cat:'interior', name:'Palo de agua', sci:'Dracaena fragrans', emoji:'🎍', luz:'Luz media', riego:10, abono:45, humedad:'Media', dificultad:'Fácil', toxica:true, toxNota:'Contiene saponinas.', riegoNota:'Regá cuando la mitad de arriba de la tierra esté seca.', tips:['Las puntas marrones suelen deberse al flúor o al cloro del agua.','Tolera la luz media de interior.','Limpiá el polvo de las hojas cada tanto.']},
+  {id:'jade', cat:'suculenta', name:'Árbol de jade', sci:'Crassula ovata', emoji:'🪴', luz:'Sol directo o mucha luz', riego:14, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Puede causar vómitos y decaimiento.', riegoNota:'Regá solo cuando la tierra esté seca del todo.', tips:['Hojas arrugadas: sed. Hojas blandas y caídas: exceso de agua.','Con varias horas de sol, los bordes se tiñen de rojo.','Una hoja suelta, apoyada sobre tierra seca, echa raíces y forma una planta nueva.']},
+  {id:'echeveria', cat:'suculenta', name:'Echeveria', sci:'Echeveria spp.', emoji:'🌸', luz:'Sol directo o mucha luz', riego:12, abono:60, humedad:'Baja', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Regá cuando la tierra esté seca, mojando la tierra y no las hojas.', tips:['Si se estira y pierde la forma de roseta, le falta luz.','No dejes agua acumulada entre las hojas: puede pudrirse.','Se multiplica fácil por hojas o hijuelos.']},
+  {id:'cactus', cat:'suculenta', name:'Cactus', sci:'Cactaceae (varias especies)', emoji:'🌵', luz:'Sol directo', riego:21, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:null, toxNota:'Varía según la especie; además, las espinas pueden lastimar.', riegoNota:'Regá bien, y solo cuando la tierra esté seca del todo.', tips:['En invierno casi no necesita riego.','Usá tierra para cactus y una maceta con agujeros abajo.','Acostumbralo al sol de a poco para evitar quemaduras.']},
+  {id:'albahaca', cat:'huerta', name:'Albahaca', sci:'Ocimum basilicum', emoji:'🌿', luz:'Sol directo (6 horas o más)', riego:2, abono:21, humedad:'Media', dificultad:'Fácil', toxica:false, toxNota:'', riegoNota:'Le gusta la tierra húmeda; en verano puede necesitar agua todos los días.', tips:['Cortá los brotes florales para que siga dando hojas.','Cortá las hojas de arriba, justo sobre un par de hojas: así larga más ramitas.','Es anual y no tolera el frío.']},
+  {id:'romero', cat:'huerta', name:'Romero', sci:'Salvia rosmarinus', emoji:'🌲', luz:'Sol directo', riego:8, abono:60, humedad:'Baja', dificultad:'Muy fácil', toxica:false, toxNota:'', riegoNota:'Regá poco: dejá secar bien la tierra, no soporta el agua estancada.', tips:['Prefiere suelos pobres y bien drenados.','Podalo después de la floración para mantenerlo compacto.','En maceta, mejor si es de barro.']},
+  {id:'menta', cat:'huerta', name:'Menta', sci:'Mentha spp.', emoji:'🌱', luz:'Sol o media sombra', riego:3, abono:30, humedad:'Media', dificultad:'Muy fácil', toxica:true, toxNota:'La ASPCA la lista como tóxica (malestar gastrointestinal).', riegoNota:'Le gusta la tierra siempre húmeda.', tips:['Es invasiva: plantala en su propia maceta.','Cortala seguido para que se ponga tupida.','Rebrota con fuerza en primavera aunque se seque en invierno.']},
+  {id:'tomate', cat:'huerta', name:'Tomate', sci:'Solanum lycopersicum', emoji:'🍅', luz:'Sol directo (8 horas o más)', riego:2, abono:14, humedad:'Media', dificultad:'Moderada', toxica:true, toxNota:'Hojas y tallos son tóxicos (el fruto maduro no).', riegoNota:'Riego regular al pie, sin mojar las hojas.', tips:['Regar de forma pareja evita que los frutos se rajen.','Atalo a una caña o una estaca a medida que crece.','En las variedades de crecimiento indeterminado, quitá los brotes laterales (chupones).']},
+  {id:'lavanda', cat:'exterior', name:'Lavanda', sci:'Lavandula spp.', emoji:'💜', luz:'Sol directo', riego:10, abono:0, humedad:'Baja', dificultad:'Fácil', toxica:true, toxNota:'Contiene linalool (náuseas, vómitos).', riegoNota:'Regá poco, y solo cuando la tierra esté seca.', tips:['Prefiere suelos pobres: casi no necesita fertilizante.','Podala después de la floración, sin cortar la madera vieja.','El exceso de humedad es su principal problema.']},
+  {id:'malvon', cat:'exterior', name:'Malvón', sci:'Pelargonium spp.', emoji:'🌺', luz:'Sol directo', riego:5, abono:21, humedad:'Baja', dificultad:'Muy fácil', toxica:true, toxNota:'Puede causar vómitos y dermatitis.', riegoNota:'Dejá secar la superficie entre riegos.', tips:['Retirá las flores secas para estimular nuevas.','Se multiplica fácil por gajos.','Protegelo de las heladas fuertes.']},
   {id:'otra', cat:'otra', name:'Otra planta', sci:'Especie no listada', emoji:'🪴', luz:'Revisá lo que necesita tu especie', riego:7, abono:30, humedad:'—', dificultad:'—', toxica:null, toxNota:'Si tenés mascotas, buscá la especie en la base de datos de la ASPCA.', riegoNota:'Tocá la tierra antes de regar y ajustá la frecuencia según lo que observes.', tips:['Ajustá la frecuencia de riego según cómo responda la planta.']},
 ];
 const SPECIES_BY_ID = Object.fromEntries(SPECIES.map(s => [s.id, s]));
+// Biografía de cada especie: [origen, descripción, curiosidad].
+const SPECIES_BIO = {
+  'potus':['Mo’orea, en la Polinesia Francesa.', 'Trepadora de selva: en su hábitat sube por los árboles y sus hojas pueden superar el medio metro.', 'Es de las plantas de interior más resistentes: aguanta poca luz y se multiplica con un gajo puesto en agua.'],
+  'monstera':['Selvas del sur de México y América Central.', 'Trepadora de hojas gigantes que se sostiene de los árboles con sus raíces aéreas.', 'Los agujeros de sus hojas aparecen a medida que madura. Su fruto maduro es comestible y sabe a una mezcla de ananá y banana (verde es irritante).'],
+  'sansevieria':['África occidental tropical, de Nigeria al Congo.', 'Planta de hojas rígidas y erguidas, preparada para la sequía.', 'Abre sus poros de noche para perder menos agua; por eso aguanta semanas sin riego.'],
+  'zamioculca':['África oriental, de Kenia al norte de Sudáfrica.', 'Sus tallos brillantes nacen de unas raíces gruesas bajo tierra que funcionan como tanques de agua.', 'Puede pasar meses sin riego, y hasta una hoja suelta puede enraizar y formar una planta nueva.'],
+  'cinta':['Sudáfrica.', 'Forma matas de hojas finas y arqueadas, con tallos largos de los que cuelgan plantitas nuevas.', 'Sus hijuelos se independizan apenas tocan tierra: es una de las plantas más fáciles de multiplicar y regalar.'],
+  'espatifilo':['Selvas de Colombia y Venezuela.', 'En la selva crece bajo los árboles, acostumbrada a la sombra.', 'Su “flor” blanca es en realidad una hoja modificada (espata) que envuelve a las flores verdaderas, diminutas.'],
+  'calathea':['Selvas tropicales de Sudamérica, sobre todo de Brasil.', 'Famosa por sus hojas pintadas, con dibujos que parecen hechos a mano.', 'Es una de las “plantas que rezan”: de noche levanta y pliega sus hojas, y de día las vuelve a bajar.'],
+  'aloe':['Península arábiga.', 'Suculenta de hojas carnosas llenas de un gel transparente que guarda agua.', 'Se cultiva desde hace miles de años, y el gel de sus hojas se usa tradicionalmente para calmar quemaduras leves.'],
+  'ficus-lyrata':['Selvas de África occidental.', 'Árbol de hojas grandes y onduladas que en su hábitat supera los 12 metros.', 'Su nombre viene de la forma de sus hojas, parecida a una lira o a un violín.'],
+  'gomero':['Del noreste de la India a Indonesia.', 'Árbol de hojas grandes, gruesas y brillantes, que en la naturaleza supera los 30 metros.', 'Con su savia lechosa se fabricaba caucho antes de que se impusiera el árbol del caucho de Brasil.'],
+  'helecho':['Zonas tropicales de América.', 'Helecho de hojas largas y arqueadas, ideal para macetas colgantes.', 'No da flores ni semillas: se reproduce por esporas, los puntitos marrones de la parte de abajo de sus hojas.'],
+  'areca':['Madagascar.', 'Palmera de tallos finos agrupados y hojas plumosas que se arquean hacia afuera.', 'Por sus tallos dorados también se la conoce como palmera bambú o palma dorada.'],
+  'orquidea':['Sudeste asiático y norte de Australia.', 'En la naturaleza vive agarrada a los troncos de los árboles, no en la tierra.', 'Phalaenopsis significa “parecida a una polilla”: así se ven sus flores colgando de la vara.'],
+  'peperomia':['Zonas tropicales de América.', 'Plantas compactas de hojas carnosas, con cientos de especies muy distintas entre sí.', 'Es pariente de la pimienta negra: las dos pertenecen a la familia de las piperáceas.'],
+  'pilea':['Provincia de Yunnan, en el sur de China.', 'Sus hojas redondas sobre tallitos largos parecen monedas; de ahí su nombre de planta china del dinero.', 'Un misionero noruego la llevó de China a Noruega en 1946 y la repartió de hijuelo en hijuelo entre sus amigos: por eso también la llaman planta de la amistad.'],
+  'filodendro':['Selvas tropicales de América.', 'Un gran grupo de trepadoras y plantas de hojas grandes, con formas y colores muy variados.', 'Su nombre significa “amante de los árboles” en griego, porque muchas especies trepan por los troncos.'],
+  'hoya':['Asia oriental y Australia.', 'Trepadora de hojas carnosas que da racimos de flores con forma de estrella.', 'Sus flores parecen de cera o porcelana y suelen perfumar de noche. Debe su nombre a Thomas Hoy, un jardinero inglés.'],
+  'dracena':['África tropical.', 'Arbusto de tronco leñoso y hojas largas como cintas, muchas veces con una franja amarilla.', 'Cuando florece (algo raro dentro de casa), sus flores perfuman intensamente de noche: de ahí su nombre, fragrans.'],
+  'jade':['Sudáfrica y Mozambique.', 'Suculenta con forma de arbolito, de tronco grueso y hojas que parecen monedas de jade.', 'Puede vivir décadas y pasar de generación en generación; en muchos lugares se la considera un símbolo de abundancia.'],
+  'echeveria':['México y América Central.', 'Suculenta en forma de roseta, con hojas cubiertas de un polvillo protector.', 'Debe su nombre a Atanasio Echeverría, un dibujante botánico mexicano del siglo XVIII.'],
+  'cactus':['América, del sur de Canadá a la Patagonia.', 'Una familia enorme de plantas adaptadas a la sequía, que guardan agua en sus tallos.', 'Sus espinas son hojas modificadas: las protegen de los animales y le dan sombra al tallo.'],
+  'albahaca':['Zonas tropicales de Asia, de la India al sudeste asiático.', 'Aromática anual de hojas tiernas y perfumadas, infaltable en la cocina mediterránea.', 'Su nombre científico, basilicum, viene del griego y significa “real”.'],
+  'romero':['Costas del Mediterráneo.', 'Arbusto aromático de hojas como agujas, muy resistente a la sequía.', 'Su antiguo nombre latino, ros marinus, significa “rocío del mar”, porque crece cerca de la costa.'],
+  'menta':['Europa, Asia y África.', 'Aromática de crecimiento rápido que se expande con tallos subterráneos.', 'Según la mitología griega, la ninfa Minthe fue convertida en esta planta: de ahí viene su nombre.'],
+  'tomate':['Los Andes de Sudamérica; se domesticó en México.', 'Planta de huerta de la misma familia que la papa y el morrón.', 'Llegó a Europa en el siglo XVI y durante años se cultivó como ornamental, porque se creía que era venenoso.'],
+  'lavanda':['Cuenca del Mediterráneo.', 'Arbusto aromático de flores violetas, muy visitado por abejas y mariposas.', 'Su nombre se suele asociar con el latín lavare (lavar), por su uso tradicional para perfumar el agua y la ropa.'],
+  'malvon':['Sudáfrica.', 'Planta de flores abundantes y hojas aterciopeladas, clásica de balcones y patios.', 'Su nombre científico, Pelargonium, viene del griego pelargós (cigüeña): sus frutos tienen forma de pico de cigüeña.'],
+};
 const CATS = {interior:'Interior', suculenta:'Suculentas y cactus', huerta:'Huerta y aromáticas', exterior:'Exterior', otra:'Otra'};
 const LOG_TYPES = {
   riego:{label:'Riego', emoji:'💧'}, abono:{label:'Abono', emoji:'🧪'}, trasplante:{label:'Trasplante', emoji:'🪴'},
@@ -514,27 +576,27 @@ const SYMPTOM_LABEL = Object.fromEntries(SYMPTOMS.flatMap(g => g.items));
 const PROBLEMS = [
   {id:'exceso-riego', cat:'riego', emoji:'💧', name:'Exceso de riego', short:'La tierra no llega a secarse y las raíces se ahogan.',
     signs:['Hojas amarillas y blandas, sobre todo las de abajo.', 'La tierra sigue húmeda varios días después de regar.', 'Mosquitas chiquitas volando cerca de la tierra.', 'En casos avanzados, tallo blando u oscuro en la base y olor feo.'],
-    causes:['Regar por costumbre, sin tocar la tierra.', 'Maceta sin agujeros o plato con agua acumulada.', 'Poca luz o frío: la planta consume menos agua.', 'Sustrato muy compacto que retiene demasiada agua.'],
-    steps:['Dejá de regar hasta que se sequen los primeros 3–5 cm de tierra (en suculentas, toda la maceta).', 'Vaciá el plato y fijate que la maceta tenga agujeros de drenaje.', 'Cortá las hojas amarillas desde la base con una tijera limpia.', 'Si el tallo está blando o la tierra huele mal, revisá las raíces (mirá «Raíces podridas»).', 'Cuando se recupere, espaciá el riego y tocá la tierra antes de cada riego.'],
-    prevent:['Regá cuando la tierra lo pida, no por calendario.', 'Usá sustrato aireado (con perlita o corteza) y macetas con drenaje.', 'En otoño e invierno, regá menos.'],
+    causes:['Regar por costumbre, sin tocar la tierra.', 'Maceta sin agujeros o plato con agua acumulada.', 'Poca luz o frío: la planta consume menos agua.', 'Tierra muy apretada que retiene demasiada agua.'],
+    steps:['Dejá de regar hasta que se sequen los primeros 3–5 cm de tierra (en suculentas, toda la maceta).', 'Vaciá el plato y fijate que la maceta tenga agujeros abajo para que salga el agua.', 'Cortá las hojas amarillas desde la base con una tijera limpia.', 'Si el tallo está blando o la tierra huele mal, revisá las raíces (mirá «Raíces podridas»).', 'Cuando se recupere, espaciá el riego y tocá la tierra antes de cada riego.'],
+    prevent:['Regá cuando la tierra lo pida, no por calendario.', 'Usá tierra liviana (con perlita, unas piedritas blancas que venden en viveros) y macetas con agujeros abajo.', 'En otoño e invierno, regá menos.'],
     sym:{'hojas-amarillas':3, 'tierra-humeda':3, 'mustia':1, 'tallo-blando':2, 'olor':2, 'mosquitas-tierra':2, 'moho-tierra':2, 'manchas-marrones':1, 'se-caen':1},
     kw:['exceso de riego', 'riego excesivo', 'exceso de agua', 'encharc', 'demasiada agua', 'riego en exceso', 'sobrerriego']},
   {id:'falta-riego', cat:'riego', emoji:'🏜️', name:'Falta de riego', short:'Pasó sed: pierde firmeza y se secan los bordes.',
     signs:['Hojas caídas o mustias que se recuperan al regar.', 'Bordes y puntas secos y crocantes.', 'La tierra está muy seca, dura o se despega del borde de la maceta.', 'En suculentas, hojas finas y arrugadas.'],
-    causes:['Riegos muy espaciados o escasos.', 'Calor, sol fuerte o calefacción que secan rápido la tierra.', 'Sustrato tan seco que el agua escurre sin mojarlo.', 'Maceta chica para el tamaño de la planta.'],
-    steps:['Regá a fondo hasta que salga agua por los agujeros de drenaje.', 'Si la tierra está muy seca, sumergí la maceta en un balde con agua 20–30 minutos y dejala escurrir.', 'Cortá solo las partes que estén totalmente secas.', 'Acortá la frecuencia de riego en la app (en verano suele necesitar más).'],
+    causes:['Riegos muy espaciados o escasos.', 'Calor, sol fuerte o calefacción que secan rápido la tierra.', 'Tierra tan seca que el agua escurre sin mojarla.', 'Maceta chica para el tamaño de la planta.'],
+    steps:['Regá bien, hasta que salga agua por los agujeros de abajo de la maceta.', 'Si la tierra está muy seca, sumergí la maceta en un balde con agua 20–30 minutos y dejala escurrir.', 'Cortá solo las partes que estén totalmente secas.', 'Acortá la frecuencia de riego en la app (en verano suele necesitar más).'],
     prevent:['En épocas de calor, tocá la tierra cada pocos días.', 'Si la maceta se seca enseguida, pasala a una más grande.'],
     sym:{'mustia':3, 'tierra-seca':3, 'puntas-secas':2, 'enrolladas':2, 'se-caen':1, 'hojas-amarillas':1},
     kw:['falta de riego', 'falta de agua', 'deshidrat', 'riego insuficiente', 'poco riego', 'sequía', 'sequia']},
   {id:'pudricion-raiz', cat:'riego', emoji:'🥀', name:'Raíces podridas', short:'Por exceso de agua, las raíces se pudren y la planta colapsa.',
     signs:['Tallo blando, oscuro o hundido en la base.', 'La planta está mustia aunque la tierra esté húmeda.', 'Olor a podrido en la tierra.', 'Raíces marrones y blandas (las sanas son claras y firmes).'],
-    causes:['Riego en exceso durante semanas.', 'Maceta sin drenaje.', 'Frío con la tierra mojada.'],
-    steps:['Sacá la planta de la maceta y quitá la tierra de las raíces.', 'Cortá todas las raíces blandas y oscuras con una tijera desinfectada con alcohol.', 'Dejá secar las raíces al aire una o dos horas (en suculentas, un día).', 'Plantala en sustrato nuevo y aireado, en una maceta limpia con drenaje.', 'Regá poco hasta que veas brotes nuevos.', 'Si casi no quedan raíces sanas, hacé esquejes de las partes sanas.'],
+    causes:['Riego en exceso durante semanas.', 'Maceta sin agujeros abajo.', 'Frío con la tierra mojada.'],
+    steps:['Sacá la planta de la maceta y quitá la tierra de las raíces.', 'Cortá todas las raíces blandas y oscuras con una tijera desinfectada con alcohol.', 'Dejá secar las raíces al aire una o dos horas (en suculentas, un día).', 'Plantala en tierra nueva y liviana, en una maceta limpia con agujeros abajo.', 'Regá poco hasta que veas brotes nuevos.', 'Si casi no quedan raíces sanas, cortá gajos de las partes sanas y ponelos en agua para que echen raíces.'],
     prevent:['Los mismos cuidados que para el exceso de riego.'],
     sym:{'tallo-blando':3, 'olor':3, 'mustia':2, 'tierra-humeda':2, 'hojas-amarillas':1},
     kw:['pudrición', 'pudricion', 'podrid']},
   {id:'poca-luz', cat:'ambiente', emoji:'🌥️', name:'Falta de luz', short:'Crece estirada, pálida y despacio, buscando la ventana.',
-    signs:['Tallos largos y finos, con mucho espacio entre hojas.', 'Se inclina hacia la ventana.', 'Hojas nuevas más chicas o pálidas; pierde el variegado.', 'No florece o crece muy poco.'],
+    signs:['Tallos largos y finos, con mucho espacio entre hojas.', 'Se inclina hacia la ventana.', 'Hojas nuevas más chicas o pálidas; las hojas con manchas claras se ponen verdes.', 'No florece o crece muy poco.'],
     causes:['Lejos de la ventana o en un rincón oscuro.', 'Cortinas gruesas o mucha sombra afuera.'],
     steps:['Acercala a una ventana luminosa (si va a recibir sol directo, acostumbrala de a poco).', 'Girá la maceta una vez por semana para que crezca pareja.', 'Regá un poco menos: con menos luz consume menos agua.', 'Podá los tallos muy estirados para que rebrote más compacta.'],
     prevent:['Revisá en la Guía cuánta luz necesita su especie.'],
@@ -550,7 +612,7 @@ const PROBLEMS = [
   {id:'aire-seco', cat:'ambiente', emoji:'🌬️', name:'Aire seco', short:'Le falta humedad ambiente y se le secan las puntas.',
     signs:['Puntas y bordes marrones y crocantes.', 'Hojas enrolladas (muy típico en calatheas y helechos).', 'Empeora cerca de estufas, aire acondicionado o calefacción.'],
     causes:['Calefacción o aire acondicionado cerca.', 'Plantas de selva en ambientes muy secos.'],
-    steps:['Alejala de estufas, radiadores y salidas de aire.', 'Subí la humedad: agrupá plantas o apoyá la maceta sobre una bandeja con piedras y agua (sin que el agua toque la maceta).', 'Recortá las puntas secas con tijera limpia, siguiendo la forma de la hoja.', 'Revisá el envés de las hojas: el aire seco favorece a la arañuela.'],
+    steps:['Alejala de estufas, radiadores y salidas de aire.', 'Subí la humedad: agrupá plantas o apoyá la maceta sobre una bandeja con piedras y agua (sin que el agua toque la maceta).', 'Recortá las puntas secas con tijera limpia, siguiendo la forma de la hoja.', 'Mirá la parte de abajo de las hojas: el aire seco atrae a la arañuela.'],
     prevent:['En invierno, juntá las plantas que piden humedad.', 'Los baños luminosos son ideales para helechos y calatheas.'],
     sym:{'puntas-secas':3, 'enrolladas':2, 'telaranas':1, 'puntitos':1},
     kw:['aire seco', 'humedad ambiente', 'baja humedad', 'ambiente seco', 'falta de humedad']},
@@ -571,48 +633,48 @@ const PROBLEMS = [
   {id:'falta-nutrientes', cat:'nutrientes', emoji:'🌱', name:'Falta de nutrientes', short:'La tierra se agotó: crece lento y amarillea parejo.',
     signs:['Hojas viejas amarillas de forma pareja.', 'Hojas nuevas chicas y crecimiento lento en primavera o verano.', 'Hace meses (o años) que no se abona ni se cambia la tierra.'],
     causes:['Mucho tiempo en la misma tierra.', 'No abonar en la temporada de crecimiento.'],
-    steps:['Abonala con un fertilizante equilibrado, diluido según la etiqueta, en primavera y verano.', 'Si hace más de dos años que está en la misma maceta, trasplantala a sustrato nuevo.', 'Activá el recordatorio de abono en la app (Editar → Abonar cada).'],
+    steps:['Abonala con un fertilizante equilibrado, diluido según la etiqueta, en primavera y verano.', 'Si hace más de dos años que está en la misma maceta, pasala a una maceta con tierra nueva.', 'Activá el recordatorio de abono en la app (Editar → Abonar cada).'],
     prevent:['Abono cada 2–4 semanas en la temporada de crecimiento, según la especie.', 'Trasplante cada 1–2 años, en primavera.'],
     sym:{'hojas-amarillas':2, 'palidas':2, 'crece-lento':3},
     kw:['nutrient', 'carencia', 'clorosis', 'deficiencia', 'falta de abono', 'nitrógeno', 'nitrogeno']},
   {id:'cochinilla', cat:'plagas', emoji:'🐛', name:'Cochinilla', short:'Bichos blancos algodonosos o caparazones que chupan la savia.',
-    signs:['Bolitas blancas como algodón en las axilas de las hojas y en el envés.', 'O caparazones marrones chiquitos pegados a tallos y nervaduras.', 'Hojas pegajosas y, a veces, hormigas o un polvillo negro (fumagina).'],
+    signs:['Bolitas blancas como algodón donde las hojas se unen al tallo y en la parte de abajo de las hojas.', 'O caparazones marrones chiquitos pegados a tallos y nervaduras.', 'Hojas pegajosas y, a veces, hormigas o un polvillo negro (un hongo que aparece por lo pegajoso).'],
     causes:['Llega con plantas nuevas.', 'Ambientes cálidos y secos.'],
-    steps:['Aislala para que no pase a otras plantas.', 'Sacá las cochinillas con un hisopo mojado en alcohol.', 'Lavá hojas y tallos con jabón potásico diluido según la etiqueta (aplicalo al atardecer, no a pleno sol).', 'Repetí cada 5–7 días durante 3 o 4 semanas: los huevos siguen naciendo.', 'Si persiste, sumá aceite de neem según la etiqueta.'],
+    steps:['Aislala para que no pase a otras plantas.', 'Sacá las cochinillas con un hisopo mojado en alcohol.', 'Lavá hojas y tallos con jabón potásico (un jabón para plantas que venden en viveros), diluido como dice la etiqueta. Aplicalo al atardecer, no a pleno sol.', 'Repetí cada 5–7 días durante 3 o 4 semanas: los huevos siguen naciendo.', 'Si siguen apareciendo, sumá aceite de neem (un insecticida natural de viveros) como dice la etiqueta.'],
     prevent:['Revisá y aislá unas semanas las plantas nuevas.', 'Limpiá las hojas cada tanto.'],
     sym:{'algodon':3, 'pegajosas':2, 'hojas-amarillas':1, 'se-caen':1},
     kw:['cochinilla']},
   {id:'pulgon', cat:'plagas', emoji:'🐞', name:'Pulgón', short:'Bichitos verdes o negros en los brotes tiernos.',
-    signs:['Colonias de bichitos verdes, negros o amarillos en brotes y pimpollos.', 'Hojas nuevas enrolladas o deformadas.', 'Una sustancia pegajosa (melaza) y hormigas.'],
+    signs:['Colonias de bichitos verdes, negros o amarillos en brotes y pimpollos.', 'Hojas nuevas enrolladas o deformadas.', 'Hojas pegajosas y hormigas que suben a buscar eso dulce.'],
     causes:['Brotes tiernos en primavera.', 'Exceso de abono con nitrógeno.'],
-    steps:['Sacalos con un chorro de agua o con los dedos.', 'Pulverizá jabón potásico (según la etiqueta) sobre las zonas afectadas, incluido el envés.', 'Repetí cada 3–5 días hasta que no aparezcan más.', 'Cortá los brotes muy infestados.'],
+    steps:['Sacalos con un chorro de agua o con los dedos.', 'Rociá jabón potásico (de viveros, diluido como dice la etiqueta) sobre las partes con bichitos, también abajo de las hojas.', 'Repetí cada 3–5 días hasta que no aparezcan más.', 'Cortá los brotes muy infestados.'],
     prevent:['Revisá los brotes nuevos en primavera.', 'No te excedas con el abono.'],
     sym:{'bichitos':3, 'deformadas':2, 'pegajosas':2, 'enrolladas':1},
     kw:['pulgón', 'pulgon', 'áfido', 'afido']},
   {id:'aranuela', cat:'plagas', emoji:'🕷️', name:'Arañuela (araña roja)', short:'Ácaros diminutos que dejan las hojas punteadas.',
-    signs:['Puntitos amarillos o plateados en las hojas, como un punteado.', 'Telarañas muy finitas en el envés y entre las hojas.', 'Hojas apagadas, como con polvo, que después se secan.'],
+    signs:['Puntitos amarillos o plateados en las hojas, como un punteado.', 'Telarañas muy finitas abajo de las hojas y entre las hojas.', 'Hojas apagadas, como con polvo, que después se secan.'],
     causes:['Aire seco y calor (estufas, verano).', 'Plantas estresadas.'],
-    steps:['Aislala.', 'Duchá la planta, sobre todo el envés de las hojas.', 'Subí la humedad ambiente (mirá «Aire seco»).', 'Aplicá jabón potásico o aceite de neem cada 3–5 días, al menos 3 veces.', 'Cortá las hojas muy afectadas.'],
-    prevent:['Mantené buena humedad ambiente.', 'Revisá el envés de las hojas cada tanto.'],
+    steps:['Aislala.', 'Duchá la planta, sobre todo la parte de abajo de las hojas.', 'Subí la humedad ambiente (mirá «Aire seco»).', 'Aplicá jabón potásico o aceite de neem (los dos se consiguen en viveros) cada 3–5 días, al menos 3 veces.', 'Cortá las hojas muy afectadas.'],
+    prevent:['Mantené buena humedad ambiente.', 'Mirá la parte de abajo de las hojas cada tanto.'],
     sym:{'puntitos':3, 'telaranas':3, 'palidas':1, 'se-caen':1, 'puntas-secas':1},
     kw:['arañuela', 'aranuela', 'araña roja', 'ácaro', 'acaro']},
   {id:'trips', cat:'plagas', emoji:'🦗', name:'Trips', short:'Insectos alargados diminutos que raspan las hojas.',
     signs:['Manchas plateadas o brillantes con puntitos negros.', 'Hojas nuevas deformadas.', 'Insectitos alargados que se mueven al tocar la hoja.'],
     causes:['Ambientes cálidos y secos.', 'Llegan con plantas o flores nuevas.'],
-    steps:['Aislala.', 'Duchá bien la planta.', 'Aplicá jabón potásico o aceite de neem cada 5 días, 3 o 4 veces.', 'Poné trampas adhesivas (azules o amarillas) cerca de la planta.'],
+    steps:['Aislala.', 'Duchá bien la planta.', 'Aplicá jabón potásico o aceite de neem (los dos se consiguen en viveros) cada 5 días, 3 o 4 veces.', 'Poné trampas adhesivas (azules o amarillas) cerca de la planta.'],
     prevent:['Revisá las plantas nuevas antes de juntarlas con las demás.'],
     sym:{'manchas-claras':2, 'puntitos':2, 'deformadas':2},
     kw:['trips']},
   {id:'mosca-blanca', cat:'plagas', emoji:'🪰', name:'Mosca blanca', short:'Mosquitas blancas que vuelan al mover la planta.',
-    signs:['Nubecitas de mosquitas blancas al mover las hojas.', 'Huevos y larvas en el envés.', 'Hojas amarillentas y pegajosas.'],
+    signs:['Nubecitas de mosquitas blancas al mover las hojas.', 'Huevitos y larvas abajo de las hojas.', 'Hojas amarillentas y pegajosas.'],
     causes:['Calor y poca ventilación.', 'Muy común en la huerta y en aromáticas.'],
-    steps:['Colgá trampas adhesivas amarillas cerca de la planta.', 'Pulverizá jabón potásico en el envés de las hojas.', 'Repetí cada 5–7 días; si sigue, usá aceite de neem.', 'Mejorá la ventilación.'],
-    prevent:['Revisá el envés de las hojas, sobre todo en verano.'],
+    steps:['Colgá trampas adhesivas amarillas cerca de la planta.', 'Rociá jabón potásico (de viveros) abajo de las hojas.', 'Repetí cada 5–7 días; si siguen, usá aceite de neem.', 'Mejorá la ventilación.'],
+    prevent:['Mirá la parte de abajo de las hojas, sobre todo en verano.'],
     sym:{'mosquitas-blancas':3, 'pegajosas':2, 'hojas-amarillas':1},
     kw:['mosca blanca']},
-  {id:'mosquita-sustrato', cat:'plagas', emoji:'🦟', name:'Mosquita del sustrato', short:'Mosquitas negras que viven en la tierra húmeda.',
-    signs:['Mosquitas negras chiquitas volando cerca de la tierra.', 'Larvas finitas en la superficie del sustrato.', 'La tierra suele estar siempre húmeda.'],
-    causes:['Riego en exceso y sustrato con mucha materia orgánica.'],
+  {id:'mosquita-sustrato', cat:'plagas', emoji:'🦟', name:'Mosquita de la tierra', short:'Mosquitas negras que viven en la tierra húmeda.',
+    signs:['Mosquitas negras chiquitas volando cerca de la tierra.', 'Gusanitos finitos en la superficie de la tierra.', 'La tierra suele estar siempre húmeda.'],
+    causes:['Regar de más, sobre todo con tierra que se mantiene mojada mucho tiempo.'],
     steps:['Dejá secar bien los primeros centímetros de tierra entre riegos.', 'Poné trampas adhesivas amarillas para los adultos.', 'Cubrí la superficie con una capa de arena o piedritas.', 'Regá desde abajo: agua en el plato y retirá lo que sobre a los 20 minutos.'],
     prevent:['No riegues de más: es la causa principal.'],
     sym:{'mosquitas-tierra':3, 'tierra-humeda':2, 'moho-tierra':1},
@@ -620,14 +682,14 @@ const PROBLEMS = [
   {id:'oidio', cat:'hongos', emoji:'🌫️', name:'Oídio', short:'Hongo que deja un polvo blanco sobre las hojas.',
     signs:['Polvo blanco como harina sobre las hojas (se va al frotarlo).', 'Hojas que se deforman, amarillean y se secan.', 'Común en huerta, rosales y suculentas.'],
     causes:['Poca ventilación.', 'Días cálidos con noches frescas y húmedas.', 'Plantas muy juntas.'],
-    steps:['Cortá y tirá las hojas más afectadas (no al compost).', 'Mejorá la ventilación y separá las plantas.', 'Pulverizá una mezcla casera: una cucharadita de bicarbonato por litro de agua con unas gotas de jabón potásico. Probala antes en una hoja y repetí cada 5–7 días.', 'Si avanza, usá un fungicida a base de azufre siguiendo la etiqueta.'],
+    steps:['Cortá y tirá las hojas más afectadas (no al compost).', 'Mejorá la ventilación y separá las plantas.', 'Rociá una mezcla casera: una cucharadita de bicarbonato por litro de agua, con unas gotas de jabón potásico. Probala antes en una sola hoja y repetí cada 5–7 días.', 'Si avanza, usá un fungicida de azufre (un remedio para hongos que venden en viveros) como dice la etiqueta.'],
     prevent:['Regá la tierra, no las hojas, y mejor a la mañana.', 'Dejá espacio entre las plantas.'],
     sym:{'polvo-blanco':3, 'deformadas':1, 'hojas-amarillas':1},
     kw:['oídio', 'oidio', 'polvo blanco', 'cenicilla']},
   {id:'manchas-hongos', cat:'hongos', emoji:'🍂', name:'Manchas por hongos', short:'Manchas marrones o negras que crecen, a veces con borde amarillo.',
     signs:['Manchas marrones o negras, a veces con un halo amarillo alrededor.', 'Las manchas crecen y se juntan.', 'Aparecen después de mojar las hojas o con mucha humedad.'],
     causes:['Agua que queda sobre las hojas.', 'Poca ventilación y humedad alta.', 'Herramientas o plantas contagiadas.'],
-    steps:['Cortá las hojas con manchas con una tijera desinfectada con alcohol.', 'No mojes las hojas al regar y regá a la mañana.', 'Mejorá la ventilación.', 'Si sigue avanzando, aplicá un fungicida a base de cobre según la etiqueta.'],
+    steps:['Cortá las hojas con manchas con una tijera desinfectada con alcohol.', 'No mojes las hojas al regar y regá a la mañana.', 'Mejorá la ventilación.', 'Si sigue avanzando, aplicá un fungicida de cobre (un remedio para hongos de viveros) como dice la etiqueta.'],
     prevent:['Desinfectá la tijera entre planta y planta.', 'No pulverices agua sobre las hojas en lugares sin ventilación.'],
     sym:{'manchas-marrones':3, 'hojas-amarillas':1, 'se-caen':1},
     kw:['hongo', 'fúngic', 'fungic', 'mancha foliar', 'antracnosis', 'bacteri', 'roya']},
@@ -751,6 +813,8 @@ function normalizePlant(p){
     reviewDue: isValidISO(p.reviewDue) ? p.reviewDue : null,
     treatments: Array.isArray(p.treatments) ? p.treatments.map(normalizeTreatment).filter(Boolean).slice(-30) : [],
     notes: str(p.notes, 1000),
+    story: str(p.story, 300).trim(),
+    adoptedAt: isValidISO(p.adoptedAt) ? p.adoptedAt : null,
     createdAt: isValidISO(p.createdAt) ? p.createdAt : todayISO(),
     log: Array.isArray(p.log) ? p.log.map(normalizeLog).filter(Boolean).slice(-500) : [],
   };
@@ -794,7 +858,7 @@ function save(){
 let loadFailed = false;
 let state = load();
 const ui = {search:'', locFilter:'', weekDate:null, careFilter:'', sym:{plantId:'', selected:new Set()}, guideSearch:'', guideFilter:'todas', modal:null, formPhotoSet:undefined, formAnalysis:null,
-            diagNote:'', busy:false, photoToken:0, galleryCache:{}, lastDay:todayISO()};
+            diagNote:'', busy:false, photoToken:0, galleryCache:{}, bioCache:{}, lastDay:todayISO()};
 
 // Aplica un cambio; si falla o no se puede guardar, vuelve atrás. Devuelve la foto previa (para "Deshacer").
 function commit(fn){
@@ -805,10 +869,13 @@ function commit(fn){
   return snap;
 }
 function act(msg, fn){
+  const before = gardenerLevel().i;
   const snap = commit(fn);
   if (snap === null) return false;
   refresh();
-  if (msg) toast(msg, () => { state = JSON.parse(snap); save(); refresh(); toast('Listo, se deshizo el cambio.'); });
+  const L = gardenerLevel(), up = L.i > before ? `🎉 ¡Subiste a ${L.name}!` : '';
+  if (msg) toast(up ? `${msg} · ${up}` : msg, () => { state = JSON.parse(snap); save(); refresh(); toast('Listo, se deshizo el cambio.'); });
+  else if (up) toast(up);
   return true;
 }
 
@@ -924,12 +991,47 @@ function greeting(){
 }
 
 /* =====================================================================
+   Un poco de juego: ánimo de cada planta, nivel de jardinero y mensajes
+   ===================================================================== */
+function plantMood(p){
+  if (activeTreatments(p).length) return {emoji:'🤒', label:'En tratamiento', say:'Está en tratamiento', cls:'mood-sick'};
+  const d = diffDays(todayISO(), nextWater(p));
+  if (d < -2) return {emoji:'🥵', label:'Muerta de sed', say:'Está muerta de sed', cls:'mood-bad'};
+  if (d < 0) return {emoji:'😓', label:'Con sed', say:'Tiene sed', cls:'mood-bad'};
+  if (d === 0) return {emoji:'💧', label:'Hoy toma agua', say:'Hoy le toca agua', cls:'mood-warn'};
+  return waterLevel(p) > 0.5 ? {emoji:'😊', label:'Contenta', say:'Está contenta', cls:'mood-ok'} : {emoji:'🙂', label:'Bien', say:'Está bien', cls:'mood-ok'};
+}
+const GARDENER_LEVELS = [[0, 'Semilla', '🌰'], [10, 'Brote', '🌱'], [25, 'Plantín', '🪴'], [60, 'Mano verde', '🌿'], [150, 'Leyenda del jardín', '🌳']];
+const CARE_TYPES = ['riego', 'abono', 'foto', 'diagnostico', 'tratamiento'];
+// Cada riego, abono, foto, diagnóstico, tratamiento y paso cumplido suma un cuidado.
+function gardenerLevel(){
+  const count = state.plants.reduce((n, p) => n + p.log.filter(l => CARE_TYPES.includes(l.type)).length
+    + (p.treatments || []).reduce((m, t) => m + t.steps.filter(x => x.done).length, 0), 0);
+  let i = 0;
+  while (i + 1 < GARDENER_LEVELS.length && count >= GARDENER_LEVELS[i + 1][0]) i++;
+  const [from, name, emoji] = GARDENER_LEVELS[i], next = GARDENER_LEVELS[i + 1];
+  return {i, name, emoji, count, next:next ? {name:next[1], left:next[0] - count, pct:(count - from) / (next[0] - from)} : null};
+}
+function levelHTML(){
+  const L = gardenerLevel();
+  return `<div class="level" title="Cada riego, abono, foto o paso de un tratamiento suma un cuidado">
+    <b><span aria-hidden="true">${L.emoji}</span> ${L.name}</b>
+    ${L.next ? `<span class="bar" aria-hidden="true"><i style="width:${Math.round(L.next.pct * 100)}%"></i></span><small>${L.next.left} ${plural(L.next.left, 'cuidado', 'cuidados')} más para ${L.next.name}</small>` : '<small>¡Nivel máximo!</small>'}
+  </div>`;
+}
+const THANKS = {
+  riego:['💧 ¡Gracias! {n} quedó feliz', '💧 {n} te lo agradece', '💧 ¡Listo! {n} ya tomó agua', '💧 {n}: «¡ahhh, qué rico!»'],
+  abono:['🧪 {n} recibió sus vitaminas', '🧪 ¡Listo! {n} ya comió'],
+};
+const thanks = (type, name) => { const a = THANKS[type]; return a[Math.floor(Math.random() * a.length)].replace('{n}', name); };
+
+/* =====================================================================
    Vistas
    ===================================================================== */
 function viewHoy(){
   const S = SEASONS[seasonKey()];
   const eyebrow = `${cap(fmtLong.format(new Date())).replace(',', '')} · ${S.name}`;
-  const head = lead => `<section class="hero"><p class="eyebrow">${esc(eyebrow)}</p><h1>${greeting()}.</h1>${lead ? `<p class="lead">${lead}</p>` : ''}</section>`;
+  const head = lead => `<section class="hero"><p class="eyebrow">${esc(eyebrow)}</p><h1>${greeting()}.</h1>${lead ? `<p class="lead">${lead}</p>` : ''}${state.plants.length ? levelHTML() : ''}</section>`;
   if (!state.plants.length) return head('Empecemos tu jardín.') + emptyState();
 
   const {due} = collectTasks();
@@ -1016,7 +1118,7 @@ function plantListHTML(){
     const pct = Math.round(waterLevel(p) * 100);
     const status = d < 0 ? 'Riego atrasado' : d === 0 ? 'Riego · hoy' : d === 1 ? 'Riego · mañana' : `Riego · en ${d} días`;
     return `<article class="plant-card" role="button" tabindex="0" data-action="open" data-id="${p.id}" aria-label="${esc(p.name)}: ${esc(status)}">
-      <div class="pc-photo">${photoOrEmoji(p)}</div>
+      <div class="pc-photo">${photoOrEmoji(p)}<span class="pc-mood ${plantMood(p).cls}">${plantMood(p).emoji} ${plantMood(p).label}</span></div>
       <h3>${esc(p.name)}</h3>
       <p class="pc-next ${whenClass(d)}">${status}</p>
       <div class="meter ${pct < 20 ? 'low' : ''}" role="img" aria-label="Humedad estimada ${pct}%"><span style="width:${pct}%"></span></div>
@@ -1049,7 +1151,7 @@ function guideListHTML(){
   const list = SPECIES.filter(guideMatches);
   if (!list.length) return '<p class="muted">No encontramos plantas con ese criterio.</p>';
   return list.map(sp => `<article class="guide-card">
-      <div class="gc-head"><span class="gc-emoji" aria-hidden="true">${sp.emoji}</span><div><h3>${esc(sp.name)}</h3><p class="sci">${esc(sp.sci)}</p></div></div>
+      <div class="gc-head"><span class="gc-emoji" aria-hidden="true">${sp.emoji}</span><div><h3>${esc(sp.name)}</h3><p class="sci">${esc(sp.sci)}</p>${SPECIES_BIO[sp.id] ? `<p class="origin">Origen: ${esc(SPECIES_BIO[sp.id][0])}</p>` : ''}</div></div>
       ${careChips(sp)}
       <p class="note">${esc(sp.riegoNota)}</p>
       <details><summary>Consejos</summary><ul class="tips">${sp.tips.map(t => `<li>${esc(t)}</li>`).join('')}</ul></details>
@@ -1149,6 +1251,7 @@ function detailHTML(p){
       <p class="eyebrow">${esc(sp.name)}${p.location ? ` · ${esc(p.location)}` : ''}</p>
       <h2>${esc(p.name)}</h2>
       ${sp.id !== 'otra' ? `<p class="sci">${esc(sp.sci)}</p>` : ''}
+      <p class="mood-line ${plantMood(p).cls}">${plantMood(p).emoji} ${plantMood(p).say}</p>
     </div>
     <div class="stats">
       <div class="stat riego"><span>Próximo riego</span>
@@ -1166,6 +1269,7 @@ function detailHTML(p){
       ${activeTreatments(p).length ? treatRowsHTML(activeTreatments(p).map(t => ({p, t})), false) : '<p class="note">Sin problemas en curso.</p>'}
       ${(p.treatments || []).some(t => t.status === 'resuelto') ? `<details style="margin-top:10px"><summary>Tratamientos terminados</summary>${treatRowsHTML(p.treatments.filter(t => t.status === 'resuelto').map(t => ({p, t})), false)}</details>` : ''}
     </div>
+    ${bioHTML(p)}
     <div class="detail-section">
       <div class="section-head"><h3>Fotos y diagnósticos</h3>
         <label class="btn small">${ICON.camera} Sacar foto<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label></div>
@@ -1194,6 +1298,46 @@ function detailHTML(p){
     </div>`;
 }
 
+const fmtDayLong = new Intl.DateTimeFormat('es-AR', {day:'numeric', month:'long', year:'numeric'});
+function ageText(iso){
+  const d = diffDays(iso, todayISO());
+  if (d <= 0) return 'desde hoy';
+  if (d < 30) return `hace ${d} ${plural(d, 'día', 'días')}`;
+  const months = Math.floor(d / 30.44);
+  if (months < 12) return `hace ${months} ${plural(months, 'mes', 'meses')}`;
+  const y = Math.floor(months / 12), m = months % 12;
+  return `hace ${y} ${plural(y, 'año', 'años')}${m ? ` y ${m} ${plural(m, 'mes', 'meses')}` : ''}`;
+}
+// Biografía: su historia con vos (fecha, relato, números, antes y ahora) y datos de la especie.
+function bioHTML(p){
+  const sp = speciesOf(p), info = SPECIES_BIO[sp.id];
+  const since = p.adoptedAt || p.createdAt;
+  const cnt = type => p.log.filter(l => l.type === type).length;
+  const tr = p.treatments || [];
+  const stats = [[cnt('riego'), 'riego', 'riegos'], [cnt('abono'), 'abono', 'abonos'], [cnt('foto'), 'foto', 'fotos'],
+    [cnt('diagnostico'), 'diagnóstico', 'diagnósticos'], [tr.length, 'tratamiento', 'tratamientos'], [tr.filter(t => t.status === 'resuelto').length, 'curado', 'curados']];
+  return `<div class="detail-section bio">
+    <h3>Biografía</h3>
+    <p class="bio-lead">En tu jardín desde el <b>${esc(fmtDayLong.format(localDate(since)))}</b> · ${ageText(since)}</p>
+    ${p.story ? `<blockquote class="bio-quote">${esc(p.story)}</blockquote>`
+      : `<p class="small muted" style="margin:8px 0 0">¿Cómo llegó a tu casa? <button class="linkbtn" type="button" data-action="edit" data-id="${p.id}">Contalo acá</button></p>`}
+    <div class="bio-stats">${stats.map(([n, uno, varios]) => `<div><b>${n}</b><span>${plural(n, uno, varios)}</span></div>`).join('')}</div>
+    <div id="bio-photos" class="bio-photos" data-plant="${p.id}">${ui.bioCache[p.id] || ''}</div>
+    ${info ? `<div class="bio-species">
+      <h4>Sobre la especie</h4>
+      <p><span class="eyebrow">Origen</span> ${esc(info[0])}</p>
+      <p>${esc(info[1])}</p>
+      <p class="note">${esc(info[2])}</p>
+    </div>` : ''}
+  </div>`;
+}
+// Antes y ahora: la primera y la última foto de la galería.
+function bioPhotosHTML(recs){
+  if (!recs || recs.length < 2) return '<p class="small muted">Con dos fotos o más, acá vas a ver el antes y el ahora.</p>';
+  const sorted = recs.slice().sort((a, b) => a.createdAt - b.createdAt);
+  const cell = (r, label) => `<button type="button" data-action="view-photo" data-photo="${esc(r.id)}"><img src="${esc(r.full)}" alt="${label} (${esc(fmtDate.format(localDate(r.date)))})"><span>${label} · ${esc(fmtDM.format(localDate(r.date)).replace('.', ''))}</span></button>`;
+  return cell(sorted[0], 'Antes') + cell(sorted[sorted.length - 1], 'Ahora');
+}
 function speciesHint(sp){
   const pet = petInfo(sp);
   return `${esc(sp.luz)}. ${esc(sp.riegoNota)} ${pet.label}.`;
@@ -1224,6 +1368,7 @@ function formHTML(p, speciesId){
     </div>
     <div id="ai-identify" class="ai-box" style="padding-top:12px" hidden></div>
     <label class="field"><span>Especie</span><select name="speciesId" id="species-select">${speciesOptions(sp.id)}</select></label>
+    ${p ? '' : '<p class="small muted" style="margin:-8px 0 0">¿No sabés qué planta es? Agregá una foto arriba y tocá <b>Identificar con IA</b>, o elegí «Otra planta».</p>'}
     <div id="species-hint" class="hint-box">${speciesHint(sp)}</div>
     <label class="field"><span>Nombre</span><input name="name" maxlength="60" placeholder="${esc(sp.id === 'otra' ? 'Ej.: Helecho de la abuela' : sp.name)}" value="${esc(p ? p.name : '')}"></label>
     <label class="field"><span>Ubicación</span><input name="location" list="loc-list" maxlength="40" placeholder="Ej.: Living, balcón…" value="${esc(p ? p.location : '')}"></label>
@@ -1236,6 +1381,8 @@ function formHTML(p, speciesId){
       <label class="field"><span>Último riego</span><input type="date" name="lastWater" max="${t}" value="${p ? (p.lastWater || '') : t}"><small>Vacío = regar hoy</small></label>
       <label class="field"><span>Último abono</span><input type="date" name="lastFert" max="${t}" value="${p ? (p.lastFert || '') : ''}"><small>Opcional</small></label>
     </div>
+    <label class="field"><span>¿Desde cuándo la tenés?</span><input type="date" name="adoptedAt" max="${t}" value="${p ? (p.adoptedAt || '') : ''}"><small>Opcional. Si no lo completás, cuenta desde que la cargaste.</small></label>
+    <label class="field"><span>Su historia</span><textarea name="story" rows="2" maxlength="300" placeholder="Ej.: me la regaló mi hermano; es un gajo de la planta de mi abuela">${esc(p ? p.story : '')}</textarea></label>
     <label class="field"><span>Notas</span><textarea name="notes" rows="3" maxlength="1000" placeholder="Ej.: maceta de 20 cm, la compré en el vivero…">${esc(p ? p.notes : '')}</textarea></label>
     <div class="btn-row end">
       <button class="btn ghost" type="button" data-action="close">Cancelar</button>
@@ -1253,7 +1400,7 @@ function logFormHTML(p){
       ${['riego','abono','trasplante','poda','nota'].map(k => `<option value="${k}">${LOG_TYPES[k].emoji} ${LOG_TYPES[k].label}</option>`).join('')}
     </select></label>
     <label class="field"><span>Fecha</span><input type="date" name="date" required max="${t}" value="${t}"></label>
-    <label class="field"><span>Detalle (opcional)</span><textarea name="text" rows="3" maxlength="500" placeholder="Ej.: maceta nueva de 25 cm, sustrato con perlita"></textarea></label>
+    <label class="field"><span>Detalle (opcional)</span><textarea name="text" rows="3" maxlength="500" placeholder="Ej.: maceta nueva de 25 cm, tierra nueva"></textarea></label>
     <div class="btn-row end">
       <button class="btn ghost" type="button" data-action="open" data-id="${p.id}">Volver</button>
       <button class="btn primary" type="submit">Guardar</button>
@@ -1299,7 +1446,7 @@ function markDone(id, type){
   const p0 = getPlant(id);
   if (!p0) return;
   const t = todayISO();
-  act(type === 'riego' ? `💧 ${p0.name}: riego registrado` : `🧪 ${p0.name}: abono registrado`, () => {
+  act(thanks(type, p0.name), () => {
     const p = getPlant(id);
     if (type === 'riego') p.lastWater = maxISO(p.lastWater, t); else p.lastFert = maxISO(p.lastFert, t);
     delete p.snooze[type];
@@ -1317,7 +1464,7 @@ function snooze(id, type){
 function waterAll(){
   const ids = collectTasks().due.filter(t => t.type === 'riego').map(t => t.p.id);
   const t = todayISO();
-  act(`💧 ${ids.length} plantas regadas`, () => {
+  act(`💧 ${ids.length} plantas regadas. ¡Gracias por cuidarlas!`, () => {
     ids.forEach(id => {
       const p = getPlant(id);
       p.lastWater = maxISO(p.lastWater, t);
@@ -1400,6 +1547,8 @@ async function savePlantForm(form){
     lastWater: dateOrNull(fd.get('lastWater')),
     lastFert: dateOrNull(fd.get('lastFert')),
     notes: String(fd.get('notes') || '').trim().slice(0, 1000),
+    story: String(fd.get('story') || '').trim().slice(0, 300),
+    adoptedAt: dateOrNull(fd.get('adoptedAt')),
   };
   const id = form.dataset.id;
   const plantId = id || uid();
@@ -1521,6 +1670,8 @@ async function loadGallery(plantId){
   const p = getPlant(plantId), box = $('#gallery');
   if (!p || !box || box.dataset.plant !== plantId) return;
   box.innerHTML = ui.galleryCache[plantId] = galleryHTML(p, recs);
+  const bio = $('#bio-photos');
+  if (bio && bio.dataset.plant === plantId) bio.innerHTML = ui.bioCache[plantId] = bioPhotosHTML(recs);
 }
 
 async function takePhoto(plantId, file){
@@ -1834,6 +1985,16 @@ function viewCuidados(){
         <div><h2>Contame qué ves</h2><p>Marcá los síntomas y te digo las causas más probables. Gratis y sin IA.</p>
         <button class="btn small" type="button" data-action="symptoms">Buscar por síntomas</button></div></article>
     </div>
+    <section>
+      <div class="sec"><h2>Lo básico para que no se te muera</h2></div>
+      <ol class="steps-n basics">
+        <li>Antes de regar, tocá la tierra: si todavía está húmeda, esperá. Se mueren más plantas por exceso de agua que por falta.</li>
+        <li>Cuando riegues, que salga agua por abajo de la maceta, y tirá la que quede en el plato.</li>
+        <li>Casi todas quieren mucha luz, pero no sol fuerte de golpe: cerca de una ventana es ideal.</li>
+        <li>Usá macetas con agujeros abajo. Sin agujeros, el agua se estanca y pudre las raíces.</li>
+        <li>Si ves algo raro (hojas amarillas, manchas, bichos), entrá acá y contame qué ves.</li>
+      </ol>
+    </section>
     <section>
       <div class="sec"><h2>En tratamiento</h2><span class="aside">${active.length ? `${active.length} ${plural(active.length, 'planta', 'plantas')}` : ''}${active.length && cured ? ' · ' : ''}${cured ? `${cured} ${plural(cured, 'curada', 'curadas')}` : ''}</span></div>
       ${active.length ? treatRowsHTML(active) : '<p class="tipline">Ninguna planta en tratamiento. ¡Bien ahí!</p>'}

@@ -16,13 +16,18 @@ App para el celular que organiza el riego y el abono de tus plantas, guarda foto
 
 ## Qué hace
 
+Pensada para quien no sabe de plantas: todo está en palabras de todos los días, hay una lista con lo básico para que no se te mueran y la app es un poco entretenida.
+
 - **Cuidados:** el lugar para resolver qué le pasa a una planta.
   - **Sacale una foto:** la IA la revisa y te dice qué tiene y cómo solucionarlo.
   - **Contame qué ves:** marcás los síntomas (hojas amarillas, manchas, bichos, tierra siempre húmeda…) y te muestra las causas más probables, cruzadas con el riego de esa planta. Es gratis y no usa la IA.
   - **Plan de tratamiento:** cada problema queda con sus pasos para tachar y una foto de control, hasta que tocás "Ya se curó".
+  - **Lo básico para que no se te muera:** 5 reglas simples.
   - **Problemas frecuentes:** 17 fichas (riego, luz y ambiente, plagas, hongos y nutrientes) con cómo reconocerlos, por qué pasan, qué hacer y cómo prevenirlos.
 - **Hoy:** qué regar y abonar hoy, lo atrasado, las plantas en tratamiento y lo que viene en los próximos 7 días. "✓ Listo", "posponer" y "Deshacer".
-- **Tu jardín:** foto, especie, ubicación (con filtro por ambiente), historial (riegos, abonos, trasplantes, podas, notas) y galería de fotos.
+- **Tu jardín:** foto, especie, ubicación (con filtro por ambiente), historial (riegos, abonos, trasplantes, podas, notas) y galería de fotos. Cada planta muestra cómo está: 😊 contenta, 😓 con sed, 🥵 muerta de sed o 🤒 en tratamiento.
+- **Biografía de cada planta:** desde cuándo la tenés, cómo llegó a tu casa, sus números (riegos, fotos, tratamientos…), un antes y ahora con su primera y su última foto, y el origen y una curiosidad de su especie.
+- **Nivel de jardinero:** cada cuidado suma, y vas pasando de Semilla a Brote, Plantín, Mano verde y Leyenda del jardín.
 - **La semana:** una tira con los próximos 7 días; tocás un día y ves qué toca.
 - **Diagnóstico con IA:** abrís una foto, tocás "Diagnosticar con IA" y Claude responde con el estado (saludable, leve, moderado, grave), los problemas probables con su tratamiento y qué hacer ahora. Con "Empezar tratamiento" lo convertís en un plan de pasos. Si conviene, propone una nueva frecuencia de riego o corregir la especie (se aplican con un toque) y te programa una **foto de control** para seguir la evolución.
 - **Identificar la especie** al cargar una planta nueva con foto.
