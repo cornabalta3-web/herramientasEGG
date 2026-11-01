@@ -18,9 +18,7 @@ _(Agregar descripción)_
 ## Otras herramientas
 
 ### 🌱 [Brote — Cuidado de plantas](./cuidado-plantas)
-Agenda de riego y abono para plantas de interior, huerta y exterior. Muestra qué regar hoy y en los próximos 7 días, ajusta las frecuencias según la estación (hemisferio sur o norte), incluye una guía de 27 especies comunes con toxicidad para mascotas (según la ASPCA), historial y galería de fotos por planta, recordatorios exportables a Google/Apple Calendar (.ics) y respaldo en JSON (con fotos). Los datos se guardan solo en el navegador.
-
-**Diagnóstico con IA (opcional):** sacale una foto a una planta y Claude detecta problemas (riego, luz, plagas, hongos), sugiere qué hacer, propone ajustar la frecuencia de riego, reconoce la especie y programa una foto de control para seguir la evolución. Usa la API de Claude directo desde el navegador con tu propia API key (se carga en Ajustes y se paga por uso; [crear una key](https://platform.claude.com/settings/keys)), igual que ROGADOR: no hace falta servidor.
+App para el celular (se instala con ícono, como Déficit Tracker) con la agenda de riego y abono de tus plantas, ajuste según la estación, guía de 27 especies con toxicidad para mascotas, galería de fotos por planta y **diagnóstico con IA**: le sacás una foto y Claude te dice qué problemas tiene y qué hacer. Se publica en Netlify, con la clave de Claude guardada en el servidor. Instrucciones en [cuidado-plantas/README.md](./cuidado-plantas/README.md).
 
 ## Uso
 

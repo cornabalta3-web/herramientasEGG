@@ -3,10 +3,17 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="theme-color" content="#2F7D5B">
-<meta name="description" content="Brote: organizá el riego y el cuidado de tus plantas. Funciona sin conexión y guarda todo en tu dispositivo.">
+<meta name="theme-color" content="#2F7D5B" media="(prefers-color-scheme: light)">
+<meta name="theme-color" content="#163024" media="(prefers-color-scheme: dark)">
+<meta name="mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<meta name="apple-mobile-web-app-title" content="Brote">
+<meta name="description" content="Brote: organizá el riego y el cuidado de tus plantas, con fotos y diagnóstico con IA. Tus datos quedan en tu celular.">
 <title>Brote · Cuidado de plantas</title>
-<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🌱</text></svg>">
+<link rel="manifest" href="manifest.json">
+<link rel="apple-touch-icon" href="icons/icon-180.png">
+<link rel="icon" type="image/png" sizes="192x192" href="icons/icon-192.png">
 <style>
   :root{
     --verde:#2F7D5B; --verde-osc:#1F5A41; --verde-claro:#E4F3EA; --on-verde:#FFFFFF;
@@ -48,7 +55,7 @@
   :focus-visible{outline:3px solid var(--agua);outline-offset:2px}
 
   /* ---------- Encabezado y navegación ---------- */
-  header.top{position:sticky;top:0;z-index:20;background:var(--header-bg);color:var(--header-ink);box-shadow:0 2px 10px rgba(0,0,0,.12)}
+  header.top{position:sticky;top:0;z-index:20;background:var(--header-bg);color:var(--header-ink);box-shadow:0 2px 10px rgba(0,0,0,.12);padding-top:env(safe-area-inset-top)}
   .top-inner{display:flex;align-items:center;justify-content:space-between;gap:12px;min-height:58px}
   .brand{display:flex;align-items:center;gap:8px;color:var(--header-ink);text-decoration:none;font-weight:800;font-size:20px;letter-spacing:.01em}
   .brand-ico{font-size:24px}
@@ -262,6 +269,8 @@
   table.season th,table.season td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line)}
   table.season th{font-size:12px;text-transform:uppercase;letter-spacing:.05em;color:var(--muted)}
   table.season tr.now td{font-weight:750;background:var(--verde-claro)}
+  .steps{margin:8px 0 0;padding-left:20px;font-size:14px}
+  .steps li{margin:4px 0}
   .banner{background:var(--ambar-claro);color:var(--ambar);border-radius:12px;padding:10px 14px;margin:0 0 14px;font-size:14px}
   footer.foot{margin:26px 0 0;font-size:12.5px;color:var(--muted);text-align:center}
 
@@ -398,28 +407,29 @@ const STORAGE_KEY = 'brote.v1';
 const ASPCA_URL = 'https://www.aspca.org/pet-care/animal-poison-control/toxic-and-non-toxic-plants';
 
 /* ---------------------------------------------------------------------
-   Diagnóstico con IA. La app llama directo a la API de Claude desde el
-   navegador con la API key de la persona (igual que ROGADOR y Amanuense),
-   así que no hace falta un servidor propio.
+   Diagnóstico con IA. Igual que Déficit Tracker: la app manda la foto a una
+   función de Netlify (netlify/functions/diagnostico.mjs) que tiene la clave
+   de Claude guardada en el servidor. El prompt y el formato de la respuesta
+   viven en esa función.
    --------------------------------------------------------------------- */
-const API_URL = 'https://api.anthropic.com/v1/messages';
-const API_VERSION = '2026-10-21';
-const KEYS_URL = 'https://platform.claude.com/settings/keys';
-const KEY_STORAGE = 'brote.apiKey';
+const DIAG_URL = '/.netlify/functions/diagnostico';
+// Si configurás APP_SHARED_TOKEN en Netlify, pegá el mismo valor acá.
+const APP_TOKEN = '';
 const MODEL_STORAGE = 'brote.model';
 const DEFAULT_MODEL = 'claude-opus-5-5';
-// Modelos a elegir en Ajustes. "fallback": si los filtros de seguridad rechazan la consulta,
-// la API la reintenta sola con el modelo alternativo que recomienda Anthropic.
 const AI_MODELS = {
-  'claude-opus-5-5':   {label:'Claude Opus 5.5 — el más preciso (recomendado) · ~US$0,06 por foto', fallback:true},
-  'claude-sonnet-5-5': {label:'Claude Sonnet 5.5 — equilibrado · ~US$0,03 por foto', fallback:true},
-  'claude-haiku-5-5':  {label:'Claude Haiku 5.5 — el más económico · menos de US$0,01 por foto', fallback:false},
+  'claude-opus-5-5':   {label:'Claude Opus 5.5 — el más preciso (recomendado) · ~US$0,06 por foto'},
+  'claude-sonnet-5-5': {label:'Claude Sonnet 5.5 — equilibrado y más rápido · ~US$0,03 por foto'},
+  'claude-haiku-5-5':  {label:'Claude Haiku 5.5 — el más económico · menos de US$0,01 por foto'},
 };
 // Nombre y precio en US$ por millón de tokens (entrada, salida), para estimar el costo de cada diagnóstico.
 const MODEL_INFO = {
   'claude-opus-5-5':['Claude Opus 5.5', 4, 20], 'claude-sonnet-5-5':['Claude Sonnet 5.5', 2, 10], 'claude-haiku-5-5':['Claude Haiku 5.5', 0.10, 0.50],
   'claude-opus-5':['Claude Opus 5', 5, 25], 'claude-opus-4-8':['Claude Opus 4.8', 5, 25], 'claude-sonnet-5':['Claude Sonnet 5', 2, 10],
 };
+// La IA necesita la función de Netlify: no anda abriendo el archivo directamente.
+const servedOnline = () => location.protocol === 'http:' || location.protocol === 'https:';
+const isInstalled = () => matchMedia('(display-mode: standalone)').matches || navigator.standalone === true;
 const DIAG_STATES = {
   saludable:   {label:'Saludable',          cls:'ok',    emoji:'💚'},
   leve:        {label:'Problema leve',      cls:'leve',  emoji:'🟡'},
@@ -429,53 +439,6 @@ const DIAG_STATES = {
 };
 const PROBLEM_STATES = ['leve', 'moderado', 'grave'];
 const LEVELS = ['alta', 'media', 'baja'];
-// Formato fijo de la respuesta (salida estructurada): la API garantiza un JSON con este esquema.
-const DIAG_SCHEMA = {
-  type:'object', additionalProperties:false,
-  required:['es_planta','calidad_foto','especie','estado','resumen','observaciones','problemas','acciones_inmediatas','riego_sugerido_dias','revisar_en_dias','consultar_experto'],
-  properties:{
-    es_planta:{type:'boolean'},
-    calidad_foto:{type:'string', enum:['buena','aceptable','mala']},
-    especie:{type:'object', additionalProperties:false, required:['nombre_comun','nombre_cientifico','catalogo_id','confianza'], properties:{
-      nombre_comun:{type:'string'}, nombre_cientifico:{type:'string'},
-      catalogo_id:{type:'string', enum:SPECIES.map(s => s.id)}, confianza:{type:'string', enum:LEVELS}}},
-    estado:{type:'string', enum:Object.keys(DIAG_STATES)},
-    resumen:{type:'string'},
-    observaciones:{type:'array', items:{type:'string'}},
-    problemas:{type:'array', items:{type:'object', additionalProperties:false, required:['nombre','probabilidad','senales','causa','tratamiento'], properties:{
-      nombre:{type:'string'}, probabilidad:{type:'string', enum:LEVELS}, senales:{type:'string'}, causa:{type:'string'},
-      tratamiento:{type:'array', items:{type:'string'}}}}},
-    acciones_inmediatas:{type:'array', items:{type:'string'}},
-    riego_sugerido_dias:{anyOf:[{type:'integer'}, {type:'null'}]},
-    revisar_en_dias:{type:'integer'},
-    consultar_experto:{type:'boolean'},
-  },
-};
-const AI_SYSTEM = `Sos especialista en sanidad vegetal y en el cultivo de plantas de interior, huerta y jardín. Analizás fotos que una persona saca con su celular para ayudarla a cuidar sus plantas. Escribí en español rioplatense (voseo), con lenguaje simple, concreto y amable.
-
-Cómo trabajar:
-- Basate en lo que realmente se ve en la foto y en el contexto que te pasan (especie cargada, riego, ubicación, estación, historial y comentarios). No inventes síntomas que no se ven.
-- Priorizá las causas más comunes antes que las raras: exceso o falta de riego, mal drenaje, poca luz o demasiado sol directo, aire seco, frío, falta o exceso de fertilizante, y plagas frecuentes (cochinilla, pulgón, araña roja, trips, mosca blanca, mosquita del sustrato) u hongos.
-- Cruzá lo que ves con el contexto. Por ejemplo, hojas amarillas y blandas en una planta que se riega muy seguido sugieren exceso de riego.
-- Sé honesto con la incertidumbre. Si la foto no alcanza, decí qué foto conviene sacar (hojas de cerca, el envés, el tallo, el sustrato o la planta entera).
-- Recomendá primero soluciones caseras y seguras: ajustar el riego y la luz, aislar la planta, limpiar las hojas, cortar partes dañadas, jabón potásico o aceite de neem. Si sugerís un producto, aclará que se use según la etiqueta y lejos de niños y mascotas.
-
-Campos de la respuesta:
-- es_planta: false si la foto no muestra una planta.
-- calidad_foto: qué tan útil es la foto para diagnosticar.
-- especie: lo que ves en la foto. En catalogo_id usá el id de la lista de abajo si coincide; si no, "otra". En confianza, qué tan seguro estás de la identificación.
-- estado: "saludable" (sin problemas relevantes), "leve", "moderado", "grave" o "no_evaluable" (no es una planta o la foto no permite evaluarla).
-- resumen: una o dos oraciones con la conclusión principal.
-- observaciones: lo que se ve en la foto, en hasta 5 frases cortas.
-- problemas: los problemas probables, del más al menos probable (lista vacía si está saludable). En tratamiento, pasos concretos.
-- acciones_inmediatas: lo más importante para hacer ahora, en orden (hasta 4).
-- riego_sugerido_dias: la nueva frecuencia de riego en días solo si recomendás cambiar la actual; si no, null.
-- revisar_en_dias: en cuántos días conviene sacar otra foto para controlar la evolución (entre 3 y 30; si está saludable, 30).
-- consultar_experto: true si es grave, si puede contagiar a otras plantas o si conviene llevar una muestra a un vivero.
-
-Especies del catálogo de la app (id = nombre común, nombre científico):
-${SPECIES.map(s => `${s.id} = ${s.name}, ${s.sci}`).join('\n')}`;
-
 /* =====================================================================
    Utilidades
    ===================================================================== */
@@ -898,15 +861,23 @@ function viewAjustes(){
     </section>
     <section class="card">
       <h2>🩺 Diagnóstico con IA</h2>
-      <p class="muted">Sacale una foto a una planta y Claude, la IA de Anthropic, te dice qué problemas puede tener y qué hacer. También reconoce la especie. Necesitás una API key de Claude (se paga por uso): creala en <a href="${KEYS_URL}" target="_blank" rel="noopener">platform.claude.com</a>.</p>
+      <p class="muted">Sacale una foto a una planta y Claude, la IA de Anthropic, te dice qué problemas puede tener y qué hacer. También reconoce la especie.</p>
+      ${servedOnline() ? '' : '<p class="banner" style="margin-top:10px">Estás abriendo el archivo directamente: el diagnóstico funciona en la app publicada en Netlify.</p>'}
       <div class="form" style="margin-top:12px">
-        <label class="field"><span>API key de Claude</span><input type="password" id="set-key" autocomplete="off" spellcheck="false" placeholder="sk-ant-…" value="${esc(getApiKey())}">
-          <small>Se guarda solo en este navegador y no se incluye en los respaldos.</small></label>
         <label class="field"><span>Modelo</span><select id="set-model">${Object.entries(AI_MODELS).map(([id, m]) => `<option value="${id}" ${id === getModel() ? 'selected' : ''}>${esc(m.label)}</option>`).join('')}</select>
           <small>Costos aproximados. Al terminar cada diagnóstico se muestra cuánto costó.</small></label>
       </div>
-      <p class="small muted" style="margin:10px 0 0">Las fotos se envían a Anthropic solo cuando pedís un diagnóstico o una identificación.</p>
+      <p class="small muted" style="margin:10px 0 0">La clave de Claude está guardada en el servidor (Netlify), como en Déficit Tracker: no hay que cargar nada en el celular. Las fotos se envían solo cuando pedís un diagnóstico o una identificación.</p>
     </section>
+    ${isInstalled() ? '' : `<section class="card">
+      <h2>📲 Instalar en el celular</h2>
+      <p class="muted">Agregala a la pantalla de inicio y se abre como una app, con su ícono y sin la barra del navegador.</p>
+      <ul class="steps">
+        <li><b>iPhone:</b> abrila en Safari → botón Compartir → <i>Agregar a pantalla de inicio</i>.</li>
+        <li><b>Android:</b> abrila en Chrome → menú ⋮ → <i>Instalar app</i> (o <i>Agregar a la pantalla principal</i>).</li>
+      </ul>
+      <p class="small muted" style="margin:10px 0 0">Ojo, en iPhone la app instalada guarda sus datos aparte de Safari: si ya cargaste plantas en Safari, exportá un respaldo e importalo en la app.</p>
+    </section>`}
     <section class="card">
       <h2>Recordatorios en tu calendario</h2>
       <p class="muted">Descargá un archivo .ics con los riegos y abonos programados e importalo en Google Calendar, Calendario de Apple u Outlook. Si cambiás frecuencias o cambia la estación, volvé a descargarlo.</p>
@@ -925,7 +896,7 @@ function viewAjustes(){
       <p class="muted">Elimina todas las plantas, fotos, diagnósticos e historial de este navegador.</p>
       <div class="btn-row"><button class="btn danger" type="button" data-action="wipe" ${state.plants.length ? '' : 'disabled'}>🗑️ Borrar todo</button></div>
     </section>
-    <footer class="foot">Brote funciona sin conexión y no envía tus datos a ningún servidor.<br>Toxicidad para mascotas según la <a href="${ASPCA_URL}" target="_blank" rel="noopener">ASPCA</a>. Las frecuencias de riego son orientativas.</footer>`;
+    <footer class="foot">Tus plantas y fotos se guardan solo en este dispositivo. Las fotos se envían a la IA solo cuando pedís un diagnóstico.<br>Toxicidad para mascotas según la <a href="${ASPCA_URL}" target="_blank" rel="noopener">ASPCA</a>. Las frecuencias de riego son orientativas.</footer>`;
 }
 
 /* =====================================================================
@@ -1370,9 +1341,8 @@ function photoHTML(p, rec, entry){
 const loadingHTML = (msg = 'Analizando la foto…') => `<div class="ai-loading" role="status"><span class="spinner" aria-hidden="true"></span>
   <div><strong>${msg}</strong><br><span class="small muted">Puede tardar hasta un minuto.</span></div></div>`;
 function diagPromptHTML(errorMsg){
-  if (!getApiKey()) return `<div class="ai-box"><h3>🩺 ¿Tiene algún problema?</h3>
-    <p class="small muted">Para que la IA revise la foto y te diga qué problemas puede tener, cargá tu API key de Claude en Ajustes.</p>
-    <a class="btn small" href="#ajustes">⚙️ Configurar la IA</a></div>`;
+  if (!servedOnline()) return `<div class="ai-box"><h3>🩺 ¿Tiene algún problema?</h3>
+    <p class="small muted">El diagnóstico con IA funciona en la app publicada en Netlify (la que instalás en el celular), no abriendo el archivo directamente.</p></div>`;
   return `<div class="ai-box">
     <h3>🩺 ¿Tiene algún problema?</h3>
     <p class="small muted">Claude analiza la foto junto con el riego y el historial de la planta. La foto se envía a Anthropic solo cuando tocás el botón.</p>
@@ -1462,10 +1432,10 @@ async function runDiagnosis(){
 
 /* ---------- Identificar la especie al cargar una planta nueva ---------- */
 function identifyBoxHTML(){
-  return getApiKey()
+  return servedOnline()
     ? `<div class="btn-row" style="margin:0;align-items:center"><button class="btn small" type="button" data-action="identify">🔍 Identificar con IA</button>
         <span class="small muted">Sugiere la especie y revisa su salud.</span></div><div id="identify-result"></div>`
-    : '<p class="small muted" style="margin:0">💡 Con una API key de Claude (en Ajustes), Brote puede reconocer la especie y revisar su salud desde la foto.</p>';
+    : '<p class="small muted" style="margin:0">💡 En la app publicada, Brote puede reconocer la especie y revisar su salud desde la foto.</p>';
 }
 async function identifyInForm(btn){
   const set = ui.formPhotoSet, form = $('#plant-form');
@@ -1540,90 +1510,58 @@ function applySpecies(id, speciesId){
   });
 }
 
-/* ---------- Llamada a la API de Claude ---------- */
-let memKey = '';
-function getApiKey(){ try { return localStorage.getItem(KEY_STORAGE) || memKey; } catch { return memKey; } }
-function setApiKey(v){ memKey = v; try { if (v) localStorage.setItem(KEY_STORAGE, v); else localStorage.removeItem(KEY_STORAGE); } catch {} }
+/* ---------- Llamada a la función de diagnóstico (Netlify) ---------- */
 function getModel(){ let m = null; try { m = localStorage.getItem(MODEL_STORAGE); } catch {} return AI_MODELS[m] ? m : DEFAULT_MODEL; }
 function setModel(m){ if (AI_MODELS[m]) try { localStorage.setItem(MODEL_STORAGE, m); } catch {} }
 
+// Datos de la planta para la IA. El servidor los valida y arma el texto del pedido.
 function aiContext(p, note){
-  const t = todayISO(), S = SEASONS[seasonKey()];
-  const L = [];
-  if (p){
-    const sp = speciesOf(p);
-    L.push(`Planta: "${p.name}"`);
-    L.push(`Especie cargada en la app: ${sp.id === 'otra' ? 'no especificada' : `${sp.name} (${sp.sci})`}`);
-    if (p.location) L.push(`Ubicación: ${p.location}`);
-    L.push(`Riego programado: cada ${waterInterval(p)} días. Último riego registrado: ${p.lastWater ? `${p.lastWater} (hace ${diffDays(p.lastWater, t)} días)` : 'sin dato'}.`);
-    L.push(`Abono: ${p.fertEvery ? `cada ${p.fertEvery} días; último: ${p.lastFert || 'sin dato'}` : 'sin abono programado'}.`);
-    const hist = p.log.filter(l => l.type !== 'alta' && l.type !== 'foto').slice().sort((a, b) => a.date.localeCompare(b.date)).slice(-10)
-      .map(l => `- ${l.date}: ${LOG_TYPES[l.type].label}${l.type === 'diagnostico' ? ` (${l.data.estado})` : ''}${l.text ? ` — ${l.text}` : ''}`);
-    if (hist.length) L.push('Historial reciente:\n' + hist.join('\n'));
-    if (p.notes) L.push(`Notas de la persona sobre la planta: ${p.notes}`);
-  } else {
-    L.push('Es una planta nueva que la persona todavía no cargó en la app: identificá la especie con cuidado.');
-  }
-  L.push(`Hoy es ${t}. Estación: ${S.name.toLowerCase()} (hemisferio ${state.settings.hemisphere === 'N' ? 'norte' : 'sur'}).`);
-  if (note) L.push(`Lo que notó la persona: ${note}`);
-  L.push('Analizá la foto y devolvé el diagnóstico.');
-  return L.join('\n');
-}
-function apiErrorText(status, data){
-  const msg = (data && data.error && data.error.message) || '';
-  if (/credit balance/i.test(msg)) return 'Tu cuenta de Claude no tiene saldo suficiente. Cargá crédito en platform.claude.com.';
-  if (status === 401) return 'La API key no es válida. Revisala en Ajustes.';
-  if (status === 403) return 'Tu API key no tiene permiso para usar este modelo.';
-  if (status === 404) return 'El modelo elegido no está disponible para tu cuenta. Probá con otro en Ajustes.';
-  if (status === 413) return 'La foto es demasiado grande.';
-  if (status === 429) return 'Se alcanzó el límite de uso de tu cuenta de Claude. Esperá un momento y probá de nuevo.';
-  if (status === 529 || status >= 500) return 'Los servidores de Claude están saturados o con problemas. Probá de nuevo en unos minutos.';
-  return `Claude devolvió un error (${status})${msg ? ': ' + msg : ''}.`;
+  const t = todayISO();
+  const c = {hoy:t, estacion:SEASONS[seasonKey()].name.toLowerCase(), hemisferio:state.settings.hemisphere === 'N' ? 'norte' : 'sur', nota:note || ''};
+  if (!p) return {...c, planta_nueva:true};
+  const sp = speciesOf(p);
+  const historial = p.log.filter(l => l.type !== 'alta' && l.type !== 'foto').slice().sort((a, b) => a.date.localeCompare(b.date)).slice(-10)
+    .map(l => `${l.date}: ${LOG_TYPES[l.type].label}${l.type === 'diagnostico' ? ` (${l.data.estado})` : ''}${l.text ? ` — ${l.text}` : ''}`);
+  return {
+    ...c,
+    nombre: p.name,
+    especie: sp.id === 'otra' ? '' : `${sp.name} (${sp.sci})`,
+    ubicacion: p.location,
+    riego_cada_dias: waterInterval(p),
+    ultimo_riego: p.lastWater,
+    dias_desde_riego: p.lastWater ? diffDays(p.lastWater, t) : null,
+    abono_cada_dias: p.fertEvery,
+    ultimo_abono: p.lastFert,
+    historial,
+    notas: p.notes,
+  };
 }
 function costOf(model, usage){
   const info = MODEL_INFO[model];
   if (!info || !usage) return null;
   return ((usage.input_tokens || 0) * info[1] + (usage.output_tokens || 0) * info[2]) / 1e6;
 }
-async function callClaude(imageDataURL, contextText){
-  const key = getApiKey();
-  if (!key) throw new Error('Falta la API key de Claude. Cargala en Ajustes.');
-  const img = /^data:(image\/(?:jpeg|png|webp|gif));base64,(.+)$/.exec(imageDataURL || '');
+async function callClaude(imageDataURL, contexto){
+  if (!servedOnline()) throw new Error('El diagnóstico con IA funciona en la app publicada en Netlify, no abriendo el archivo directamente.');
+  const img = /^data:(image\/(?:jpeg|png|webp));base64,(.+)$/.exec(imageDataURL || '');
   if (!img) throw new Error('La foto no tiene un formato válido.');
-  const model = getModel();
-  const body = {
-    model,
-    max_tokens: 16000,
-    system: AI_SYSTEM,
-    messages: [{role:'user', content:[
-      {type:'image', source:{type:'base64', media_type:img[1], data:img[2]}},   // la imagen va antes del texto
-      {type:'text', text:contextText},
-    ]}],
-    output_config: {effort:'medium', format:{type:'json_schema', schema:DIAG_SCHEMA}},
-  };
-  const headers = {
-    'content-type': 'application/json',
-    'x-api-key': key,
-    'anthropic-version': API_VERSION,
-    'anthropic-dangerous-direct-browser-access': 'true',
-  };
-  if (AI_MODELS[model].fallback){
-    body.fallbacks = 'default';
-    headers['anthropic-beta'] = 'server-side-fallback-2026-07-01';
-  }
+  const headers = {'Content-Type':'application/json'};
+  if (APP_TOKEN) headers['x-app-token'] = APP_TOKEN;
   let res;
-  try { res = await fetch(API_URL, {method:'POST', headers, body:JSON.stringify(body)}); }
-  catch { throw new Error('No se pudo conectar con Claude. Revisá tu conexión a internet.'); }
+  try {
+    res = await fetch(DIAG_URL, {method:'POST', headers, body:JSON.stringify({photo:{mediaType:img[1], data:img[2]}, contexto, modelo:getModel()})});
+  } catch { throw new Error('No hay conexión. Revisá tu internet y probá de nuevo.'); }
   const data = await res.json().catch(() => null);
-  if (!res.ok || !data) throw new Error(apiErrorText(res.status, data));
-  if (data.stop_reason === 'refusal') throw new Error('Claude no pudo analizar esta foto (la consulta fue bloqueada por sus filtros de seguridad). Probá con otra foto.');
-  if (data.stop_reason === 'max_tokens') throw new Error('La respuesta de la IA quedó incompleta. Probá de nuevo.');
-  const block = (data.content || []).find(b => b.type === 'text');
-  let diag = null;
-  try { diag = normalizeDiag(JSON.parse(block.text)); } catch {}
+  if (!res.ok || !data){
+    if (data && data.error) throw new Error(data.error);
+    if (res.status === 404) throw new Error('No se encontró el servicio de diagnóstico. ¿Está publicada la función en Netlify?');
+    if (res.status === 502 || res.status === 504) throw new Error('El diagnóstico tardó demasiado. Probá de nuevo o elegí un modelo más rápido en Ajustes.');
+    throw new Error(`No se pudo hacer el diagnóstico (error ${res.status}). Probá de nuevo.`);
+  }
+  const diag = normalizeDiag(data.resultado);
   if (!diag) throw new Error('No se pudo leer la respuesta de la IA. Probá de nuevo.');
-  const served = data.model || model;
-  return {diag, model:served, cost:costOf(served, data.usage)};
+  const served = data.modelo || getModel();
+  return {diag, model:served, cost:costOf(served, data.uso)};
 }
 
 /* ---------- Exportar / importar ---------- */
@@ -1818,7 +1756,6 @@ document.addEventListener('keydown', e => {
 document.addEventListener('input', e => {
   if (e.target.id === 'plant-search'){ ui.search = e.target.value; $('#plant-list').innerHTML = plantListHTML(); }
   if (e.target.id === 'guide-search'){ ui.guideSearch = e.target.value; $('#guide-list').innerHTML = guideListHTML(); }
-  if (e.target.id === 'set-key') setApiKey(e.target.value.trim());
 });
 
 document.addEventListener('change', async e => {
@@ -1889,6 +1826,7 @@ window.addEventListener('storage', e => { if (e.key === STORAGE_KEY){ state = lo
 
 render();
 if (storageOK && !loadFailed) gcPhotos();
+try { localStorage.removeItem('brote.apiKey'); } catch {}   // de una versión anterior que guardaba la clave en el celular
 </script>
 </body>
 </html>
