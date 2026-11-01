@@ -18,7 +18,7 @@ _(Agregar descripción)_
 ## Otras herramientas
 
 ### 🌱 [Brote — Cuidado de plantas](./cuidado-plantas)
-App para el celular (se instala con ícono, como Déficit Tracker) con la agenda de riego y abono de tus plantas, ajuste según la estación, guía de 27 especies con toxicidad para mascotas, galería de fotos por planta y una sección de **Cuidados** para resolver qué le pasa a cada planta: por foto (Claude te dice qué tiene y qué hacer) o marcando síntomas, con planes de tratamiento paso a paso y 17 fichas de problemas frecuentes. Se publica en Netlify, con la clave de Claude guardada en el servidor. Instrucciones en [cuidado-plantas/README.md](./cuidado-plantas/README.md).
+App para el celular (se instala con ícono, como Déficit Tracker) con la agenda de riego y abono de tus plantas, avisos en el celular cuando alguna necesita algo, ajuste según la estación, guía de 27 especies con toxicidad para mascotas, galería de fotos por planta y una sección de **Cuidados** para resolver qué le pasa a cada planta: por foto (Claude te dice qué tiene y qué hacer) o marcando síntomas, con planes de tratamiento paso a paso y 17 fichas de problemas frecuentes. Se publica en Netlify, con la clave de Claude guardada en el servidor. Instrucciones en [cuidado-plantas/README.md](./cuidado-plantas/README.md).
 
 ## Uso
 

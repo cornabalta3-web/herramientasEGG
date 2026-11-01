@@ -313,6 +313,12 @@
   table.season tr.now td{font-weight:650;background:var(--sand)}
   .steps{margin:8px 0 0;padding-left:20px;font-size:14.5px}
   .steps li{margin:5px 0}
+  #avisos-card{scroll-margin-top:calc(72px + env(safe-area-inset-top))}
+  @media(max-width:759px){ #avisos-card{scroll-margin-top:calc(12px + env(safe-area-inset-top))} }
+  .ok-line{font-family:var(--serif);font-style:italic;color:var(--moss);font-size:17px;margin:2px 0 0}
+  table.gasto th:not(:first-child),table.gasto td:not(:first-child){text-align:right;font-variant-numeric:tabular-nums}
+  .care-line.nudge{align-items:center}
+  .care-line.nudge .icon-btn{width:32px;height:32px;font-size:14px;margin-left:auto}
 
   /* ---------- Ánimo y nivel ---------- */
   .pc-photo{position:relative}
@@ -527,9 +533,9 @@ const APP_TOKEN = '';
 const MODEL_STORAGE = 'brote.model';
 const DEFAULT_MODEL = 'claude-opus-5-5';
 const AI_MODELS = {
-  'claude-opus-5-5':   {label:'Claude Opus 5.5 — el más preciso (recomendado) · ~US$0,06 por foto'},
-  'claude-sonnet-5-5': {label:'Claude Sonnet 5.5 — equilibrado y más rápido · ~US$0,03 por foto'},
-  'claude-haiku-5-5':  {label:'Claude Haiku 5.5 — el más económico · menos de US$0,01 por foto'},
+  'claude-opus-5-5':   {label:'Claude Opus 5.5 — el más preciso (recomendado) · ~US$0,06 por foto', perPhoto:0.06},
+  'claude-sonnet-5-5': {label:'Claude Sonnet 5.5 — equilibrado y más rápido · ~US$0,03 por foto', perPhoto:0.03},
+  'claude-haiku-5-5':  {label:'Claude Haiku 5.5 — el más económico · menos de US$0,01 por foto', perPhoto:0.005},
 };
 // Nombre y precio en US$ por millón de tokens (entrada, salida), para estimar el costo de cada diagnóstico.
 const MODEL_INFO = {
@@ -734,7 +740,7 @@ const fmtDate  = new Intl.DateTimeFormat('es-AR', {day:'numeric', month:'short',
    Estado y persistencia
    ===================================================================== */
 const storageOK = (() => { try { const k = '__brote_test__'; localStorage.setItem(k, '1'); localStorage.removeItem(k); return true; } catch { return false; } })();
-const defaultState = () => ({version:1, plants:[], settings:{seasonal:true, hemisphere:'S'}});
+const defaultState = () => ({version:1, plants:[], settings:{seasonal:true, hemisphere:'S'}, aiUsage:{}});
 
 const normEnum = (v, allowed, def) => { const x = typeof v === 'string' ? v.trim().toLowerCase() : ''; return allowed.includes(x) ? x : def; };
 const strList = (v, n, max) => Array.isArray(v) ? v.filter(x => typeof x === 'string' && x.trim()).slice(0, n).map(x => x.trim().slice(0, max)) : [];
@@ -832,7 +838,28 @@ function normalizeState(d){
     seen.add(p.id);
     return p;
   });
+  out.aiUsage = normalizeUsage(d.aiUsage, out.plants);
   return out;
+}
+// Gasto en IA por mes: {'2026-11': {n: fotos analizadas, c: US$ aproximados}}.
+// Si los datos son de antes de que existiera, se arma con los diagnósticos guardados.
+function normalizeUsage(u, plants){
+  const out = {};
+  if (u && typeof u === 'object' && !Array.isArray(u)){
+    for (const [k, v] of Object.entries(u)){
+      if (!/^\d{4}-(0[1-9]|1[0-2])$/.test(k) || !v || typeof v !== 'object') continue;
+      const n = clampInt(v.n, 0, 1e6, 0), c = Number(v.c);
+      if (n) out[k] = {n, c:Number.isFinite(c) && c > 0 ? Math.min(c, 1e5) : 0};
+    }
+  } else {
+    for (const p of plants) for (const l of p.log){
+      if (l.type !== 'diagnostico') continue;
+      const m = out[l.date.slice(0, 7)] ||= {n:0, c:0};
+      m.n++;
+      if (l.meta && l.meta.costo > 0) m.c += l.meta.costo;
+    }
+  }
+  return Object.fromEntries(Object.entries(out).sort(([a], [b]) => a.localeCompare(b)).slice(-60));
 }
 function load(){
   if (!storageOK) return defaultState();
@@ -847,18 +874,21 @@ function load(){
 }
 function save(){
   if (!storageOK) return true;
-  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); return true; }
+  try { localStorage.setItem(STORAGE_KEY, JSON.stringify(state)); }
   catch (e) {
     console.error(e);
     toast('No se pudo guardar: el almacenamiento del navegador está lleno. Probá quitando alguna foto.');
     return false;
   }
+  scheduleAvisosSync();   // si hay avisos, el servidor se entera de las fechas nuevas
+  return true;
 }
 
 let loadFailed = false;
 let state = load();
 const ui = {search:'', locFilter:'', weekDate:null, careFilter:'', sym:{plantId:'', selected:new Set()}, guideSearch:'', guideFilter:'todas', modal:null, formPhotoSet:undefined, formAnalysis:null,
-            diagNote:'', busy:false, photoToken:0, galleryCache:{}, bioCache:{}, lastDay:todayISO()};
+            diagNote:'', busy:false, photoToken:0, galleryCache:{}, bioCache:{}, lastDay:todayISO(),
+            avisosBusy:false, avisosFocus:false, avisosTimer:0, avisosQueue:null, vapid:'', scrollTo:null};
 
 // Aplica un cambio; si falla o no se puede guardar, vuelve atrás. Devuelve la foto previa (para "Deshacer").
 function commit(fn){
@@ -1075,7 +1105,7 @@ function viewHoy(){
   const care = treating.length
     ? `<section><div class="sec"><h2>En tratamiento</h2><span class="aside"><a class="linkbtn" href="#cuidados">Cuidados →</a></span></div>${treatRowsHTML(treating)}</section>`
     : '<p class="care-line">¿Alguna planta anda mal? <a class="linkbtn" href="#cuidados">Ver qué le pasa →</a></p>';
-  return head(lead) + today + care + week;
+  return head(lead) + today + care + avisosNudgeHTML() + week;
 }
 
 // Tira de los próximos 7 días: al tocar un día se ve qué toca.
@@ -1177,6 +1207,7 @@ function viewAjustes(){
   const rows = order.map(k => `<tr class="${k === cur ? 'now' : ''}"><td>${SEASONS[k].name}${k === cur ? ' (ahora)' : ''}</td><td>${months[k]}</td><td>cada ${adjust(7, SEASONS[k].factor)} días</td><td>${k === 'invierno' ? 'En pausa' : 'Activo'}</td></tr>`).join('');
   return `<div class="page-head"><p class="eyebrow">Brote · cuidado de plantas</p><h1>Ajustes</h1></div>
     ${storageOK ? '' : '<p class="banner">Este navegador no permite guardar datos (¿modo incógnito?). Los cambios se van a perder al cerrar la página.</p>'}
+    ${avisosCardHTML()}
     <section class="card">
       <h2>Estaciones del año</h2>
       <label class="switch-row"><input type="checkbox" id="set-seasonal" ${state.settings.seasonal ? 'checked' : ''}>
@@ -1198,6 +1229,7 @@ function viewAjustes(){
       </div>
       <p class="small muted" style="margin:10px 0 0">La clave de Claude está guardada en el servidor (Netlify), como en Déficit Tracker: no hay que cargar nada en el celular. Las fotos se envían solo cuando pedís un diagnóstico o una identificación.</p>
     </section>
+    ${gastoHTML()}
     ${isInstalled() ? '' : `<section class="card">
       <h2>Instalar en el celular</h2>
       <p class="muted">Agregala a la pantalla de inicio y se abre como una app, con su ícono y sin la barra del navegador.</p>
@@ -1225,7 +1257,7 @@ function viewAjustes(){
       <p class="muted">Elimina todas las plantas, fotos, diagnósticos e historial de este navegador.</p>
       <div class="btn-row"><button class="btn danger" type="button" data-action="wipe" ${state.plants.length ? '' : 'disabled'}>Borrar todo</button></div>
     </section>
-    <footer class="foot">Tus plantas y fotos se guardan solo en este dispositivo. Las fotos se envían a la IA solo cuando pedís un diagnóstico.<br>Toxicidad para mascotas según la <a href="${ASPCA_URL}" target="_blank" rel="noopener">ASPCA</a>. Las frecuencias de riego son orientativas.</footer>`;
+    <footer class="foot">Tus plantas y fotos se guardan en este dispositivo. Las fotos se envían a la IA solo cuando pedís un diagnóstico, y los avisos usan solo los nombres de las plantas y las fechas.<br>Toxicidad para mascotas según la <a href="${ASPCA_URL}" target="_blank" rel="noopener">ASPCA</a>. Las frecuencias de riego son orientativas.</footer>`;
 }
 
 /* =====================================================================
@@ -1950,10 +1982,19 @@ async function callClaude(imageDataURL, contexto){
     if (res.status === 502 || res.status === 504) throw new Error('El diagnóstico tardó demasiado. Probá de nuevo o elegí un modelo más rápido en Ajustes.');
     throw new Error(`No se pudo hacer el diagnóstico (error ${res.status}). Probá de nuevo.`);
   }
+  const served = data.modelo || getModel(), cost = costOf(served, data.uso);
+  recordUsage(cost);   // se anota aunque la respuesta no se pueda leer: Claude la cobra igual
   const diag = normalizeDiag(data.resultado);
   if (!diag) throw new Error('No se pudo leer la respuesta de la IA. Probá de nuevo.');
-  const served = data.modelo || getModel();
-  return {diag, model:served, cost:costOf(served, data.uso)};
+  return {diag, model:served, cost};
+}
+const monthKey = (offset = 0) => { const d = new Date(); d.setDate(1); d.setMonth(d.getMonth() + offset); return `${d.getFullYear()}-${String(d.getMonth() + 1).padStart(2, '0')}`; };
+function recordUsage(cost){
+  commit(() => {
+    const m = state.aiUsage[monthKey()] ||= {n:0, c:0};
+    m.n++;
+    if (cost > 0) m.c += cost;
+  });
 }
 
 /* =====================================================================
@@ -2311,6 +2352,283 @@ async function importFile(file){
 }
 
 /* =====================================================================
+   Cuánto gasta: lo único que se paga es la IA (por foto analizada)
+   ===================================================================== */
+const money = n => n > 0 ? fmtUSD(n) : 'US$0';
+function gastoHTML(){
+  const u = state.aiUsage, none = {n:0, c:0};
+  const total = Object.values(u).reduce((a, m) => ({n:a.n + m.n, c:a.c + m.c}), {n:0, c:0});
+  const row = (label, m) => `<tr><td>${label}</td><td>${m.n}</td><td>${money(m.c)}</td></tr>`;
+  const per = AI_MODELS[getModel()].perPhoto;
+  return `<section class="card" id="gasto-card">
+    <h2>Cuánto gasta</h2>
+    <p class="muted">Casi todo en Brote es gratis: la agenda, los avisos, la guía y el buscador de síntomas no cuestan nada. Lo único que se paga es cuando la IA mira una foto (para ver qué tiene la planta o reconocer la especie), y se descuenta del saldo de tu cuenta de Claude.</p>
+    <table class="season gasto"><thead><tr><th>Uso de la IA</th><th>Fotos</th><th>Costo aprox.</th></tr></thead>
+      <tbody>${row('Este mes', u[monthKey()] || none)}${row('El mes pasado', u[monthKey(-1)] || none)}${row('Desde el principio', total)}</tbody></table>
+    <p class="small muted" style="margin:12px 0 0">Con el modelo elegido, cada foto cuesta ${per < 0.01 ? 'menos de US$0,01' : `unos ${fmtUSD(per)}`}. Son cuentas de este celular: el gasto exacto está en tu cuenta de Anthropic, en la parte de facturación.</p>
+    <p class="small muted" style="margin:8px 0 0">Netlify, donde está publicada la app, no cobra nada en el plan gratis: trae 300 créditos por mes. Cada vez que se publica una versión nueva se usan 15, y el uso de todos los días (abrir la app, los avisos y los diagnósticos) gasta apenas unos pocos créditos por mes.</p>
+  </section>`;
+}
+
+/* =====================================================================
+   Avisos en el celular (notificaciones push). La app guarda su suscripción
+   en la función netlify/functions/avisos.mjs junto con las fechas de riego,
+   abono y fotos de control, y avisos-diarios.mjs revisa cada hora a quién
+   le toca un aviso. La configuración es de cada celular: no va en el respaldo.
+   ===================================================================== */
+const AVISOS_URL = '/.netlify/functions/avisos';
+const AVISOS_KEY = 'brote.avisos';
+const AVISOS_HORAS = Array.from({length:16}, (_, i) => i + 7);   // de 7 a 22 h
+const isIOS = () => /iPad|iPhone|iPod/.test(navigator.userAgent) || (navigator.platform === 'MacIntel' && navigator.maxTouchPoints > 1);
+const pushSupported = () => 'serviceWorker' in navigator && 'PushManager' in window && 'Notification' in window;
+const tzName = () => { try { return Intl.DateTimeFormat().resolvedOptions().timeZone || 'America/Argentina/Buenos_Aires'; } catch { return 'America/Argentina/Buenos_Aires'; } };
+const withTimeout = (p, ms, msg) => Promise.race([p, new Promise((_, reject) => setTimeout(() => reject(new Error(msg)), ms))]);
+
+function avisosCfg(){
+  let c = null;
+  try { c = JSON.parse(localStorage.getItem(AVISOS_KEY)); } catch {}
+  if (!c || typeof c !== 'object') c = {};
+  return {
+    on: c.on === true,
+    hora: Number.isInteger(c.hora) && c.hora >= 0 && c.hora <= 23 ? c.hora : 9,
+    id: typeof c.id === 'string' && /^[A-Za-z0-9_-]{20,64}$/.test(c.id) ? c.id : '',
+    endpoint: typeof c.endpoint === 'string' ? c.endpoint : '',
+    sent: typeof c.sent === 'string' ? c.sent : '',   // huella del último plan que recibió el servidor
+    nudge: c.nudge !== false,
+  };
+}
+function setAvisosCfg(patch){
+  const c = {...avisosCfg(), ...patch};
+  try { localStorage.setItem(AVISOS_KEY, JSON.stringify(c)); } catch {}
+  return c;
+}
+// Identificador al azar de este celular: el servidor solo guarda su hash.
+function deviceId(){
+  const c = avisosCfg();
+  if (c.id) return c.id;
+  const bytes = crypto.getRandomValues(new Uint8Array(24));
+  const id = btoa(String.fromCharCode(...bytes)).replace(/\+/g, '-').replace(/\//g, '_').replace(/=+$/, '');
+  setAvisosCfg({id});
+  return id;
+}
+function avisosState(){
+  if (!servedOnline()) return 'archivo';
+  if (isIOS() && !isInstalled()) return 'instalar';
+  if (!pushSupported()) return 'no-soportado';
+  if (Notification.permission === 'denied') return 'bloqueado';
+  return avisosCfg().on && Notification.permission === 'granted' ? 'activo' : 'apagado';
+}
+// Qué planta necesita qué y cuándo, con lo más urgente primero.
+function avisosPlan(){
+  const plan = [];
+  for (const p of state.plants){
+    const n = p.name.slice(0, 60);
+    plan.push({n, t:'riego', d:nextWater(p)});
+    const f = nextFert(p);
+    if (f) plan.push({n, t:'abono', d:f});
+    const r = nextReview(p);
+    if (r) plan.push({n, t:'revision', d:r});
+  }
+  return plan.sort((a, b) => a.d.localeCompare(b.d) || TASK_ORDER[a.t] - TASK_ORDER[b.t]).slice(0, 300);
+}
+function hashStr(s){ let h = 0x811c9dc5; for (let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = Math.imul(h, 0x01000193); } return (h >>> 0).toString(36); }
+const planSig = (plan, hora) => hashStr(JSON.stringify([hora, tzName(), plan]));
+
+async function avisosPost(body, keepalive = false){
+  const headers = {'Content-Type':'application/json'};
+  if (APP_TOKEN) headers['x-app-token'] = APP_TOKEN;
+  let res;
+  try { res = await fetch(AVISOS_URL, {method:'POST', headers, body:JSON.stringify(body), keepalive}); }
+  catch { throw Object.assign(new Error('No hay conexión. Revisá tu internet y probá de nuevo.'), {code:'sin_conexion'}); }
+  const data = await res.json().catch(() => null);
+  if (res.ok && data) return data;
+  const err = new Error(data && data.error ? data.error
+    : res.status === 404 ? 'No se encontró el servicio de avisos. ¿Está publicada la función en Netlify?'
+    : `No se pudo completar (error ${res.status}). Probá de nuevo.`);
+  err.code = (data && data.code) || `http_${res.status}`;
+  throw err;
+}
+let swReady = null;
+function registerSW(){
+  if (!('serviceWorker' in navigator) || !servedOnline()) return Promise.reject(new Error('Este navegador no permite avisos.'));
+  return swReady ||= navigator.serviceWorker.register('sw.js')
+    .then(() => withTimeout(navigator.serviceWorker.ready, 15000, 'El celular tardó demasiado en preparar los avisos. Probá de nuevo.'))
+    .catch(e => { swReady = null; throw e; });
+}
+async function vapidKey(){
+  if (ui.vapid) return ui.vapid;
+  const data = await avisosPost({accion:'clave'});
+  if (typeof data.publicKey !== 'string' || !data.publicKey) throw new Error('El servidor no devolvió la clave de los avisos.');
+  return ui.vapid = data.publicKey;
+}
+function b64urlBytes(s){
+  const b = atob(s.replace(/-/g, '+').replace(/_/g, '/') + '='.repeat((4 - s.length % 4) % 4));
+  return Uint8Array.from(b, ch => ch.charCodeAt(0));
+}
+function sameKey(sub, key){
+  const k = sub.options && sub.options.applicationServerKey;
+  if (!k) return true;   // el navegador no la informa: se asume que es la misma
+  const a = new Uint8Array(k), b = b64urlBytes(key);
+  return a.length === b.length && a.every((x, i) => x === b[i]);
+}
+async function saveSubscription(sub){
+  const c = avisosCfg(), plan = avisosPlan();
+  await avisosPost({accion:'guardar', id:deviceId(), subscription:sub.toJSON(), plan, hora:c.hora, tz:tzName()});
+  setAvisosCfg({on:true, endpoint:sub.endpoint, sent:planSig(plan, c.hora)});
+}
+// Si el servidor perdió la suscripción, la vuelve a guardar (si el celular todavía la tiene).
+async function repairSubscription(){
+  try {
+    const reg = await registerSW();
+    const sub = await reg.pushManager.getSubscription();
+    if (!sub){ setAvisosCfg({on:false, endpoint:'', sent:''}); return false; }
+    await saveSubscription(sub);
+    return true;
+  } catch (e) { console.warn(e); return false; }
+}
+
+async function enableAvisos(){
+  if (ui.avisosBusy || !pushSupported()) return;
+  // En iPhone el permiso se pide en el mismo toque del botón, antes de cualquier espera.
+  const permiso = Notification.permission === 'granted' ? Promise.resolve('granted') : Notification.requestPermission();
+  ui.avisosBusy = true;
+  renderAvisos();
+  try {
+    const perm = await permiso;
+    if (perm !== 'granted'){
+      toast(perm === 'denied' ? 'Bloqueaste los avisos. Si cambiás de idea, habilitalos en los ajustes del celular.' : 'No se activaron los avisos.');
+      return;
+    }
+    const reg = await registerSW();
+    const key = await vapidKey();
+    let sub = await reg.pushManager.getSubscription();
+    if (sub && !sameKey(sub, key)){ await sub.unsubscribe().catch(() => {}); sub = null; }
+    if (!sub) sub = await reg.pushManager.subscribe({userVisibleOnly:true, applicationServerKey:b64urlBytes(key)});
+    await saveSubscription(sub);
+    toast('🔔 ¡Listo! Te vamos a avisar cuando una planta necesite algo.');
+  } catch (e) {
+    console.warn(e);
+    toast(e.code ? e.message : 'No se pudieron activar los avisos. Probá de nuevo en un rato.');
+  } finally {
+    ui.avisosBusy = false;
+    renderAvisos();
+  }
+}
+async function disableAvisos(silent = false){
+  const c = avisosCfg();
+  setAvisosCfg({on:false, endpoint:'', sent:''});
+  clearTimeout(ui.avisosTimer);
+  ui.avisosTimer = 0;
+  if (!silent){ ui.avisosBusy = true; renderAvisos(); }
+  try { const reg = await registerSW(); const sub = await reg.pushManager.getSubscription(); if (sub) await sub.unsubscribe(); }
+  catch (e) { console.warn(e); }
+  if (c.id) try { await avisosPost({accion:'borrar', id:c.id}); } catch (e) { console.warn(e); }   // si falla, el servidor la borra solo al primer aviso rechazado
+  ui.avisosBusy = false;
+  renderAvisos();
+  if (!silent) toast('🔕 Listo, no te mandamos más avisos.');
+}
+async function testAvisos(){
+  const c = avisosCfg();
+  if (ui.avisosBusy || !c.id) return;
+  ui.avisosBusy = true;
+  renderAvisos();
+  try {
+    try { await avisosPost({accion:'probar', id:c.id}); }
+    catch (e) {
+      if (e.code !== 'sin_suscripcion' || !(await repairSubscription())) throw e;
+      await avisosPost({accion:'probar', id:c.id});
+    }
+    toast('📨 Aviso de prueba enviado: te tendría que llegar en unos segundos.');
+  } catch (e) {
+    if (e.code === 'suscripcion_vencida' || e.code === 'sin_suscripcion'){
+      setAvisosCfg({on:false, endpoint:'', sent:''});
+      toast('Los avisos se dieron de baja en este celular. Tocá «Activar avisos» de nuevo.');
+    } else toast(e.message);
+  } finally {
+    ui.avisosBusy = false;
+    renderAvisos();
+  }
+}
+// Cada cambio guardado actualiza las fechas en el servidor (un rato después, todo junto).
+function scheduleAvisosSync(){
+  if (!avisosCfg().on) return;
+  clearTimeout(ui.avisosTimer);
+  ui.avisosTimer = setTimeout(() => { ui.avisosTimer = 0; syncAvisos(); }, 2000);
+}
+// Las sincronizaciones van en fila, para que la última que llega al servidor sea la más nueva.
+function syncAvisos(opts = {}){
+  const run = () => doSyncAvisos(opts);
+  return ui.avisosQueue = (ui.avisosQueue || Promise.resolve()).then(run, run);
+}
+async function doSyncAvisos({force = false, keepalive = false}){
+  const c = avisosCfg();
+  if (!c.on || !c.id) return true;
+  const plan = avisosPlan(), sig = planSig(plan, c.hora);
+  if (!force && sig === c.sent) return true;
+  try {
+    await avisosPost({accion:'plan', id:c.id, plan, hora:c.hora, tz:tzName()}, keepalive);
+    setAvisosCfg({sent:sig});
+    return true;
+  } catch (e) {
+    if (e.code === 'sin_suscripcion') return repairSubscription();
+    console.warn('No se pudieron actualizar los avisos', e);   // se reintenta con el próximo cambio o al volver a la app
+    return false;
+  }
+}
+// Al abrir la app: si el celular dio de baja los avisos o sacaron el permiso, se apagan; si no, se ponen al día.
+async function checkAvisos(){
+  const c = avisosCfg();
+  if (!c.on || !servedOnline()) return;
+  if (!pushSupported() || Notification.permission !== 'granted') return disableAvisos(true);
+  try {
+    const reg = await registerSW();
+    const sub = await reg.pushManager.getSubscription();
+    if (!sub) return await disableAvisos(true);
+    if (sub.endpoint !== c.endpoint) await saveSubscription(sub);
+    else await syncAvisos();
+  } catch (e) { console.warn(e); }
+}
+async function setAvisosHora(hora){
+  const c = setAvisosCfg({hora});
+  if (!c.on) return;
+  toast(await syncAvisos({force:true}) ? `⏰ Listo: los avisos te van a llegar a las ${hora} h.` : 'No se pudo cambiar la hora. Revisá tu conexión y probá de nuevo.');
+  renderAvisos();
+}
+
+function avisosCardHTML(){
+  const st = avisosState(), c = avisosCfg(), dis = ui.avisosBusy ? ' disabled' : '';
+  const hora = `<div class="form" style="margin-top:14px"><label class="field"><span>¿A qué hora te aviso?</span><select id="avisos-hora"${dis}>${AVISOS_HORAS.map(h => `<option value="${h}"${h === c.hora ? ' selected' : ''}>${h} h</option>`).join('')}</select></label></div>`;
+  const privacy = '<p class="small muted" style="margin:12px 0 0">Para mandarte los avisos, el servidor guarda solo los nombres de tus plantas y las fechas de riego, abono y fotos de control (nada de fotos ni notas). Si desactivás los avisos, se borra todo.</p>';
+  let body;
+  if (st === 'archivo') body = '<p class="banner" style="margin:10px 0 0">Los avisos funcionan en la app publicada en Netlify.</p>';
+  else if (st === 'instalar') body = `<p class="muted">En iPhone, los avisos solo funcionan con Brote instalada en la pantalla de inicio (iOS 16.4 o más nuevo):</p>
+    <ol class="steps-n compact"><li>Abrila en Safari y tocá el botón Compartir.</li><li>Elegí «Agregar a pantalla de inicio».</li><li>Abrí Brote desde el ícono nuevo y volvé a esta pantalla.</li></ol>`;
+  else if (st === 'no-soportado') body = '<p class="muted">Este navegador no permite avisos. En Android usá Chrome; en iPhone, instalá Brote en la pantalla de inicio.</p>';
+  else if (st === 'bloqueado') body = '<p class="muted">Los avisos están bloqueados para Brote. Para habilitarlos, entrá a los ajustes del celular (o del navegador) → Notificaciones → Brote, permitilos y volvé a esta pantalla.</p>';
+  else if (st === 'activo') body = `<p class="ok-line">🔔 Avisos activados. Si alguna planta necesita algo, te escribimos a las ${c.hora} h.</p>${hora}
+    <div class="btn-row"><button class="btn" type="button" data-action="avisos-test"${dis}>Probar aviso</button><button class="btn ghost" type="button" data-action="avisos-off"${dis}>Desactivar</button></div>${privacy}`;
+  else body = `<p class="muted">Brote te avisa en el celular cuando una planta necesita agua, abono o una foto de control. Como mucho un aviso por día, y solo si hay algo que hacer.</p>${hora}
+    <div class="btn-row"><button class="btn primary" type="button" data-action="avisos-on"${dis}>${ui.avisosBusy ? 'Activando…' : 'Activar avisos'}</button></div>${privacy}`;
+  return `<section class="card" id="avisos-card"><h2>Avisos en el celular</h2>${body}</section>`;
+}
+function avisosNudgeHTML(){
+  if (!avisosCfg().nudge || !['apagado', 'instalar'].includes(avisosState())) return '';
+  return `<p class="care-line nudge" id="avisos-nudge">🔔 ¿Querés que te avise cuando una planta necesite agua? <a class="linkbtn" href="#ajustes" data-action="go-avisos">Activar avisos →</a>
+    <button class="icon-btn" type="button" data-action="nudge-off" aria-label="No mostrar más esta sugerencia">✕</button></p>`;
+}
+function renderAvisos(){
+  const card = $('#avisos-card');
+  if (card){
+    // Mientras está ocupado los botones se deshabilitan: el foco vuelve al terminar.
+    if (card.contains(document.activeElement)) ui.avisosFocus = true;
+    card.outerHTML = avisosCardHTML();
+    const btn = ui.avisosFocus && $('#avisos-card button:not([disabled])');
+    if (btn){ btn.focus({preventScroll:true}); ui.avisosFocus = false; }
+  } else ui.avisosFocus = false;
+  if (!avisosNudgeHTML()) $('#avisos-nudge')?.remove();
+}
+
+/* =====================================================================
    Render y navegación
    ===================================================================== */
 const VIEWS = {hoy:viewHoy, plantas:viewPlantas, cuidados:viewCuidados, guia:viewGuia, ajustes:viewAjustes};
@@ -2329,6 +2647,8 @@ function render(){
   badge.hidden = !due;
   badge.textContent = due > 99 ? '99+' : due;
   document.title = due ? `(${due}) ${BASE_TITLE}` : BASE_TITLE;
+  // Deja todo listo antes de que toquen «Activar avisos» (en iPhone conviene no hacer esperar al permiso).
+  if (tab === 'ajustes' && avisosState() === 'apagado'){ registerSW().catch(() => {}); vapidKey().catch(() => {}); }
 }
 function refresh(){
   render();
@@ -2447,6 +2767,15 @@ document.addEventListener('click', e => {
       if (confirm('¿Borrar TODAS las plantas, fotos e historial? Esta acción se puede deshacer solo durante unos segundos.'))
         { act('🗑️ Se borraron todos los datos', () => { state.plants = []; }); ui.galleryCache = {}; scheduleGC(); }
       break;
+    case 'avisos-on': enableAvisos(); break;
+    case 'avisos-off': disableAvisos(); break;
+    case 'avisos-test': testAvisos(); break;
+    case 'go-avisos': ui.scrollTo = 'avisos-card'; break;   // el enlace lleva a Ajustes y ahí baja hasta los avisos
+    case 'nudge-off':
+      setAvisosCfg({nudge:false});
+      $('#avisos-nudge')?.remove();
+      toast('Listo, no te lo muestro más. Los avisos se activan desde Ajustes cuando quieras.');
+      break;
   }
 });
 
@@ -2485,6 +2814,8 @@ document.addEventListener('change', async e => {
   }
   else if (el.id === 'set-model'){
     setModel(el.value);
+    const g = $('#gasto-card');
+    if (g) g.outerHTML = gastoHTML();   // el costo por foto depende del modelo
     toast(`Modelo elegido: ${MODEL_INFO[el.value][0]}`);
   }
   else if (el.id === 'photo-input' && el.files[0]){
@@ -2517,6 +2848,9 @@ document.addEventListener('change', async e => {
   else if (el.name === 'hemi'){
     act(`Hemisferio ${el.value === 'S' ? 'sur' : 'norte'} seleccionado`, () => { state.settings.hemisphere = el.value; });
   }
+  else if (el.id === 'avisos-hora'){
+    await setAvisosHora(clampInt(el.value, 0, 23, 9));
+  }
 });
 
 document.addEventListener('submit', e => {
@@ -2524,10 +2858,20 @@ document.addEventListener('submit', e => {
   if (e.target.id === 'log-form'){ e.preventDefault(); saveLogForm(e.target); }
 });
 
-window.addEventListener('hashchange', () => { closeModal(); render(); window.scrollTo(0, 0); });
+window.addEventListener('hashchange', () => {
+  closeModal();
+  render();
+  const target = ui.scrollTo && document.getElementById(ui.scrollTo);
+  ui.scrollTo = null;
+  if (target) target.scrollIntoView({block:'start'}); else window.scrollTo(0, 0);
+});
 // Si la pestaña queda abierta de un día para el otro, actualizar las tareas.
 function checkNewDay(){ const t = todayISO(); if (t !== ui.lastDay){ ui.lastDay = t; refresh(); } }
-document.addEventListener('visibilitychange', () => { if (!document.hidden) checkNewDay(); });
+document.addEventListener('visibilitychange', () => {
+  if (!document.hidden){ checkNewDay(); syncAvisos(); return; }
+  // Si cierran la app justo después de regar, las fechas nuevas salen igual.
+  if (ui.avisosTimer){ clearTimeout(ui.avisosTimer); ui.avisosTimer = 0; syncAvisos({keepalive:true}); }
+});
 setInterval(checkNewDay, 60 * 1000);
 // Sincronizar si la app está abierta en otra pestaña.
 window.addEventListener('storage', e => { if (e.key === STORAGE_KEY){ state = load(); refresh(); } });
@@ -2535,6 +2879,9 @@ window.addEventListener('storage', e => { if (e.key === STORAGE_KEY){ state = lo
 render();
 if (storageOK && !loadFailed) gcPhotos();
 try { localStorage.removeItem('brote.apiKey'); } catch {}   // de una versión anterior que guardaba la clave en el celular
+// El service worker solo recibe y muestra los avisos (no guarda nada en caché).
+if ('serviceWorker' in navigator && servedOnline()) registerSW().catch(e => console.warn('No se pudo registrar el service worker', e));
+checkAvisos();
 </script>
 </body>
 </html>

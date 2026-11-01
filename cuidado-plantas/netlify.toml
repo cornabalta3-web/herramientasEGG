@@ -1,5 +1,15 @@
 # Brote se publica en Netlify con "Base directory" = cuidado-plantas.
-# Las rutas de acá son relativas a esa carpeta. No hay paso de build ni dependencias.
+# Las rutas de acá son relativas a esa carpeta. No hay paso de build: Netlify
+# solo instala las dependencias de package.json, que usan las funciones de los avisos.
 [build]
   publish = "."
   functions = "netlify/functions"
+
+# @netlify/blobs (donde se guardan los avisos) pide Node 22 o más.
+[build.environment]
+  NODE_VERSION = "22"
+
+[functions]
+  node_bundler = "esbuild"
+  # web-push es CommonJS y usa módulos de Node: va tal cual, sin empaquetar.
+  external_node_modules = ["web-push"]
