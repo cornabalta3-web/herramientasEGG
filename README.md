@@ -15,6 +15,11 @@ Convierte una escritura de protocolo (.docx) en su primer testimonio: agrega el 
 ### ✍️ [Amanuense](./amanuense)
 _(Agregar descripción)_
 
+## Otras herramientas
+
+### 🌱 [Brote — Cuidado de plantas](./cuidado-plantas)
+App para el celular (se instala con ícono, como Déficit Tracker) con la agenda de riego y abono de tus plantas, ajuste según la estación, guía de 27 especies con toxicidad para mascotas, galería de fotos por planta y **diagnóstico con IA**: le sacás una foto y Claude te dice qué problemas tiene y qué hacer. Se publica en Netlify, con la clave de Claude guardada en el servidor. Instrucciones en [cuidado-plantas/README.md](./cuidado-plantas/README.md).
+
 ## Uso
 
 Cada carpeta contiene un archivo `index.html` autocontenido. Para usar cualquier herramienta:

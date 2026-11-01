@@ -1,0 +1,5 @@
+# Brote se publica en Netlify con "Base directory" = cuidado-plantas.
+# Las rutas de acá son relativas a esa carpeta. No hay paso de build ni dependencias.
+[build]
+  publish = "."
+  functions = "netlify/functions"
