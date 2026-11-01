@@ -314,6 +314,49 @@
   .steps{margin:8px 0 0;padding-left:20px;font-size:14.5px}
   .steps li{margin:5px 0}
 
+  /* ---------- Cuidados ---------- */
+  .care-cta{display:grid;grid-template-columns:1fr;margin-top:18px}
+  @media(min-width:640px){ .care-cta{grid-template-columns:1fr 1fr;gap:0 32px} }
+  .cta{display:flex;gap:16px;align-items:flex-start;border-top:1px solid var(--rule);padding:18px 0 22px}
+  .cta-ico{width:54px;height:66px;flex-shrink:0;border-radius:999px 999px 10px 10px;background:var(--sand);color:var(--moss);display:flex;align-items:center;justify-content:center}
+  .cta-ico svg{width:24px;height:24px}
+  .cta h2{font-family:var(--serif);font-size:22px;margin:0 0 4px}
+  .cta p{margin:0 0 12px;color:var(--muted);font-size:14px}
+  .care-line{font-family:var(--serif);font-style:italic;color:var(--moss);font-size:17px;margin:22px 0 0;display:flex;gap:10px;flex-wrap:wrap;align-items:baseline}
+  .care-line .linkbtn{font-family:var(--sans);font-style:normal}
+  .tlist{list-style:none;margin:0;padding:0}
+  .tlist li{border-bottom:1px solid var(--line)}
+  .row-btn{width:100%;display:flex;gap:14px;align-items:center;padding:11px 0;border:0;background:none;font:inherit;color:var(--ink);text-align:left;cursor:pointer}
+  .row-btn:hover strong{text-decoration:underline}
+  .row-btn .tt{flex:1;min-width:0}
+  .row-btn strong{display:block;font-family:var(--serif);font-weight:400;font-size:18px;line-height:1.25}
+  .row-btn small{display:block;color:var(--muted);font-size:13px;margin-top:1px}
+  .row-btn svg.i{color:var(--muted)}
+  .pe{width:42px;height:42px;border-radius:50%;background:var(--sand);display:flex;align-items:center;justify-content:center;font-size:20px;flex-shrink:0}
+  .sheet-title{font-family:var(--serif);font-size:32px;margin:6px 0 0;letter-spacing:-.01em}
+  .problem-hero{height:150px;border-radius:999px 999px 18px 18px;background:var(--sand);display:flex;align-items:center;justify-content:center;font-size:64px;margin:4px 0 18px}
+  .sym-group{margin-top:20px}
+  .sym-group .pills{margin-top:8px}
+  .sheet-bottom{position:sticky;bottom:calc(-30px - env(safe-area-inset-bottom));z-index:2;margin:22px -22px 0;padding:14px 22px calc(14px + env(safe-area-inset-bottom));background:var(--bg);border-top:1px solid var(--line)}
+  .sheet-bottom .btn{width:100%}
+  @media(min-width:760px){ .sheet-bottom{bottom:-30px;margin:22px -28px 0;padding:14px 28px} }
+  .result{padding:16px 0;border-bottom:1px solid var(--line)}
+  .result .problem-head strong{font-size:20px}
+  ol.steps-n.compact li{padding:8px 0;font-size:14px}
+  ol.steps-n.compact li::before{font-size:19px}
+  .progress{display:flex;align-items:center;gap:12px;margin:18px 0 6px;font-size:13px;color:var(--muted)}
+  .progress .bar{flex:1;height:3px;background:var(--line)}
+  .progress .bar i{display:block;height:100%;background:var(--moss)}
+  .steps-check{list-style:none;margin:0;padding:0;border-top:1px solid var(--rule)}
+  .steps-check li{border-bottom:1px solid var(--line)}
+  .steps-check button{width:100%;display:flex;gap:13px;align-items:flex-start;padding:13px 0;border:0;background:none;font:inherit;font-size:15.5px;line-height:1.4;color:var(--ink);text-align:left;cursor:pointer}
+  .steps-check .box{width:24px;height:24px;flex-shrink:0;border-radius:50%;border:1.5px solid var(--ink);display:flex;align-items:center;justify-content:center;margin-top:-1px}
+  .steps-check .box svg{width:14px;height:14px;opacity:0}
+  .steps-check [aria-pressed="true"] .box{background:var(--moss);border-color:var(--moss);color:#fff}
+  .steps-check [aria-pressed="true"] .box svg{opacity:1}
+  .steps-check [aria-pressed="true"] .tx{text-decoration:line-through;color:var(--muted)}
+  .danger-link{color:var(--danger)}
+
   /* ---------- Aviso flotante ---------- */
   #toast{position:fixed;left:0;right:0;margin:0 auto;width:max-content;max-width:calc(100vw - 28px);bottom:calc(172px + env(safe-area-inset-bottom));transform:translateY(16px);opacity:0;pointer-events:none;
     background:var(--ink);color:var(--on-ink);border-radius:16px;padding:11px 12px 11px 18px;display:flex;gap:12px;align-items:center;font-size:14.5px;
@@ -332,6 +375,7 @@
     <nav class="tabs" aria-label="Secciones">
       <a href="#hoy" data-tab="hoy"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2.5V5M12 19v2.5M2.5 12H5M19 12h2.5M5.3 5.3l1.8 1.8M16.9 16.9l1.8 1.8M5.3 18.7l1.8-1.8M16.9 7.1l1.8-1.8"/></svg><span class="lbl">Hoy</span><span class="badge" id="badge-hoy" hidden></span></a>
       <a href="#plantas" data-tab="plantas"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 21v-9"/><path d="M12 12c0-4.5-3.2-7.5-8-7.5 0 4.6 3.4 7.5 8 7.5z"/><path d="M12 14.5c0-3.8 2.8-6.5 7.5-6.5 0 3.9-2.9 6.5-7.5 6.5z"/></svg><span class="lbl">Jardín</span></a>
+      <a href="#cuidados" data-tab="cuidados"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M12 20s-7.5-4.6-7.5-10.1A4.1 4.1 0 0 1 12 7.6a4.1 4.1 0 0 1 7.5 2.3C19.5 15.4 12 20 12 20z"/><path d="M12 10.5v5M9.5 13h5"/></svg><span class="lbl">Cuidados</span></a>
       <a href="#guia" data-tab="guia"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 5.5c2.5-1 5.5-1 8 .5 2.5-1.5 5.5-1.5 8-.5v13c-2.5-1-5.5-1-8 .5-2.5-1.5-5.5-1.5-8-.5z"/><path d="M12 6v13.5"/></svg><span class="lbl">Guía</span></a>
       <a href="#ajustes" data-tab="ajustes"><svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M4 7h9M17 7h3M4 17h3M11 17h9"/><circle cx="15" cy="7" r="2"/><circle cx="9" cy="17" r="2"/></svg><span class="lbl">Ajustes</span></a>
     </nav>
@@ -393,7 +437,8 @@ const CATS = {interior:'Interior', suculenta:'Suculentas y cactus', huerta:'Huer
 const LOG_TYPES = {
   riego:{label:'Riego', emoji:'💧'}, abono:{label:'Abono', emoji:'🧪'}, trasplante:{label:'Trasplante', emoji:'🪴'},
   poda:{label:'Poda', emoji:'✂️'}, nota:{label:'Nota', emoji:'📝'}, alta:{label:'Se sumó a tu colección', emoji:'🌱'},
-  foto:{label:'Foto', emoji:'📷'}, diagnostico:{label:'Diagnóstico con IA', emoji:'🩺'}
+  foto:{label:'Foto', emoji:'📷'}, diagnostico:{label:'Diagnóstico con IA', emoji:'🩺'},
+  tratamiento:{label:'Tratamiento', emoji:'🩹'}
 };
 const TASK_ORDER = {riego:0, abono:1, revision:2};
 const TASK_VERB = {riego:'Regar', abono:'Abonar', revision:'Foto de control'};
@@ -441,6 +486,157 @@ const DIAG_STATES = {
 };
 const PROBLEM_STATES = ['leve', 'moderado', 'grave'];
 const LEVELS = ['alta', 'media', 'baja'];
+/* =====================================================================
+   Cuidados: síntomas, problemas frecuentes y tratamientos.
+   Cada problema tiene sus síntomas con un peso (3 = típico, 2 = frecuente,
+   1 = posible) para el buscador, y "kw" para reconocerlo en un diagnóstico
+   de la IA.
+   ===================================================================== */
+const CARE_CATS = {riego:'Riego', ambiente:'Luz y ambiente', plagas:'Plagas', hongos:'Hongos', nutrientes:'Nutrientes'};
+const SYMPTOMS = [
+  {g:'Hojas', items:[
+    ['hojas-amarillas', 'Hojas amarillas'], ['puntas-secas', 'Puntas o bordes secos'], ['manchas-marrones', 'Manchas marrones o negras'],
+    ['manchas-claras', 'Manchas blancas o plateadas'], ['polvo-blanco', 'Polvo blanco'], ['mustia', 'Caídas o mustias'],
+    ['se-caen', 'Se le caen las hojas'], ['enrolladas', 'Enrolladas o arrugadas'], ['pegajosas', 'Pegajosas'],
+    ['palidas', 'Pálidas o sin color'], ['deformadas', 'Hojas nuevas deformadas'],
+  ]},
+  {g:'Crecimiento', items:[['se-estira', 'Se estira hacia la luz'], ['crece-lento', 'Crece poco o nada'], ['no-florece', 'No florece']]},
+  {g:'Bichos', items:[
+    ['algodon', 'Bolitas blancas como algodón'], ['bichitos', 'Bichitos verdes o negros'], ['puntitos', 'Puntitos en las hojas'],
+    ['telaranas', 'Telarañas finitas'], ['mosquitas-tierra', 'Mosquitas negras en la tierra'], ['mosquitas-blancas', 'Mosquitas blancas al moverla'],
+  ]},
+  {g:'Tallo y tierra', items:[
+    ['tallo-blando', 'Tallo blando u oscuro'], ['olor', 'Olor feo en la tierra'], ['tierra-humeda', 'Tierra siempre húmeda'],
+    ['tierra-seca', 'Tierra muy seca'], ['costra', 'Costra blanca en la tierra'], ['moho-tierra', 'Moho sobre la tierra'],
+  ]},
+];
+const SYMPTOM_LABEL = Object.fromEntries(SYMPTOMS.flatMap(g => g.items));
+const PROBLEMS = [
+  {id:'exceso-riego', cat:'riego', emoji:'💧', name:'Exceso de riego', short:'La tierra no llega a secarse y las raíces se ahogan.',
+    signs:['Hojas amarillas y blandas, sobre todo las de abajo.', 'La tierra sigue húmeda varios días después de regar.', 'Mosquitas chiquitas volando cerca de la tierra.', 'En casos avanzados, tallo blando u oscuro en la base y olor feo.'],
+    causes:['Regar por costumbre, sin tocar la tierra.', 'Maceta sin agujeros o plato con agua acumulada.', 'Poca luz o frío: la planta consume menos agua.', 'Sustrato muy compacto que retiene demasiada agua.'],
+    steps:['Dejá de regar hasta que se sequen los primeros 3–5 cm de tierra (en suculentas, toda la maceta).', 'Vaciá el plato y fijate que la maceta tenga agujeros de drenaje.', 'Cortá las hojas amarillas desde la base con una tijera limpia.', 'Si el tallo está blando o la tierra huele mal, revisá las raíces (mirá «Raíces podridas»).', 'Cuando se recupere, espaciá el riego y tocá la tierra antes de cada riego.'],
+    prevent:['Regá cuando la tierra lo pida, no por calendario.', 'Usá sustrato aireado (con perlita o corteza) y macetas con drenaje.', 'En otoño e invierno, regá menos.'],
+    sym:{'hojas-amarillas':3, 'tierra-humeda':3, 'mustia':1, 'tallo-blando':2, 'olor':2, 'mosquitas-tierra':2, 'moho-tierra':2, 'manchas-marrones':1, 'se-caen':1},
+    kw:['exceso de riego', 'riego excesivo', 'exceso de agua', 'encharc', 'demasiada agua', 'riego en exceso', 'sobrerriego']},
+  {id:'falta-riego', cat:'riego', emoji:'🏜️', name:'Falta de riego', short:'Pasó sed: pierde firmeza y se secan los bordes.',
+    signs:['Hojas caídas o mustias que se recuperan al regar.', 'Bordes y puntas secos y crocantes.', 'La tierra está muy seca, dura o se despega del borde de la maceta.', 'En suculentas, hojas finas y arrugadas.'],
+    causes:['Riegos muy espaciados o escasos.', 'Calor, sol fuerte o calefacción que secan rápido la tierra.', 'Sustrato tan seco que el agua escurre sin mojarlo.', 'Maceta chica para el tamaño de la planta.'],
+    steps:['Regá a fondo hasta que salga agua por los agujeros de drenaje.', 'Si la tierra está muy seca, sumergí la maceta en un balde con agua 20–30 minutos y dejala escurrir.', 'Cortá solo las partes que estén totalmente secas.', 'Acortá la frecuencia de riego en la app (en verano suele necesitar más).'],
+    prevent:['En épocas de calor, tocá la tierra cada pocos días.', 'Si la maceta se seca enseguida, pasala a una más grande.'],
+    sym:{'mustia':3, 'tierra-seca':3, 'puntas-secas':2, 'enrolladas':2, 'se-caen':1, 'hojas-amarillas':1},
+    kw:['falta de riego', 'falta de agua', 'deshidrat', 'riego insuficiente', 'poco riego', 'sequía', 'sequia']},
+  {id:'pudricion-raiz', cat:'riego', emoji:'🥀', name:'Raíces podridas', short:'Por exceso de agua, las raíces se pudren y la planta colapsa.',
+    signs:['Tallo blando, oscuro o hundido en la base.', 'La planta está mustia aunque la tierra esté húmeda.', 'Olor a podrido en la tierra.', 'Raíces marrones y blandas (las sanas son claras y firmes).'],
+    causes:['Riego en exceso durante semanas.', 'Maceta sin drenaje.', 'Frío con la tierra mojada.'],
+    steps:['Sacá la planta de la maceta y quitá la tierra de las raíces.', 'Cortá todas las raíces blandas y oscuras con una tijera desinfectada con alcohol.', 'Dejá secar las raíces al aire una o dos horas (en suculentas, un día).', 'Plantala en sustrato nuevo y aireado, en una maceta limpia con drenaje.', 'Regá poco hasta que veas brotes nuevos.', 'Si casi no quedan raíces sanas, hacé esquejes de las partes sanas.'],
+    prevent:['Los mismos cuidados que para el exceso de riego.'],
+    sym:{'tallo-blando':3, 'olor':3, 'mustia':2, 'tierra-humeda':2, 'hojas-amarillas':1},
+    kw:['pudrición', 'pudricion', 'podrid']},
+  {id:'poca-luz', cat:'ambiente', emoji:'🌥️', name:'Falta de luz', short:'Crece estirada, pálida y despacio, buscando la ventana.',
+    signs:['Tallos largos y finos, con mucho espacio entre hojas.', 'Se inclina hacia la ventana.', 'Hojas nuevas más chicas o pálidas; pierde el variegado.', 'No florece o crece muy poco.'],
+    causes:['Lejos de la ventana o en un rincón oscuro.', 'Cortinas gruesas o mucha sombra afuera.'],
+    steps:['Acercala a una ventana luminosa (si va a recibir sol directo, acostumbrala de a poco).', 'Girá la maceta una vez por semana para que crezca pareja.', 'Regá un poco menos: con menos luz consume menos agua.', 'Podá los tallos muy estirados para que rebrote más compacta.'],
+    prevent:['Revisá en la Guía cuánta luz necesita su especie.'],
+    sym:{'se-estira':3, 'palidas':2, 'crece-lento':2, 'no-florece':2, 'hojas-amarillas':1},
+    kw:['falta de luz', 'poca luz', 'luz insuficiente', 'etiol']},
+  {id:'quemadura-sol', cat:'ambiente', emoji:'☀️', name:'Quemadura de sol', short:'Manchas secas en la cara de las hojas que da al sol.',
+    signs:['Manchas blancas, amarillas o marrones secas en las hojas más expuestas.', 'Aparecen de golpe después de moverla o de un día de calor.', 'Las hojas que quedan a la sombra se ven sanas.'],
+    causes:['Sol directo fuerte en una planta de interior.', 'Pasarla de golpe de la sombra al sol.', 'Sol a través del vidrio en verano.'],
+    steps:['Pasala a un lugar con luz filtrada (alcanza con una cortina liviana).', 'Cortá las hojas muy dañadas: esas manchas no se recuperan.', 'Si querés que tome sol, acostumbrala de a poco: una hora más por semana.'],
+    prevent:['Ojo con los cambios de estación: en verano el sol entra distinto.'],
+    sym:{'manchas-claras':3, 'manchas-marrones':2, 'palidas':1, 'puntas-secas':1},
+    kw:['quemadura', 'sol directo', 'insolación', 'insolacion', 'exceso de sol', 'exceso de luz']},
+  {id:'aire-seco', cat:'ambiente', emoji:'🌬️', name:'Aire seco', short:'Le falta humedad ambiente y se le secan las puntas.',
+    signs:['Puntas y bordes marrones y crocantes.', 'Hojas enrolladas (muy típico en calatheas y helechos).', 'Empeora cerca de estufas, aire acondicionado o calefacción.'],
+    causes:['Calefacción o aire acondicionado cerca.', 'Plantas de selva en ambientes muy secos.'],
+    steps:['Alejala de estufas, radiadores y salidas de aire.', 'Subí la humedad: agrupá plantas o apoyá la maceta sobre una bandeja con piedras y agua (sin que el agua toque la maceta).', 'Recortá las puntas secas con tijera limpia, siguiendo la forma de la hoja.', 'Revisá el envés de las hojas: el aire seco favorece a la arañuela.'],
+    prevent:['En invierno, juntá las plantas que piden humedad.', 'Los baños luminosos son ideales para helechos y calatheas.'],
+    sym:{'puntas-secas':3, 'enrolladas':2, 'telaranas':1, 'puntitos':1},
+    kw:['aire seco', 'humedad ambiente', 'baja humedad', 'ambiente seco', 'falta de humedad']},
+  {id:'estres-cambio', cat:'ambiente', emoji:'🥶', name:'Cambio brusco o frío', short:'Un cambio de lugar, una corriente de aire o el frío la estresan.',
+    signs:['Se le caen hojas de golpe, aunque se vean sanas.', 'Hojas con manchas oscuras o translúcidas después de una noche fría.', 'Hace poco hubo una mudanza, un cambio de lugar o un trasplante.'],
+    causes:['Cambios de lugar o de luz.', 'Corrientes de aire, ventanas frías o aire acondicionado directo.', 'Temperaturas bajas para plantas tropicales.'],
+    steps:['Elegile un lugar estable, luminoso y sin corrientes, y dejala ahí.', 'En invierno, alejala de ventanas frías y de salidas de aire.', 'No la abones ni la trasplantes mientras se recupera.', 'Tené paciencia: suele rebrotar en unas semanas.'],
+    prevent:['Evitá moverla seguido (los ficus son muy sensibles).'],
+    sym:{'se-caen':3, 'manchas-marrones':1, 'mustia':1},
+    kw:['estrés', 'estres', 'cambio de lugar', 'corriente', 'frío', 'frio', 'helada']},
+  {id:'sales-agua', cat:'nutrientes', emoji:'🧂', name:'Sales del agua o exceso de abono', short:'Se acumulan sales en la tierra y queman las raíces.',
+    signs:['Costra blanca sobre la tierra o en el borde de la maceta.', 'Puntas marrones, sobre todo después de abonar.', 'Hojas que se ven quemadas aunque el riego sea correcto.'],
+    causes:['Agua de la canilla con mucho cloro o sales.', 'Abonar muy seguido o con mucha dosis.', 'Abonar con la tierra seca.'],
+    steps:['Lavá la tierra: regá con abundante agua y dejala escurrir bien, dos o tres veces seguidas.', 'Raspá la costra blanca de la superficie.', 'Usá agua reposada 24 horas, filtrada o de lluvia.', 'Suspendé el abono un mes y después usalo a la mitad de la dosis.'],
+    prevent:['Abonar solo en primavera y verano, con la tierra húmeda.', 'Cada tanto, lavá la tierra con abundante agua.'],
+    sym:{'costra':3, 'puntas-secas':2, 'manchas-marrones':1},
+    kw:['sales', 'cloro', 'exceso de fertiliz', 'exceso de abono', 'sobrefertiliz', 'salinidad']},
+  {id:'falta-nutrientes', cat:'nutrientes', emoji:'🌱', name:'Falta de nutrientes', short:'La tierra se agotó: crece lento y amarillea parejo.',
+    signs:['Hojas viejas amarillas de forma pareja.', 'Hojas nuevas chicas y crecimiento lento en primavera o verano.', 'Hace meses (o años) que no se abona ni se cambia la tierra.'],
+    causes:['Mucho tiempo en la misma tierra.', 'No abonar en la temporada de crecimiento.'],
+    steps:['Abonala con un fertilizante equilibrado, diluido según la etiqueta, en primavera y verano.', 'Si hace más de dos años que está en la misma maceta, trasplantala a sustrato nuevo.', 'Activá el recordatorio de abono en la app (Editar → Abonar cada).'],
+    prevent:['Abono cada 2–4 semanas en la temporada de crecimiento, según la especie.', 'Trasplante cada 1–2 años, en primavera.'],
+    sym:{'hojas-amarillas':2, 'palidas':2, 'crece-lento':3},
+    kw:['nutrient', 'carencia', 'clorosis', 'deficiencia', 'falta de abono', 'nitrógeno', 'nitrogeno']},
+  {id:'cochinilla', cat:'plagas', emoji:'🐛', name:'Cochinilla', short:'Bichos blancos algodonosos o caparazones que chupan la savia.',
+    signs:['Bolitas blancas como algodón en las axilas de las hojas y en el envés.', 'O caparazones marrones chiquitos pegados a tallos y nervaduras.', 'Hojas pegajosas y, a veces, hormigas o un polvillo negro (fumagina).'],
+    causes:['Llega con plantas nuevas.', 'Ambientes cálidos y secos.'],
+    steps:['Aislala para que no pase a otras plantas.', 'Sacá las cochinillas con un hisopo mojado en alcohol.', 'Lavá hojas y tallos con jabón potásico diluido según la etiqueta (aplicalo al atardecer, no a pleno sol).', 'Repetí cada 5–7 días durante 3 o 4 semanas: los huevos siguen naciendo.', 'Si persiste, sumá aceite de neem según la etiqueta.'],
+    prevent:['Revisá y aislá unas semanas las plantas nuevas.', 'Limpiá las hojas cada tanto.'],
+    sym:{'algodon':3, 'pegajosas':2, 'hojas-amarillas':1, 'se-caen':1},
+    kw:['cochinilla']},
+  {id:'pulgon', cat:'plagas', emoji:'🐞', name:'Pulgón', short:'Bichitos verdes o negros en los brotes tiernos.',
+    signs:['Colonias de bichitos verdes, negros o amarillos en brotes y pimpollos.', 'Hojas nuevas enrolladas o deformadas.', 'Una sustancia pegajosa (melaza) y hormigas.'],
+    causes:['Brotes tiernos en primavera.', 'Exceso de abono con nitrógeno.'],
+    steps:['Sacalos con un chorro de agua o con los dedos.', 'Pulverizá jabón potásico (según la etiqueta) sobre las zonas afectadas, incluido el envés.', 'Repetí cada 3–5 días hasta que no aparezcan más.', 'Cortá los brotes muy infestados.'],
+    prevent:['Revisá los brotes nuevos en primavera.', 'No te excedas con el abono.'],
+    sym:{'bichitos':3, 'deformadas':2, 'pegajosas':2, 'enrolladas':1},
+    kw:['pulgón', 'pulgon', 'áfido', 'afido']},
+  {id:'aranuela', cat:'plagas', emoji:'🕷️', name:'Arañuela (araña roja)', short:'Ácaros diminutos que dejan las hojas punteadas.',
+    signs:['Puntitos amarillos o plateados en las hojas, como un punteado.', 'Telarañas muy finitas en el envés y entre las hojas.', 'Hojas apagadas, como con polvo, que después se secan.'],
+    causes:['Aire seco y calor (estufas, verano).', 'Plantas estresadas.'],
+    steps:['Aislala.', 'Duchá la planta, sobre todo el envés de las hojas.', 'Subí la humedad ambiente (mirá «Aire seco»).', 'Aplicá jabón potásico o aceite de neem cada 3–5 días, al menos 3 veces.', 'Cortá las hojas muy afectadas.'],
+    prevent:['Mantené buena humedad ambiente.', 'Revisá el envés de las hojas cada tanto.'],
+    sym:{'puntitos':3, 'telaranas':3, 'palidas':1, 'se-caen':1, 'puntas-secas':1},
+    kw:['arañuela', 'aranuela', 'araña roja', 'ácaro', 'acaro']},
+  {id:'trips', cat:'plagas', emoji:'🦗', name:'Trips', short:'Insectos alargados diminutos que raspan las hojas.',
+    signs:['Manchas plateadas o brillantes con puntitos negros.', 'Hojas nuevas deformadas.', 'Insectitos alargados que se mueven al tocar la hoja.'],
+    causes:['Ambientes cálidos y secos.', 'Llegan con plantas o flores nuevas.'],
+    steps:['Aislala.', 'Duchá bien la planta.', 'Aplicá jabón potásico o aceite de neem cada 5 días, 3 o 4 veces.', 'Poné trampas adhesivas (azules o amarillas) cerca de la planta.'],
+    prevent:['Revisá las plantas nuevas antes de juntarlas con las demás.'],
+    sym:{'manchas-claras':2, 'puntitos':2, 'deformadas':2},
+    kw:['trips']},
+  {id:'mosca-blanca', cat:'plagas', emoji:'🪰', name:'Mosca blanca', short:'Mosquitas blancas que vuelan al mover la planta.',
+    signs:['Nubecitas de mosquitas blancas al mover las hojas.', 'Huevos y larvas en el envés.', 'Hojas amarillentas y pegajosas.'],
+    causes:['Calor y poca ventilación.', 'Muy común en la huerta y en aromáticas.'],
+    steps:['Colgá trampas adhesivas amarillas cerca de la planta.', 'Pulverizá jabón potásico en el envés de las hojas.', 'Repetí cada 5–7 días; si sigue, usá aceite de neem.', 'Mejorá la ventilación.'],
+    prevent:['Revisá el envés de las hojas, sobre todo en verano.'],
+    sym:{'mosquitas-blancas':3, 'pegajosas':2, 'hojas-amarillas':1},
+    kw:['mosca blanca']},
+  {id:'mosquita-sustrato', cat:'plagas', emoji:'🦟', name:'Mosquita del sustrato', short:'Mosquitas negras que viven en la tierra húmeda.',
+    signs:['Mosquitas negras chiquitas volando cerca de la tierra.', 'Larvas finitas en la superficie del sustrato.', 'La tierra suele estar siempre húmeda.'],
+    causes:['Riego en exceso y sustrato con mucha materia orgánica.'],
+    steps:['Dejá secar bien los primeros centímetros de tierra entre riegos.', 'Poné trampas adhesivas amarillas para los adultos.', 'Cubrí la superficie con una capa de arena o piedritas.', 'Regá desde abajo: agua en el plato y retirá lo que sobre a los 20 minutos.'],
+    prevent:['No riegues de más: es la causa principal.'],
+    sym:{'mosquitas-tierra':3, 'tierra-humeda':2, 'moho-tierra':1},
+    kw:['mosquita', 'sciár', 'sciar', 'fungus']},
+  {id:'oidio', cat:'hongos', emoji:'🌫️', name:'Oídio', short:'Hongo que deja un polvo blanco sobre las hojas.',
+    signs:['Polvo blanco como harina sobre las hojas (se va al frotarlo).', 'Hojas que se deforman, amarillean y se secan.', 'Común en huerta, rosales y suculentas.'],
+    causes:['Poca ventilación.', 'Días cálidos con noches frescas y húmedas.', 'Plantas muy juntas.'],
+    steps:['Cortá y tirá las hojas más afectadas (no al compost).', 'Mejorá la ventilación y separá las plantas.', 'Pulverizá una mezcla casera: una cucharadita de bicarbonato por litro de agua con unas gotas de jabón potásico. Probala antes en una hoja y repetí cada 5–7 días.', 'Si avanza, usá un fungicida a base de azufre siguiendo la etiqueta.'],
+    prevent:['Regá la tierra, no las hojas, y mejor a la mañana.', 'Dejá espacio entre las plantas.'],
+    sym:{'polvo-blanco':3, 'deformadas':1, 'hojas-amarillas':1},
+    kw:['oídio', 'oidio', 'polvo blanco', 'cenicilla']},
+  {id:'manchas-hongos', cat:'hongos', emoji:'🍂', name:'Manchas por hongos', short:'Manchas marrones o negras que crecen, a veces con borde amarillo.',
+    signs:['Manchas marrones o negras, a veces con un halo amarillo alrededor.', 'Las manchas crecen y se juntan.', 'Aparecen después de mojar las hojas o con mucha humedad.'],
+    causes:['Agua que queda sobre las hojas.', 'Poca ventilación y humedad alta.', 'Herramientas o plantas contagiadas.'],
+    steps:['Cortá las hojas con manchas con una tijera desinfectada con alcohol.', 'No mojes las hojas al regar y regá a la mañana.', 'Mejorá la ventilación.', 'Si sigue avanzando, aplicá un fungicida a base de cobre según la etiqueta.'],
+    prevent:['Desinfectá la tijera entre planta y planta.', 'No pulverices agua sobre las hojas en lugares sin ventilación.'],
+    sym:{'manchas-marrones':3, 'hojas-amarillas':1, 'se-caen':1},
+    kw:['hongo', 'fúngic', 'fungic', 'mancha foliar', 'antracnosis', 'bacteri', 'roya']},
+];
+const PROBLEM_BY_ID = Object.fromEntries(PROBLEMS.map(p => [p.id, p]));
+// Orden para reconocer un problema en el texto de la IA: primero los más específicos.
+const PROBLEM_MATCH_ORDER = ['cochinilla', 'pulgon', 'aranuela', 'trips', 'mosca-blanca', 'mosquita-sustrato', 'oidio', 'pudricion-raiz',
+  'sales-agua', 'quemadura-sol', 'manchas-hongos', 'falta-nutrientes', 'aire-seco', 'poca-luz', 'falta-riego', 'exceso-riego', 'estres-cambio'];
+
 /* =====================================================================
    Utilidades
    ===================================================================== */
@@ -515,6 +711,23 @@ function normalizeLog(l){
   }
   return out;
 }
+function normalizeTreatment(t){
+  if (!t || typeof t !== 'object') return null;
+  const title = str(t.title, 120).trim();
+  if (!title || !isValidISO(t.createdAt)) return null;
+  return {
+    id: typeof t.id === 'string' && t.id ? t.id.slice(0, 40) : uid(),
+    title,
+    problemId: PROBLEM_BY_ID[t.problemId] ? t.problemId : null,
+    origin: ['ia', 'sintomas', 'guia', 'manual'].includes(t.origin) ? t.origin : 'manual',
+    diagLogId: typeof t.diagLogId === 'string' && t.diagLogId ? t.diagLogId.slice(0, 40) : null,
+    createdAt: t.createdAt,
+    status: t.status === 'resuelto' ? 'resuelto' : 'activo',
+    resolvedAt: isValidISO(t.resolvedAt) ? t.resolvedAt : null,
+    steps: Array.isArray(t.steps) ? t.steps.filter(x => x && typeof x.text === 'string' && x.text.trim()).slice(0, 12)
+      .map(x => ({text:x.text.trim().slice(0, 400), done:x.done === true})) : [],
+  };
+}
 function normalizePlant(p){
   if (!p || typeof p !== 'object') return null;
   const name = str(p.name, 60).trim();
@@ -536,6 +749,7 @@ function normalizePlant(p){
     lastFert: isValidISO(p.lastFert) ? p.lastFert : null,
     snooze,
     reviewDue: isValidISO(p.reviewDue) ? p.reviewDue : null,
+    treatments: Array.isArray(p.treatments) ? p.treatments.map(normalizeTreatment).filter(Boolean).slice(-30) : [],
     notes: str(p.notes, 1000),
     createdAt: isValidISO(p.createdAt) ? p.createdAt : todayISO(),
     log: Array.isArray(p.log) ? p.log.map(normalizeLog).filter(Boolean).slice(-500) : [],
@@ -579,7 +793,7 @@ function save(){
 
 let loadFailed = false;
 let state = load();
-const ui = {search:'', locFilter:'', weekDate:null, guideSearch:'', guideFilter:'todas', modal:null, formPhotoSet:undefined, formAnalysis:null,
+const ui = {search:'', locFilter:'', weekDate:null, careFilter:'', sym:{plantId:'', selected:new Set()}, guideSearch:'', guideFilter:'todas', modal:null, formPhotoSet:undefined, formAnalysis:null,
             diagNote:'', busy:false, photoToken:0, galleryCache:{}, lastDay:todayISO()};
 
 // Aplica un cambio; si falla o no se puede guardar, vuelve atrás. Devuelve la foto previa (para "Deshacer").
@@ -677,6 +891,8 @@ const ICON = {
   clock: '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" aria-hidden="true"><circle cx="12" cy="12" r="8"/><path d="M12 8v4.5l3 1.8"/></svg>',
   camera: '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round" aria-hidden="true"><path d="M4 8.5h3l1.8-2.5h6.4L17 8.5h3V19H4z"/><circle cx="12" cy="13.3" r="3.3"/></svg>',
   back: '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg>',
+  chev: '<svg class="i chev" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg>',
+  list: '<svg class="i" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M9 6.5h11M9 12h11M9 17.5h11"/><path d="M4 6.5l1 1 2-2M4 12l1 1 2-2M4 17.5l1 1 2-2"/></svg>',
 };
 function careChips(sp){
   const pet = petInfo(sp);
@@ -753,7 +969,11 @@ function viewHoy(){
     <div class="sec"><h2>La semana</h2><span class="aside legend"><i class="riego"></i>riego<i class="abono"></i>abono<i class="revision"></i>fotos</span></div>
     <div id="week">${weekHTML()}</div>
   </section>`;
-  return head(lead) + today + week;
+  const treating = state.plants.flatMap(p => activeTreatments(p).map(t => ({p, t})));
+  const care = treating.length
+    ? `<section><div class="sec"><h2>En tratamiento</h2><span class="aside"><a class="linkbtn" href="#cuidados">Cuidados →</a></span></div>${treatRowsHTML(treating)}</section>`
+    : '<p class="care-line">¿Alguna planta anda mal? <a class="linkbtn" href="#cuidados">Ver qué le pasa →</a></p>';
+  return head(lead) + today + care + week;
 }
 
 // Tira de los próximos 7 días: al tocar un día se ve qué toca.
@@ -942,6 +1162,11 @@ function detailHTML(p){
       <button class="btn ghost" type="button" data-action="log-form" data-id="${p.id}">Registrar…</button>
     </div>
     <div class="detail-section">
+      <div class="section-head"><h3>Salud</h3><button class="btn small" type="button" data-action="symptoms" data-id="${p.id}">¿Le pasa algo?</button></div>
+      ${activeTreatments(p).length ? treatRowsHTML(activeTreatments(p).map(t => ({p, t})), false) : '<p class="note">Sin problemas en curso.</p>'}
+      ${(p.treatments || []).some(t => t.status === 'resuelto') ? `<details style="margin-top:10px"><summary>Tratamientos terminados</summary>${treatRowsHTML(p.treatments.filter(t => t.status === 'resuelto').map(t => ({p, t})), false)}</details>` : ''}
+    </div>
+    <div class="detail-section">
       <div class="section-head"><h3>Fotos y diagnósticos</h3>
         <label class="btn small">${ICON.camera} Sacar foto<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label></div>
       <div id="gallery" class="gallery" data-plant="${p.id}">${ui.galleryCache[p.id] || '<span class="small muted">Cargando fotos…</span>'}</div>
@@ -1047,6 +1272,7 @@ function openModal(html, info, label){
 }
 function closeModal(){ if (modal.open) modal.close(); }
 modal.addEventListener('close', () => {
+  if (modal.open) return;   // se volvió a abrir antes de que llegara este aviso
   ui.modal = null; ui.formPhotoSet = undefined; ui.formAnalysis = null; ui.diagNote = ''; ui.photoToken++;
   modalBody.innerHTML = '';
 });
@@ -1195,7 +1421,7 @@ async function savePlantForm(form){
       Object.assign(p, data);
       if (set === null) p.photo = null;
     } else {
-      p = {id:plantId, createdAt:t, snooze:{}, reviewDue:null, photo:null, log:[{id:uid(), date:t, type:'alta', text:''}], ...data};
+      p = {id:plantId, createdAt:t, snooze:{}, reviewDue:null, treatments:[], photo:null, log:[{id:uid(), date:t, type:'alta', text:''}], ...data};
       state.plants.push(p);
     }
     if (set){
@@ -1387,6 +1613,12 @@ function diagResultHTML(entry, p, hasPhoto){
       ${pr.causa ? `<p><b>Causa probable:</b> ${esc(pr.causa)}</p>` : ''}
       ${pr.tratamiento.length ? `<ul class="tips">${li(pr.tratamiento)}</ul>` : ''}
     </div>`).join('');
+  if (PROBLEM_STATES.includes(d.estado) && getPlant(p.id)){
+    const tr = treatmentForDiag(p, entry);
+    h += `<div class="btn-row" style="margin-top:18px">${tr
+      ? `<button class="btn" type="button" data-action="treat-open" data-id="${p.id}" data-tid="${esc(tr.id)}">Ver tratamiento (${treatProgress(tr)})</button>`
+      : `<button class="btn primary" type="button" data-action="treat-from-diag" data-id="${p.id}" data-log="${esc(entry.id)}">Empezar tratamiento</button>`}</div>`;
+  }
   if (d.observaciones.length) h += `<details style="margin-top:14px"><summary>Lo que se ve en la foto</summary><ul class="tips">${li(d.observaciones)}</ul></details>`;
   if (d.consultar_experto) h += '<p class="banner" style="margin-top:14px">Conviene consultar en un vivero: llevá una hoja afectada o mostrales esta foto.</p>';
   const latest = p.log.filter(l => l.type === 'diagnostico').pop();
@@ -1573,6 +1805,266 @@ async function callClaude(imageDataURL, contexto){
   return {diag, model:served, cost:costOf(served, data.uso)};
 }
 
+/* =====================================================================
+   Cuidados: buscador de síntomas, fichas de problemas y tratamientos
+   ===================================================================== */
+const activeTreatments = p => (p.treatments || []).filter(t => t.status === 'activo');
+const findTreatment = (p, tid) => p && (p.treatments || []).find(t => t.id === tid);
+const treatProgress = t => `${t.steps.filter(s => s.done).length} de ${t.steps.length} ${plural(t.steps.length, 'paso', 'pasos')}`;
+const plantSub = p => [speciesOf(p).name, p.location].filter(Boolean).map(esc).join(' · ');
+
+// Filas de tratamientos. Con showPlant, el título de cada fila es la planta.
+function treatRowsHTML(items, showPlant = true){
+  return `<ul class="tlist">${items.map(({p, t}) => `<li><button type="button" class="row-btn" data-action="treat-open" data-id="${p.id}" data-tid="${esc(t.id)}">
+      <span class="mini-thumb">${photoOrEmoji(p)}</span>
+      <span class="tt"><strong>${esc(showPlant ? p.name : t.title)}</strong><small>${showPlant ? `${esc(t.title)} · ` : ''}${t.status === 'activo' ? treatProgress(t) : 'Curada'}</small></span>
+      ${ICON.chev}</button></li>`).join('')}</ul>`;
+}
+
+function viewCuidados(){
+  const active = state.plants.flatMap(p => activeTreatments(p).map(t => ({p, t})));
+  const cured = state.plants.reduce((n, p) => n + (p.treatments || []).filter(t => t.status === 'resuelto').length, 0);
+  const cats = [['', 'Todos'], ...Object.entries(CARE_CATS)];
+  return `<div class="page-head"><p class="eyebrow">Salud de tus plantas</p><h1>Cuidados</h1><p class="lead">¿Qué le pasa a tu planta?</p></div>
+    <div class="care-cta">
+      <article class="cta"><span class="cta-ico" aria-hidden="true">${ICON.camera}</span>
+        <div><h2>Sacale una foto</h2><p>La IA la mira y te dice qué tiene y cómo solucionarlo.</p>
+        <button class="btn small primary" type="button" data-action="care-photo">Sacar foto</button></div></article>
+      <article class="cta"><span class="cta-ico" aria-hidden="true">${ICON.list}</span>
+        <div><h2>Contame qué ves</h2><p>Marcá los síntomas y te digo las causas más probables. Gratis y sin IA.</p>
+        <button class="btn small" type="button" data-action="symptoms">Buscar por síntomas</button></div></article>
+    </div>
+    <section>
+      <div class="sec"><h2>En tratamiento</h2><span class="aside">${active.length ? `${active.length} ${plural(active.length, 'planta', 'plantas')}` : ''}${active.length && cured ? ' · ' : ''}${cured ? `${cured} ${plural(cured, 'curada', 'curadas')}` : ''}</span></div>
+      ${active.length ? treatRowsHTML(active) : '<p class="tipline">Ninguna planta en tratamiento. ¡Bien ahí!</p>'}
+    </section>
+    <section>
+      <div class="sec"><h2>Problemas frecuentes</h2><span class="aside">${PROBLEMS.length} fichas</span></div>
+      <div class="chips" role="group" aria-label="Filtrar problemas">${cats.map(([k, l]) => `<button type="button" class="filter" data-action="care-filter" data-cat="${k}" aria-pressed="${ui.careFilter === k}">${l}</button>`).join('')}</div>
+      <ul id="problem-list" class="tlist plist">${problemListHTML()}</ul>
+    </section>
+    <footer class="foot">Consejos orientativos para plantas de casa. Ante plagas o enfermedades graves, consultá en un vivero.</footer>`;
+}
+function problemListHTML(){
+  return PROBLEMS.filter(pr => !ui.careFilter || pr.cat === ui.careFilter).map(pr => `<li><button type="button" class="row-btn" data-action="problem-open" data-problem="${pr.id}">
+      <span class="pe" aria-hidden="true">${pr.emoji}</span><span class="tt"><strong>${esc(pr.name)}</strong><small>${esc(pr.short)}</small></span>${ICON.chev}</button></li>`).join('');
+}
+
+// Ficha de un problema. "back" dice a dónde vuelve el botón de arriba.
+function problemHTML(pr, plantId, back){
+  const li = a => a.map(x => `<li>${esc(x)}</li>`).join('');
+  const p = plantId && getPlant(plantId);
+  const backBtn = back === 'sym' ? `<button class="back" type="button" data-action="sym-results">${ICON.back} Causas</button>`
+    : back && back.tid ? `<button class="back" type="button" data-action="treat-open" data-id="${plantId}" data-tid="${esc(back.tid)}">${ICON.back} Tratamiento</button>`
+    : `<button class="back" type="button" data-action="close">${ICON.back} Volver</button>`;
+  return `<div class="sheet-top">${backBtn}<button class="icon-btn" type="button" data-action="close" aria-label="Cerrar">✕</button></div>
+    <div class="problem-hero" aria-hidden="true">${pr.emoji}</div>
+    <p class="eyebrow">${CARE_CATS[pr.cat]}</p>
+    <h2 class="sheet-title">${esc(pr.name)}</h2>
+    <p class="lead" style="margin-top:6px">${esc(pr.short)}</p>
+    <div class="diag">
+      <h4>Cómo reconocerlo</h4><ul class="tips">${li(pr.signs)}</ul>
+      <h4>Por qué pasa</h4><ul class="tips">${li(pr.causes)}</ul>
+      <h4>Qué hacer</h4><ol class="steps-n">${li(pr.steps)}</ol>
+      <h4>Para prevenirlo</h4><ul class="tips">${li(pr.prevent)}</ul>
+    </div>
+    ${state.plants.length && !(back && back.tid) ? `<div class="btn-row" style="margin-top:24px"><button class="btn primary" type="button" data-action="treat-start" data-problem="${pr.id}" data-origin="${back === 'sym' ? 'sintomas' : 'guia'}"${p ? ` data-id="${p.id}"` : ''}>${p ? `Empezar tratamiento para ${esc(p.name)}` : 'Empezar tratamiento…'}</button></div>` : ''}`;
+}
+
+// Buscador de síntomas: primero se marcan, después se ven las causas.
+function symAiHint(){
+  const p = ui.sym.plantId && getPlant(ui.sym.plantId);
+  return `¿Preferís que la IA la mire? ${p
+    ? `<label class="linkbtn">Sacale una foto →<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label>`
+    : '<button class="linkbtn" type="button" data-action="care-photo">Sacale una foto →</button>'}`;
+}
+function symptomsHTML(){
+  const s = ui.sym, n = s.selected.size;
+  return `<div class="sheet-top"><button class="back" type="button" data-action="close">${ICON.back} Volver</button></div>
+    <p class="eyebrow">Buscador de síntomas</p>
+    <h2 class="sheet-title">¿Qué ves?</h2>
+    <p class="note" style="margin-top:6px">Marcá todo lo que notes: mientras más marques, mejor.</p>
+    ${state.plants.length ? `<label class="field" style="margin-top:18px"><span>¿Qué planta?</span><select id="sym-plant"><option value="">Ninguna en particular</option>${state.plants.map(x => `<option value="${x.id}" ${x.id === s.plantId ? 'selected' : ''}>${esc(x.name)}</option>`).join('')}</select></label>` : ''}
+    <p class="small muted" id="sym-ai" style="margin:10px 0 0">${symAiHint()}</p>
+    ${SYMPTOMS.map(g => `<div class="sym-group"><h3 class="eyebrow">${g.g}</h3><div class="pills">${g.items.map(([k, l]) => `<button type="button" class="pill" data-action="sym-toggle" data-sym="${k}" aria-pressed="${s.selected.has(k)}">${esc(l)}</button>`).join('')}</div></div>`).join('')}
+    <div class="sheet-bottom"><button class="btn primary" type="button" id="sym-go" data-action="sym-results" ${n ? '' : 'disabled'}>${symGoLabel(n)}</button></div>`;
+}
+const symGoLabel = n => n ? `Ver causas (${n})` : 'Marcá al menos un síntoma';
+
+// Ordena los problemas según los síntomas marcados y, si se eligió una planta, según su riego.
+function rankProblems(selected, p){
+  const t = todayISO();
+  return PROBLEMS.map(pr => {
+    const hits = selected.filter(k => pr.sym[k]);
+    if (!hits.length) return null;
+    let score = hits.reduce((n, k) => n + pr.sym[k], 0), why = '';
+    if (p){
+      const sp = speciesOf(p);
+      const often = sp.id !== 'otra' && p.waterEvery < sp.riego * 0.75;
+      if (['exceso-riego', 'pudricion-raiz', 'mosquita-sustrato'].includes(pr.id) && often){
+        score += 2;
+        why = `Dato de tu planta: la regás cada ${p.waterEvery} días y para ${sp.name.toLowerCase()} se recomienda cada ~${sp.riego}.`;
+      }
+      if (pr.id === 'falta-riego' && p.lastWater){
+        const since = diffDays(p.lastWater, t), every = waterInterval(p);
+        if (since > every + 2){ score += 2; why = `Dato de tu planta: hace ${since} días que no la regás (le toca cada ${every}).`; }
+        else if (sp.id !== 'otra' && p.waterEvery > sp.riego * 1.5){ score += 1; why = `Dato de tu planta: la regás cada ${p.waterEvery} días y para ${sp.name.toLowerCase()} se recomienda cada ~${sp.riego}.`; }
+      }
+      if (pr.id === 'aire-seco' && ['calathea', 'helecho', 'areca', 'espatifilo', 'orquidea'].includes(sp.id)){
+        score += 1;
+        why = `Dato de tu planta: ${sp.name.toLowerCase()} necesita humedad ${sp.humedad.toLowerCase()}.`;
+      }
+    }
+    return {pr, score, hits, why, typical:hits.some(k => pr.sym[k] === 3)};
+  }).filter(Boolean).sort((a, b) => b.score - a.score || b.hits.length - a.hits.length).slice(0, 4);
+}
+function symResultsHTML(){
+  const s = ui.sym, p = s.plantId && getPlant(s.plantId);
+  const res = rankProblems([...s.selected], p);
+  // "Muy probable" solo si coincide al menos un síntoma típico del problema.
+  const likely = (sc, typical) => sc >= 5 && typical ? ['Muy probable', 'alta'] : sc >= 3 ? ['Probable', 'media'] : ['Posible', 'baja'];
+  return `<div class="sheet-top"><button class="back" type="button" data-action="sym-back">${ICON.back} Cambiar síntomas</button><button class="icon-btn" type="button" data-action="close" aria-label="Cerrar">✕</button></div>
+    <p class="eyebrow">${p ? `${esc(p.name)} · ` : ''}${s.selected.size} ${plural(s.selected.size, 'síntoma', 'síntomas')}</p>
+    <h2 class="sheet-title">Causas más probables</h2>
+    ${res.length ? res.map(({pr, score, hits, why, typical}) => { const [lbl, cls] = likely(score, typical); return `<div class="result">
+        <div class="problem-head"><strong><span aria-hidden="true">${pr.emoji}</span> ${esc(pr.name)}</strong><span class="prob ${cls}">${lbl}</span></div>
+        <p class="small muted" style="margin:5px 0 0">Coincide: ${hits.map(k => SYMPTOM_LABEL[k].toLowerCase()).join(', ')}.</p>
+        ${why ? `<p class="note" style="margin-top:6px">${esc(why)}</p>` : ''}
+        <ol class="steps-n compact">${pr.steps.slice(0, 3).map(x => `<li>${esc(x)}</li>`).join('')}</ol>
+        <div class="btn-row" style="margin-top:10px">
+          ${state.plants.length ? `<button class="btn small primary" type="button" data-action="treat-start" data-problem="${pr.id}" data-origin="sintomas"${p ? ` data-id="${p.id}"` : ''}>Empezar tratamiento${p ? '' : '…'}</button>` : ''}
+          <button class="btn small ghost" type="button" data-action="problem-open" data-problem="${pr.id}" data-from="sym"${p ? ` data-id="${p.id}"` : ''}>Ver ficha completa</button>
+        </div></div>`; }).join('')
+      : '<p class="tipline">No encontramos una causa clara con esos síntomas. Probá marcar otros o sacale una foto.</p>'}
+    <div class="ai-box" style="margin-top:24px"><h3>¿No estás seguro?</h3><p class="small muted">Sacale una foto y la IA la revisa junto con su historial de riego.</p>
+      ${p ? `<label class="btn small">${ICON.camera} Sacar foto<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label>`
+          : `<button class="btn small" type="button" data-action="care-photo">${ICON.camera} Sacar foto</button>`}</div>`;
+}
+
+// Elegir planta: para sacarle una foto o para empezar un tratamiento.
+function pickPlantHTML(purpose, problemId, origin){
+  const rows = state.plants.map(p => purpose === 'photo'
+    ? `<li><label class="row-btn"><span class="mini-thumb">${photoOrEmoji(p)}</span><span class="tt"><strong>${esc(p.name)}</strong><small>${plantSub(p)}</small></span>${ICON.camera}<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label></li>`
+    : `<li><button type="button" class="row-btn" data-action="pick-treat" data-id="${p.id}" data-problem="${problemId}" data-origin="${origin}"><span class="mini-thumb">${photoOrEmoji(p)}</span><span class="tt"><strong>${esc(p.name)}</strong><small>${plantSub(p)}</small></span>${ICON.chev}</button></li>`).join('');
+  return `<div class="sheet-top"><button class="back" type="button" data-action="close">${ICON.back} Volver</button></div>
+    <p class="eyebrow">${purpose === 'photo' ? 'Diagnóstico con IA' : esc(PROBLEM_BY_ID[problemId].name)}</p>
+    <h2 class="sheet-title">${purpose === 'photo' ? '¿A qué planta le sacás la foto?' : '¿Qué planta vas a tratar?'}</h2>
+    ${rows ? `<ul class="tlist" style="margin-top:14px">${rows}</ul>` : '<p class="tipline">Todavía no cargaste plantas.</p>'}
+    ${purpose === 'photo' ? '<p style="margin-top:18px"><button class="linkbtn" type="button" data-action="add">Es una planta que todavía no cargué →</button></p>' : ''}`;
+}
+
+// Plan de tratamiento de una planta.
+function treatmentHTML(p, t){
+  const done = t.steps.filter(s => s.done).length, total = t.steps.length;
+  const origin = {ia:'Según el diagnóstico con IA', sintomas:'Según los síntomas que marcaste', guia:'De la ficha del problema', manual:''}[t.origin];
+  const pr = t.problemId && PROBLEM_BY_ID[t.problemId];
+  const rv = nextReview(p), t0 = todayISO();
+  return `<div class="sheet-top"><button class="back" type="button" data-action="open" data-id="${p.id}">${ICON.back} ${esc(p.name)}</button><button class="icon-btn" type="button" data-action="close" aria-label="Cerrar">✕</button></div>
+    <p class="eyebrow">${t.status === 'activo' ? 'En tratamiento' : 'Curada'} · desde el ${esc(fmtDM.format(localDate(t.createdAt)).replace('.', ''))}</p>
+    <h2 class="sheet-title">${esc(t.title)}</h2>
+    ${origin ? `<p class="note" style="margin-top:6px">${origin}</p>` : ''}
+    <div class="progress"><span>${done} de ${total} ${plural(total, 'paso', 'pasos')}</span><span class="bar"><i style="width:${total ? Math.round(done / total * 100) : 0}%"></i></span></div>
+    <ul class="steps-check">${t.steps.map((s, i) => `<li><button type="button" data-action="step-toggle" data-id="${p.id}" data-tid="${esc(t.id)}" data-i="${i}" aria-pressed="${s.done}"><span class="box">${ICON.check}</span><span class="tx">${esc(s.text)}</span></button></li>`).join('')}</ul>
+    ${t.status === 'activo' ? `
+      <div class="detail-section">
+        <div class="section-head"><h3>Seguimiento</h3><label class="btn small">${ICON.camera} Foto de control<input type="file" accept="image/*" class="cam-input" data-plant="${p.id}" hidden></label></div>
+        <p class="note">${rv ? `Próxima foto de control: ${whenText(diffDays(t0, rv)).toLowerCase()}.` : 'Sacale una foto cada tanto para ver cómo evoluciona.'} Si empeora, pedí un diagnóstico con IA desde la foto.</p>
+      </div>
+      <div class="btn-row" style="margin-top:24px">
+        <button class="btn primary" type="button" data-action="treat-resolve" data-id="${p.id}" data-tid="${esc(t.id)}">Ya se curó</button>
+        ${pr ? `<button class="btn ghost" type="button" data-action="problem-open" data-problem="${pr.id}" data-id="${p.id}" data-tid="${esc(t.id)}">Ver ficha del problema</button>` : ''}
+      </div>`
+    : `<p class="review-line">Curada el ${esc(fmtDate.format(localDate(t.resolvedAt || t0)))}.</p>`}
+    <p style="margin-top:26px"><button class="linkbtn danger-link" type="button" data-action="treat-delete" data-id="${p.id}" data-tid="${esc(t.id)}">Quitar este tratamiento</button></p>`;
+}
+
+function openProblem(problemId, plantId, from, tid){
+  const pr = PROBLEM_BY_ID[problemId];
+  if (!pr) return;
+  const back = from === 'sym' ? 'sym' : tid ? {tid} : null;
+  openModal(problemHTML(pr, plantId, back), {kind:'problem', id:plantId || null}, pr.name);
+}
+function openTreatment(plantId, tid){
+  const p = getPlant(plantId), t = findTreatment(p, tid);
+  if (!t) return toast('Ese tratamiento ya no está.');
+  openModal(treatmentHTML(p, t), {kind:'treatment', id:plantId, tid}, t.title);
+}
+function openSymptoms(plantId){
+  ui.sym = {plantId:getPlant(plantId) ? plantId : '', selected:new Set()};
+  openModal(symptomsHTML(), {kind:'symptoms'}, 'Buscador de síntomas');
+}
+
+function startTreatment(plantId, problemId, origin){
+  const p0 = getPlant(plantId), pr = PROBLEM_BY_ID[problemId];
+  if (!p0 || !pr) return;
+  const existing = activeTreatments(p0).find(t => t.problemId === problemId);
+  if (existing){ openTreatment(plantId, existing.id); toast('Ya estaba en tratamiento: seguí con estos pasos.'); return; }
+  const tid = uid(), t = todayISO();
+  const ok = act(`🩹 ${p0.name}: tratamiento para ${pr.name.toLowerCase()}`, () => {
+    const p = getPlant(plantId);
+    (p.treatments ||= []).push({id:tid, title:pr.name, problemId, origin:['sintomas', 'guia'].includes(origin) ? origin : 'guia', diagLogId:null,
+      createdAt:t, status:'activo', resolvedAt:null, steps:pr.steps.map(text => ({text, done:false}))});
+    p.log.push({id:uid(), date:t, type:'tratamiento', text:`Empezó: ${pr.name}`});
+    if (!p.reviewDue) p.reviewDue = addDays(t, 7);
+  });
+  if (ok) openTreatment(plantId, tid);
+}
+function matchProblem(text){
+  const s = (text || '').toLowerCase();
+  return PROBLEM_MATCH_ORDER.find(id => PROBLEM_BY_ID[id].kw.some(k => s.includes(k))) || null;
+}
+const diagProblemId = d => matchProblem([d.problemas[0] && d.problemas[0].nombre, d.problemas[0] && d.problemas[0].causa, d.resumen].filter(Boolean).join(' '));
+function treatmentForDiag(p, entry){
+  const pid = diagProblemId(entry.data);
+  return (p.treatments || []).find(t => t.diagLogId === entry.id) || (pid && activeTreatments(p).find(t => t.problemId === pid)) || null;
+}
+function treatFromDiag(plantId, logId){
+  const p0 = getPlant(plantId), entry = p0 && p0.log.find(l => l.id === logId);
+  if (!entry || !entry.data) return;
+  const already = treatmentForDiag(p0, entry);
+  if (already) return openTreatment(plantId, already.id);
+  const d = entry.data, top = d.problemas[0];
+  const seen = new Set(), steps = [];
+  for (const text of [...d.acciones_inmediatas, ...(top ? top.tratamiento : [])]){
+    const k = text.toLowerCase().trim();
+    if (k && !seen.has(k)){ seen.add(k); steps.push({text, done:false}); }
+  }
+  if (!steps.length) steps.push({text:'Seguí las indicaciones del diagnóstico y sacale otra foto en unos días.', done:false});
+  const title = (top ? top.nombre : 'Plan de cuidado').slice(0, 120);
+  const problemId = diagProblemId(d);
+  const tid = uid(), t = todayISO();
+  const ok = act(`🩹 ${p0.name}: tratamiento iniciado`, () => {
+    const p = getPlant(plantId);
+    (p.treatments ||= []).push({id:tid, title, problemId, origin:'ia', diagLogId:logId, createdAt:t, status:'activo', resolvedAt:null, steps:steps.slice(0, 12)});
+    p.log.push({id:uid(), date:t, type:'tratamiento', text:`Empezó: ${title}`});
+    if (!p.reviewDue) p.reviewDue = addDays(t, d.revisar_en_dias || 7);
+  });
+  if (ok) openTreatment(plantId, tid);
+}
+function toggleStep(plantId, tid, i){
+  if (commit(() => { const s = findTreatment(getPlant(plantId), tid).steps[i]; s.done = !s.done; }) === null) return;
+  refresh();
+  const t = findTreatment(getPlant(plantId), tid);
+  if (t.status === 'activo' && t.steps.every(s => s.done)) toast('¡Hiciste todos los pasos! Cuando la veas bien, marcala como curada.');
+}
+function resolveTreatment(plantId, tid){
+  const p0 = getPlant(plantId);
+  if (!findTreatment(p0, tid)) return;
+  act(`🌿 ¡${p0.name} se curó!`, () => {
+    const p = getPlant(plantId), t = findTreatment(p, tid), d = todayISO();
+    t.status = 'resuelto';
+    t.resolvedAt = d;
+    p.log.push({id:uid(), date:d, type:'tratamiento', text:`Curada: ${t.title}`});
+    if (!activeTreatments(p).length){ p.reviewDue = null; delete p.snooze.revision; }
+  });
+}
+function deleteTreatment(plantId, tid){
+  const p0 = getPlant(plantId), t0 = findTreatment(p0, tid);
+  if (!t0 || !confirm(`¿Quitar el tratamiento «${t0.title}»?`)) return;
+  openDetail(plantId);
+  act('Tratamiento quitado', () => { const p = getPlant(plantId); p.treatments = p.treatments.filter(t => t.id !== tid); });
+}
+
 /* ---------- Exportar / importar ---------- */
 function download(filename, content, mime){
   const url = URL.createObjectURL(new Blob([content], {type:mime}));
@@ -1660,7 +2152,7 @@ async function importFile(file){
 /* =====================================================================
    Render y navegación
    ===================================================================== */
-const VIEWS = {hoy:viewHoy, plantas:viewPlantas, guia:viewGuia, ajustes:viewAjustes};
+const VIEWS = {hoy:viewHoy, plantas:viewPlantas, cuidados:viewCuidados, guia:viewGuia, ajustes:viewAjustes};
 const currentTab = () => { const h = location.hash.slice(1); return VIEWS[h] ? h : 'hoy'; };
 const BASE_TITLE = 'Brote · Cuidado de plantas';
 
@@ -1684,6 +2176,10 @@ function refresh(){
   if (m.kind === 'detail'){
     const p = getPlant(m.id);
     if (p){ const top = modalBody.scrollTop; modalBody.innerHTML = detailHTML(p); modalBody.scrollTop = top; loadGallery(p.id); }
+    else closeModal();
+  } else if (m.kind === 'treatment'){
+    const p = getPlant(m.id), t = findTreatment(p, m.tid);
+    if (t){ const top = modalBody.scrollTop; modalBody.innerHTML = treatmentHTML(p, t); modalBody.scrollTop = top; }
     else closeModal();
   } else if (m.kind === 'photo' && !ui.busy){
     if (getPlant(m.id)) openPhoto(m.photoId, m.logId, true); else closeModal();
@@ -1720,6 +2216,34 @@ document.addEventListener('click', e => {
     case 'water-all': waterAll(); break;
     case 'log-form': { const p = getPlant(id); if (p) openModal(logFormHTML(p), {kind:'log', id}, 'Registrar actividad'); break; }
     case 'del-log': deleteLog(id, el.dataset.log); break;
+    case 'care-photo': openModal(pickPlantHTML('photo'), {kind:'pick'}, 'Elegir planta'); break;
+    case 'symptoms': openSymptoms(id); break;
+    case 'sym-toggle': {
+      const k = el.dataset.sym;
+      if (ui.sym.selected.has(k)) ui.sym.selected.delete(k); else ui.sym.selected.add(k);
+      el.setAttribute('aria-pressed', String(ui.sym.selected.has(k)));
+      const go = $('#sym-go');
+      if (go){ go.disabled = !ui.sym.selected.size; go.textContent = symGoLabel(ui.sym.selected.size); }
+      break;
+    }
+    case 'sym-results': if (ui.sym.selected.size) openModal(symResultsHTML(), {kind:'sym-results'}, 'Causas más probables'); break;
+    case 'sym-back': openModal(symptomsHTML(), {kind:'symptoms'}, 'Buscador de síntomas'); break;
+    case 'problem-open': openProblem(el.dataset.problem, id, el.dataset.from, el.dataset.tid); break;
+    case 'care-filter':
+      ui.careFilter = el.dataset.cat;
+      document.querySelectorAll('[data-action="care-filter"]').forEach(b => b.setAttribute('aria-pressed', String(b === el)));
+      $('#problem-list').innerHTML = problemListHTML();
+      break;
+    case 'treat-start':
+      if (id) startTreatment(id, el.dataset.problem, el.dataset.origin);
+      else openModal(pickPlantHTML('treat', el.dataset.problem, el.dataset.origin), {kind:'pick'}, 'Elegir planta');
+      break;
+    case 'pick-treat': startTreatment(id, el.dataset.problem, el.dataset.origin); break;
+    case 'treat-open': openTreatment(id, el.dataset.tid); break;
+    case 'treat-from-diag': treatFromDiag(id, el.dataset.log); break;
+    case 'step-toggle': toggleStep(id, el.dataset.tid, Number(el.dataset.i)); break;
+    case 'treat-resolve': resolveTreatment(id, el.dataset.tid); break;
+    case 'treat-delete': deleteTreatment(id, el.dataset.tid); break;
     case 'week-day':
       ui.weekDate = el.dataset.date;
       $('#week').innerHTML = weekHTML();
@@ -1793,6 +2317,10 @@ document.addEventListener('change', async e => {
     const file = el.files[0];
     el.value = '';
     await takePhoto(el.dataset.plant, file);
+  }
+  else if (el.id === 'sym-plant'){
+    ui.sym.plantId = el.value;
+    $('#sym-ai').innerHTML = symAiHint();
   }
   else if (el.id === 'set-model'){
     setModel(el.value);
